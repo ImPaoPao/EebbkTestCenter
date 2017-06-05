@@ -1,0 +1,1 @@
+include ':test-lib', ':test-kit', ':performance-test'

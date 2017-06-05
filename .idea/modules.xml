@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EebbkTestCenter.iml" filepath="$PROJECT_DIR$/EebbkTestCenter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/performance-test/performance-test.iml" filepath="$PROJECT_DIR$/performance-test/performance-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test-kit/test-kit.iml" filepath="$PROJECT_DIR$/test-kit/test-kit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test-lib/test-lib.iml" filepath="$PROJECT_DIR$/test-lib/test-lib.iml" />
+    </modules>
+  </component>
+</project>
