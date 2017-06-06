@@ -252,7 +252,7 @@ public class AutomatorHelper {
             }
         }
         Object icon = folder != null ? findIcon(folder, title) : findIcon(title);
-        assertThat(String.format("没有找到图标%s", title), icon, notNullValue());
+        assertThat(String.format("没有找到图标folde%s", title), icon, notNullValue());
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {
@@ -267,6 +267,21 @@ public class AutomatorHelper {
             assertThat(String.format("启动%s失败", title), validate, notNullValue());
         }
     }
+
+    public Object openIcon(String folder, String title, String packageName) {
+        boolean forceStop = false;
+        if (forceStop) {
+            try {
+                mDevice.executeShellCommand(String.format("am force-stop %s", packageName));
+            } catch (IOException e) {
+                // Nothing to do
+            }
+        }
+        Object icon = folder != null ? findIcon(folder, title) : findIcon(title);
+        assertThat(String.format("没有找到图标%s", title), icon, notNullValue());
+        return icon;
+    }
+
 
     public void openIcon(String title, String packageName, boolean forceStop) {
         openIcon(null, title, packageName, forceStop);

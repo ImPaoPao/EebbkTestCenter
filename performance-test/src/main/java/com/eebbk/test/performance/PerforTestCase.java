@@ -1,15 +1,23 @@
 package com.eebbk.test.performance;
 
 import android.app.Instrumentation;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
+import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,8 +38,10 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,13 +52,17 @@ import static android.support.test.InstrumentationRegistry.getArguments;
 public class PerforTestCase extends Automator {
     public static String TAG = "PerforTestCase";
 
-    private FileWriter mWriter;
-    private XmlSerializer mXml;
-    private String mStartTime;
+    protected FileWriter mWriter;
+    protected XmlSerializer mXml;
+    protected String mStartTime;
 
-    protected int mCount = 2;
-    protected int mType = 0;//0:冷启动 1:热启动
+    protected int mCount = 3;
+    protected int mType = 0;
     protected String mNumber = "unknown";
+
+
+    protected int mSys = 0;
+    protected int mApp = 0;
 
     @Before
     public void setUp() throws Exception {
@@ -57,13 +71,17 @@ public class PerforTestCase extends Automator {
         String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
-        if (TextUtils.isDigitsOnly(count)) {
-            mCount = Integer.parseInt(count);
+        String sys = getArguments().getString("numsys", "1");
+        String app = getArguments().getString("numapp", "1");
+        if (TextUtils.isDigitsOnly(sys)) {
+            mSys = Integer.parseInt(sys);
+        }
+        if (TextUtils.isDigitsOnly(app)) {
+            mApp = Integer.parseInt(app);
         }
         if (TextUtils.isDigitsOnly(type)) {
             mType = Integer.parseInt(type);
         }
-
         File out = new File("/sdcard/performance-test/", mNumber);
         if (out.exists()) {
             File[] files = out.listFiles();
@@ -89,6 +107,24 @@ public class PerforTestCase extends Automator {
         Log.i(TAG, "record start time ");
         mStartTime = getCurrentDate();
     }
+
+    public void stopTestRecord(String value) {
+        Log.i(TAG, "record endtime and infos");
+        if (mStartTime != null) {
+            try {
+                mXml.text("\n");
+                mXml.startTag(null, "Segment");
+                mXml.attribute(null, "starttime", mStartTime);
+                mXml.attribute(null, "memory", value);
+                mXml.attribute(null, "endtime", getCurrentDate());
+                mXml.endTag(null, "Segment");
+            } catch (IOException e) {
+                // Nothing to do
+            }
+        }
+        mStartTime = null;
+    }
+
 
     public void stopTestRecord() {
         Log.i(TAG, "record endtime and infos");
@@ -129,7 +165,15 @@ public class PerforTestCase extends Automator {
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
         mDevice.waitForIdle();
-        mDevice.executeShellCommand("am start -W com.android.systemui/.recents.RecentsActivity");
+        String out = mDevice.executeShellCommand("am start -W com.android.systemui/.recents.RecentsActivity");
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("======", out);
+            instrumentationStatusOut(obj);
+        } catch (JSONException je) {
+            //
+        }
+
         mDevice.waitForIdle();
         BySelector cleanAll = By.res("com.android.systemui", "clean_all");
         mDevice.wait(Until.hasObject(cleanAll), WAIT_TIME);
@@ -169,6 +213,69 @@ public class PerforTestCase extends Automator {
     }
 
 
+    //前置条件1:执行用例前启动app
+    /*
+    @sys 启动系统应用个数
+    @app 启动三方应用个数
+    */
+    public void doStartActivity(int sys, int app) throws IOException {
+        doStartActivity(sys, "1");
+        doStartActivity(app, "0");
+    }
+
+    public void doStartActivity(int flag) throws IOException {
+        if (flag == 0 || mType == 0) {
+            if ((mSys & mApp) > 0) {
+                doStartActivity(mSys, "1");
+                doStartActivity(mApp, "0");
+            } else {
+                doStartActivity(mSys > 0 ? mSys : mApp, mSys > 0 ? "1" : "0");
+            }
+        }
+    }
+
+
+    /*
+    @num 启动的apk个数
+    @type 启动apk的类型 sys 1 3app 0
+     */
+    public void doStartActivity(int num, String type) throws IOException {
+        PackageManager mManager = mContext.getPackageManager();
+        String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
+        List<String> packages = new ArrayList();
+        mDevice.waitForIdle(5000);
+        JSONObject obj = new JSONObject();
+        List<PackageInfo> pis = mManager.getInstalledPackages(0);
+        if (num > pis.size()) num = pis.size();
+        for (PackageInfo pi : pis) {
+            if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == Integer.parseInt(type)) {
+                for (String category : categories) {
+                    Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(
+                            category).setPackage(pi.packageName);
+                    List<ResolveInfo> ris = mManager.queryIntentActivities(intent, 0);
+                    for (ResolveInfo ri : ris) {
+                        if (ri.activityInfo.name != null) {
+                            mDevice.executeShellCommand("am start -W " + pi.packageName + "/" + ri.activityInfo.name);
+                            packages.add(pi.packageName + "/" + ri.activityInfo.name);
+                            mDevice.waitForIdle(5000);
+                            mDevice.pressHome();
+                            break;
+                        }
+                    }
+                }
+                if (packages.size() >= num) break;
+            }
+        }
+        try {
+            obj.put("===", packages);
+        } catch (JSONException je) {
+            //
+        }
+
+        instrumentationStatusOut(obj);
+    }
+
+    //截图
     protected Bitmap getHomeSourceScreen(BySelector bySelector, String startPackage, String widgetFlag, long
             waitTime) throws IOException, InterruptedException {
         swipeCurrentLauncher();
@@ -196,6 +303,7 @@ public class PerforTestCase extends Automator {
         return getHomeSourceScreen(bySelector, startPackage, null, waitTime);
     }
 
+    //图片对比
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Date timeStamp) throws JSONException {
         return doCompare(sourcePng, loadPngRect, null, timeStamp);
 
@@ -243,7 +351,7 @@ public class PerforTestCase extends Automator {
                 break;
             }
         } while (loadResult > 1 || refreshResult > 1);
-        if (!compareResult.containsKey("loadTime")){
+        if (!compareResult.containsKey("loadTime")) {
             compareResult.put("loadTime", getCurrentDate());
             compareResult.put("loadResult", String.valueOf(loadResult));
         }
@@ -252,6 +360,58 @@ public class PerforTestCase extends Automator {
         instrumentationStatusOut(obj);
         return compareResult;
     }
+
+    public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi) throws
+            IOException, JSONException {
+        Object icon = mHelper.openIcon(folder, title, packageName);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
+        mDevice.waitForIdle();
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        //Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), 400);
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 100, source_png.getWidth(), source_png.getHeight());
+        clearRunprocess();
+        for (int i = 0; i < mCount; i++) {
+            doStartActivity(i);
+            icon = mHelper.openIcon(folder, title, packageName);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).click();
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).click();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
+            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+                    ("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressHome();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
+        }
+        if (!source_png.isRecycled()) {
+            source_png.recycle();
+        }
+    }
+
+
 }
 
 

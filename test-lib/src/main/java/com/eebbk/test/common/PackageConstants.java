@@ -20,6 +20,11 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
+    public static final class AndroidLauncher {
+        public static final String PACKAGE = "com.android.systemui";
+        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+    }
+
     public static final class Personal {
         public static final String PACKAGE = "com.bbk.personal";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);

@@ -1,6 +1,7 @@
 package com.eebbk.test.automator;
 
 import android.app.UiAutomation;
+import android.content.Context;
 import android.support.test.uiautomator.UiDevice;
 
 import org.junit.Before;
@@ -18,6 +19,8 @@ public class Automator {
     protected UiDevice mDevice;
     protected UiAutomation mAutomation;
     protected AutomatorHelper mHelper;
+    protected Context mContext;
+
 
     @Before
     public void setUp() throws Exception {
@@ -29,6 +32,9 @@ public class Automator {
 
         // Initialize AutomatorHelper instance
         mHelper = new AutomatorHelper(mDevice);
+
+        //Initialize context
+        mContext = getInstrumentation().getTargetContext();
 
         // Start from the home screen
         mHelper.unlock();

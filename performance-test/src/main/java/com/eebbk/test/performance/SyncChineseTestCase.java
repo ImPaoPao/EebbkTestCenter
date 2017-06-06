@@ -6,7 +6,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
+import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -30,21 +30,46 @@ public class SyncChineseTestCase extends PerforTestCase {
     @Test
     public void launchSyncChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
-        BySelector synchinese = By.text("同步语文");
-        Bitmap source_png = getHomeSourceScreen(synchinese, SynChinese.PACKAGE, "refresh", 0);
+        Object icon = mHelper.openIcon("语文学习", "同步语文", SynChinese.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
+        mDevice.waitForIdle();
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            swipeCurrentLauncher();
-            mDevice.wait(Until.hasObject(synchinese), WAIT_TIME);
-            UiObject2 synChineseObj = mDevice.findObject(synchinese);
-            startTestRecord();
-            synChineseObj.clickAndWait(Until.newWindow(), WAIT_TIME);
+            doStartActivity(i);
+            icon = mHelper.openIcon("语文学习", "同步语文", SynChinese.PACKAGE);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).click();
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).click();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, loadPngRect, new Date());
             mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
-            clearRunprocess();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -148,7 +173,7 @@ public class SyncChineseTestCase extends PerforTestCase {
         for (int i = 0; i < mCount; i++) {
             openOneChineseBook();
             startTestRecord();
-            mHelper.longClick(mDevice.getDisplayWidth() / 2,mDevice.getDisplayHeight() / 3);
+            mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
