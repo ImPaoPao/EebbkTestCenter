@@ -49,7 +49,7 @@ public class SyncEglishTestCase extends PerforTestCase {
             icon = mHelper.openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(),WAIT_TIME);
             } else {
                 try {
                     startTestRecord();

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -25,44 +24,7 @@ import java.util.Map;
 public class OneSearchDarkTestCase extends PerforTestCase {
     @Test
     public void launchOneSearch() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        Object icon = mHelper.openIcon(null, "一键搜", OneSearchDark.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(OneSearchDark.PACKAGE, "btn_start_one_search")), WAIT_TIME);
-        mDevice.waitForIdle();
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 100);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 100, source_png.getWidth(), source_png.getHeight());
-        for (int i = 0; i < mCount; i++) {
-            icon = mHelper.openIcon(null, "一键搜", OneSearchDark.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).click();
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).click();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
-            mDevice.wait(Until.hasObject(By.res(OneSearchDark.PACKAGE, "btn_start_one_search")), WAIT_TIME);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            clearRunprocess();
-        }
-        if (!source_png.isRecycled()) {
-            source_png.recycle();
-        }
+        clickLauncherIconStartApp(null,"一键搜",OneSearchDark.PACKAGE,"btn_start_one_search");
     }
 
 

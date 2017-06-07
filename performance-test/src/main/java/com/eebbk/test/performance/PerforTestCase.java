@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -71,8 +70,8 @@ public class PerforTestCase extends Automator {
         String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
-        String sys = getArguments().getString("numsys", "1");
-        String app = getArguments().getString("numapp", "1");
+        String sys = getArguments().getString("numsys", "0");
+        String app = getArguments().getString("numapp", "0");
         if (TextUtils.isDigitsOnly(sys)) {
             mSys = Integer.parseInt(sys);
         }
@@ -81,6 +80,9 @@ public class PerforTestCase extends Automator {
         }
         if (TextUtils.isDigitsOnly(type)) {
             mType = Integer.parseInt(type);
+        }
+        if (TextUtils.isDigitsOnly(count)) {
+            mCount = Integer.parseInt(count);
         }
         File out = new File("/sdcard/performance-test/", mNumber);
         if (out.exists()) {
@@ -240,6 +242,7 @@ public class PerforTestCase extends Automator {
     @type 启动apk的类型 sys 1 3app 0
      */
     public void doStartActivity(int num, String type) throws IOException {
+//        if (num<1) return;
         PackageManager mManager = mContext.getPackageManager();
         String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
         List<String> packages = new ArrayList();
@@ -248,6 +251,7 @@ public class PerforTestCase extends Automator {
         List<PackageInfo> pis = mManager.getInstalledPackages(0);
         if (num > pis.size()) num = pis.size();
         for (PackageInfo pi : pis) {
+            if (packages.size() >= num) {break;}
             if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == Integer.parseInt(type)) {
                 for (String category : categories) {
                     Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(
@@ -263,7 +267,6 @@ public class PerforTestCase extends Automator {
                         }
                     }
                 }
-                if (packages.size() >= num) break;
             }
         }
         try {
@@ -377,8 +380,9 @@ public class PerforTestCase extends Automator {
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         //Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), 400);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 100, source_png.getWidth(), source_png.getHeight());
+        //下方菜单条
+        Rect loadPngRect = getLoadRect(source_png);
+        Rect refreshPngRect = getRefreshRect(source_png);//除了下方条外的其它部分。
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -411,6 +415,15 @@ public class PerforTestCase extends Automator {
         }
     }
 
+
+    public Rect getLoadRect(Bitmap source_png){
+        Rect loadPngRect=new Rect(0,source_png.getHeight()-70,source_png.getWidth(),source_png.getHeight());
+        return loadPngRect;
+    }
+    public Rect getRefreshRect(Bitmap source_png){
+        Rect refreshPngRect=new Rect(0,0,source_png.getWidth(),source_png.getHeight()-200);
+        return refreshPngRect;
+    }
 
 }
 
