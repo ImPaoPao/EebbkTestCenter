@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiObject2;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 
 import com.eebbk.test.common.PackageConstants;
@@ -50,6 +51,43 @@ public class DisciplineTestCase extends PerforTestCase {
             //回到桌面 等待加载完即为学科同步页面。
         }
     }
+
+
+    // 学科同步
+    @Test
+    public void launchDisciplineSynMath() throws IOException, UiObjectNotFoundException, JSONException,
+            InterruptedException {
+        mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
+        UiObject2 icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese"));
+        icon.clickAndWait(Until.newWindow(), WAIT_TIME);
+        mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
+        mDevice.waitForIdle();
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()/2);
+        clearRunprocess();
+        for (int i = 0; i < mCount; i++) {
+            doStartActivity(i);
+            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
+            icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese"));
+            startTestRecord();
+            icon.click();
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
+            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+                    ("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressHome();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
+        }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+        }
+    }
+
 
     //点击添加按钮→下载界面加载完成
     @Test

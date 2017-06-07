@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -70,8 +71,8 @@ public class PerforTestCase extends Automator {
         String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
-        String sys = getArguments().getString("numsys", "0");
-        String app = getArguments().getString("numapp", "0");
+        String sys = getArguments().getString("sysnum", "0");
+        String app = getArguments().getString("appnum", "0");
         if (TextUtils.isDigitsOnly(sys)) {
             mSys = Integer.parseInt(sys);
         }
@@ -167,15 +168,7 @@ public class PerforTestCase extends Automator {
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
         mDevice.waitForIdle();
-        String out = mDevice.executeShellCommand("am start -W com.android.systemui/.recents.RecentsActivity");
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("======", out);
-            instrumentationStatusOut(obj);
-        } catch (JSONException je) {
-            //
-        }
-
+        mDevice.executeShellCommand("am start -W com.android.systemui/.recents.RecentsActivity");
         mDevice.waitForIdle();
         BySelector cleanAll = By.res("com.android.systemui", "clean_all");
         mDevice.wait(Until.hasObject(cleanAll), WAIT_TIME);
@@ -350,16 +343,18 @@ public class PerforTestCase extends Automator {
                 refreshResult = loadResult;
             }
             obj.put(String.valueOf(m) + "refreshResult:", refreshResult);
-            if ((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) {
+            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4)||(loadResult <= 1 & refreshResult <= 1)) {
+                if (!compareResult.containsKey("loadTime")) {
+                    compareResult.put("loadTime", getCurrentDate());
+                    compareResult.put("loadResult", String.valueOf(loadResult));
+                }
+                compareResult.put("refreshTime", getCurrentDate());
+                compareResult.put("refreshResult", String.valueOf(refreshResult));
+                mHelper.saveScreenshot(des_png,mNumber);
+                SystemClock.sleep(1000);
                 break;
             }
         } while (loadResult > 1 || refreshResult > 1);
-        if (!compareResult.containsKey("loadTime")) {
-            compareResult.put("loadTime", getCurrentDate());
-            compareResult.put("loadResult", String.valueOf(loadResult));
-        }
-        compareResult.put("refreshResult", String.valueOf(refreshResult));
-        compareResult.put("refreshTime", getCurrentDate());
         instrumentationStatusOut(obj);
         return compareResult;
     }

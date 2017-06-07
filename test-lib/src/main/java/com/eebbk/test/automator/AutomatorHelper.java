@@ -16,6 +16,7 @@ import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ import com.eebbk.test.common.PackageConstants.SystemUi;
 import com.eebbk.test.common.PackageConstants.Vision;
 import com.eebbk.test.common.PackageConstants.Vtraining;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -151,6 +153,35 @@ public class AutomatorHelper {
                 ".png");
         Bitmap source_png = BitmapFactory.decodeStream(source_fis);
         return source_png;
+    }
+
+    public boolean saveScreenshot(Bitmap screenshot, String fileName) {
+        if (screenshot == null) {
+            return false;
+        }
+        BufferedOutputStream bos = null;
+        try {
+            Log.v("UiAutomatorHelper", "I am log");
+            bos = new BufferedOutputStream(new FileOutputStream(new File("/sdcard/performance-test/" + fileName +
+                    "/"+fileName+"_target.png")));
+            if (bos != null) {
+                screenshot.compress(Bitmap.CompressFormat.PNG, 90, bos);
+                bos.flush();
+            }
+        } catch (IOException ioe) {
+            Log.e("UiAutomatorHelper", "failed to save screen shot to file", ioe);
+            return false;
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException ioe) {
+                    /* ignore */
+                }
+            }
+            screenshot.recycle();
+        }
+        return true;
     }
 
     public boolean takeScreenshot(Rect r, File storePath, int quality) {
