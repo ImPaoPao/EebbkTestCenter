@@ -24,7 +24,7 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class SynStudyTestCase extends PerforTestCase {
     @Override
-    public void initSetup() throws UiObjectNotFoundException {
+    public void initSetup() throws UiObjectNotFoundException, IOException {
         mPkg = SynStudy.PACKAGE;
         initMiddleSetup();
     }

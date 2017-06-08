@@ -55,7 +55,7 @@ public class SyncMathTestCase extends PerforTestCase {
             icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+                ((UiObject2) icon).click();
             } else {
                 try {
                     //startTestRecord();

@@ -6,7 +6,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
+import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -25,22 +25,53 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class VisionTestCase extends PerforTestCase {
     //视力保护:优化点，动态画面的获取，获取控件 ，计时。
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = Vision.PACKAGE;
+    }
+
+
     @Test
     public void launchVision() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        BySelector byVision = By.text("视力保护");
-        Bitmap source_png = getHomeSourceScreen(byVision, Vision.PACKAGE, 2000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        Object icon = mHelper.openIcon(null, "视力保护", Vision.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        SystemClock.sleep(3000);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        Rect loadPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight());
+        clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            swipeCurrentLauncher();
-            mDevice.wait(Until.hasObject(byVision), WAIT_TIME);
-            UiObject2 vision = mDevice.findObject(byVision);
-            startTestRecord();
-            vision.clickAndWait(Until.newWindow(), WAIT_TIME);
+            doStartActivity(i);
+            icon = mHelper.openIcon(null, "视力保护", Vision.PACKAGE);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).click();
+            } else {
+                try {
+                    //startTestRecord();
+                    ((UiObject) icon).click();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
-            clearRunprocess();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -83,7 +114,7 @@ public class VisionTestCase extends PerforTestCase {
     public void showVisionSettings() throws JSONException, FileNotFoundException, InterruptedException {
         mHelper.openVision();
         SystemClock.sleep(1000);
-        mDevice.click(mDevice.getDisplayWidth() -45, 65);
+        mDevice.click(mDevice.getDisplayWidth() - 45, 65);
         mDevice.wait(Until.hasObject(By.text("设置")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
@@ -93,7 +124,7 @@ public class VisionTestCase extends PerforTestCase {
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
             startTestRecord();
-            mDevice.click(mDevice.getDisplayWidth() -45, 65);
+            mDevice.click(mDevice.getDisplayWidth() - 45, 65);
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

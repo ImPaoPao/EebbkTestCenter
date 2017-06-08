@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
+import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -27,24 +28,46 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
     @Test
     public void launchQuestionDatabase() throws IOException, UiObjectNotFoundException, InterruptedException,
             JSONException {
-        BySelector byQuestionDb = By.text("好题精练");
-        Bitmap source_png = getHomeSourceScreen(byQuestionDb, QuestionDatabase.PACKAGE,
-                "exercise_main_default_banner", 10000);
+        Object icon = mHelper.openIcon(null, "好题精练", QuestionDatabase.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_default_banner")), WAIT_TIME * 2);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 60);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 60, source_png.getWidth(), source_png.getHeight());
+        clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            swipeCurrentLauncher();
-            mDevice.wait(Until.hasObject(byQuestionDb), WAIT_TIME);
-            UiObject2 questionDb = mDevice.findObject(byQuestionDb);
-            startTestRecord();
-            questionDb.clickAndWait(Until.newWindow(), WAIT_TIME);
+            doStartActivity(i);
+            icon = mHelper.openIcon(null, "好题精练", QuestionDatabase.PACKAGE);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).click();
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).click();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
             mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_default_banner")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(3000);
             mDevice.pressHome();
-            clearRunprocess();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();

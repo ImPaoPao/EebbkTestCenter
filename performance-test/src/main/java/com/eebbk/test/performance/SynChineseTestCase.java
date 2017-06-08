@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class SyncChineseTestCase extends PerforTestCase {
+public class SynChineseTestCase extends PerforTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -34,7 +34,7 @@ public class SyncChineseTestCase extends PerforTestCase {
     }
 
     @Test
-    public void launchSyncChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+    public void launchSynChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         Object icon = mHelper.openIcon("语文学习", "同步语文", SynChinese.PACKAGE);
         if (icon instanceof UiObject2) {

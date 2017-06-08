@@ -109,14 +109,14 @@ public class PerforTestCase extends Automator {
         mXml.text("\n");
         mXml.startTag(null, "Record");
         initSetup();
-        clearRunprocess();
+//        clearRunprocess();
     }
 
-    public void initSetup() throws UiObjectNotFoundException {
+    public void initSetup() throws UiObjectNotFoundException, IOException {
         initPrimarySetup();
     }
 
-    public void initPrimarySetup() throws UiObjectNotFoundException {
+    public void initPrimarySetup() throws UiObjectNotFoundException, IOException {
         mDevice.waitForIdle();
         UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
         if (!user.getText().contains("小学")) {
@@ -142,11 +142,12 @@ public class PerforTestCase extends Automator {
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
+            clearRunprocess();
         }
 
     }
 
-    public void initMiddleSetup() throws UiObjectNotFoundException {
+    public void initMiddleSetup() throws UiObjectNotFoundException, IOException {
         mDevice.waitForIdle();
         UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
         if (!user.getText().contains("中学")) {
@@ -187,6 +188,7 @@ public class PerforTestCase extends Automator {
 //            user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
+            clearRunprocess();
         }
     }
 
@@ -440,9 +442,9 @@ public class PerforTestCase extends Automator {
                 refreshResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, refreshPngRect.left,
                         refreshPngRect.top,
                         refreshPngRect.width(), refreshPngRect.height()), refreshPng);
-                if (refreshPng != null && !refreshPng.isRecycled()) {
-                    refreshPng.recycle();
-                }
+//                if (refreshPng != null && !refreshPng.isRecycled()) {
+//                    refreshPng.recycle();
+//                }
             } else {
                 refreshResult = loadResult;
             }

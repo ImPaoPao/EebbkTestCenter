@@ -15,18 +15,14 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 @RunWith(AndroidJUnit4.class)
-public class LauncherTestCase extends PerforTestCase {
+public class AndroidLauncherTestCase extends PerforTestCase {
     /*
     *查看最近内存信息：
      */
     @Test
     public void launchRecentMemory() throws RemoteException, IOException, JSONException {
         for (int i = 0; i < mCount; i++) {
-            if ((mSys & mApp) > 0) {
-                doStartActivity(mSys, mApp);
-            } else {
-                doStartActivity(mSys > 0 ? mSys : mApp, mSys > 0 ? "1" : "0");
-            }
+            doStartActivity(i);
             startTestRecord();
             mDevice.pressRecentApps();
             mDevice.wait(Until.hasObject(By.res(PackageConstants.AndroidLauncher.PACKAGE, "memory_info")), WAIT_TIME);

@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
+import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -26,22 +27,48 @@ import java.util.Map;
 public class VtrainingTestCase extends PerforTestCase {
     @Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        BySelector byVtrain = By.text("名师辅导班");
-        Bitmap source_png = getHomeSourceScreen(byVtrain, Vtraining.PACKAGE, "my_plan_banner_scale_id", 20000);
+        Object icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 6);
+        SystemClock.sleep(10000);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+
+        clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            swipeCurrentLauncher();
-            mDevice.wait(Until.hasObject(byVtrain), WAIT_TIME);
-            UiObject2 byVtraining = mDevice.findObject(byVtrain);
-            startTestRecord();
-            byVtraining.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            doStartActivity(i);
+            icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).click();
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).click();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date());
             mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
-            clearRunprocess();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
