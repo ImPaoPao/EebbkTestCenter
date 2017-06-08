@@ -33,18 +33,18 @@ public class SynStudyTestCase extends PerforTestCase {
     @Test
     public void launchSynStudy() throws IOException, UiObjectNotFoundException, JSONException,
             InterruptedException {
-        mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
-        UiObject2 icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese"));
+        mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math")), WAIT_TIME);
+        UiObject2 icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
         icon.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 2);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()/3);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
-            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
-            icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese"));
+            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math")), WAIT_TIME);
+            icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
             startTestRecord();
             icon.click();
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());

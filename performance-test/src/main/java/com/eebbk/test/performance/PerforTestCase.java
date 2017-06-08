@@ -152,24 +152,39 @@ public class PerforTestCase extends Automator {
         if (!user.getText().contains("中学")) {
             user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
-            if (user != null) {
-                user.click();//点击不再提示
-                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
-                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
-                        WAIT_TIME);
-            }
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
+//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
+//            if (user != null) {
+//                user.click();//点击不再提示
+//                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
+//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+//                        WAIT_TIME);
+//            }
+
+
+//
+//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
+//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
+
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location")), WAIT_TIME
+                    * 2);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location"));
+//            if (user != null) {
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换
+            SystemClock.sleep(5000);
+//                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
+//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+//                        WAIT_TIME);
+//            }
+//
+//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
             UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
             gradeList.scrollForward(20);
             user = mDevice.findObject(By.textContains("高中"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
         }
@@ -340,7 +355,8 @@ public class PerforTestCase extends Automator {
                     List<ResolveInfo> ris = mManager.queryIntentActivities(intent, 0);
                     for (ResolveInfo ri : ris) {
                         if ((ri.activityInfo.name != null) && (pi.packageName != mPkg) && (Integer.parseInt(type)
-                                == 0 ? (!pi.packageName.contains("com.eebbk")&&!pi.packageName.contains("com.bbk")):true)) {
+                                == 0 ? (!pi.packageName.contains("com.eebbk") && !pi.packageName.contains("com.bbk"))
+                                : true)) {
                             mDevice.executeShellCommand("am start -W " + pi.packageName + "/" + ri.activityInfo.name);
                             packages.add(pi.packageName + "/" + ri.activityInfo.name);
                             mDevice.waitForIdle(5000);
