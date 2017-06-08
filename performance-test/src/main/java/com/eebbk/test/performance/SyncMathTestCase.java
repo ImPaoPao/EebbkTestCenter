@@ -26,6 +26,12 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class SyncMathTestCase extends PerforTestCase {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = SynMath.PACKAGE;
+    }
+
     // 同步数学
     @Test
     public void launchSynMath() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
@@ -49,7 +55,7 @@ public class SyncMathTestCase extends PerforTestCase {
             icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(),WAIT_TIME);
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     //startTestRecord();
@@ -74,12 +80,6 @@ public class SyncMathTestCase extends PerforTestCase {
             source_png.recycle();
         }
     }
-
-//    @Override
-//    public Rect getLoadRect(Bitmap source_png) {
-//        //return super.getLoadRect(source_png);
-//        return  new Rect(0,0,);
-//    }
 
     //addMathBook 点击添加按钮→下载界面加载完成 OK
     @Test

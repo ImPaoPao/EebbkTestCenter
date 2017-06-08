@@ -27,6 +27,12 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class SyncChineseTestCase extends PerforTestCase {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = SynChinese.PACKAGE;
+    }
+
     @Test
     public void launchSyncChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {

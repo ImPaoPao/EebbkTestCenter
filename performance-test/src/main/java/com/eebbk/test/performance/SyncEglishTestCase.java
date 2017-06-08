@@ -27,6 +27,14 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class SyncEglishTestCase extends PerforTestCase {
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = SyncEnglish.PACKAGE;
+    }
+
+
     @Test
     public void launchSyncEnglish() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
         Object icon = mHelper.openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
@@ -42,7 +50,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard")), WAIT_TIME * 2);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()/3);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 3);
         Rect refreshPngRect = new Rect(source_png.getWidth() / 2 - 40, source_png.getHeight() / 2 - 40,
                 source_png.getWidth() / 2 + 40, source_png.getHeight() / 2 + 40);
         clearRunprocess();
@@ -51,7 +59,7 @@ public class SyncEglishTestCase extends PerforTestCase {
             icon = mHelper.openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(),WAIT_TIME);
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();

@@ -10,8 +10,6 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 
 import com.eebbk.test.common.PackageConstants;
-import com.eebbk.test.common.PackageConstants.Launcher;
-import com.eebbk.test.common.PackageConstants.Personal;
 import com.eebbk.test.common.PackageConstants.SynStudy;
 
 import org.json.JSONException;
@@ -24,38 +22,16 @@ import java.util.Date;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class DisciplineTestCase extends PerforTestCase {
-
-    //切换
-    public void setUp() throws Exception {
-        super.setUp();
-        mDevice.waitForIdle();
-        UiObject2 user = mDevice.findObject(By.res(Launcher.PACKAGE, "personal_grade"));
-        if (!user.getText().contains("高中")) {
-            user = mDevice.findObject(By.res(Launcher.PACKAGE, "personal_head_layout"));
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            if (mDevice.wait(Until.hasObject(By.res(Personal.PACKAGE, "checkbox")), WAIT_TIME)) {
-                user = mDevice.findObject(By.res(Personal.PACKAGE, "checkbox"));
-                user.click();
-//                user = mDevice.findObject(By.res(Personal.PACKAGE, "btn_ok"));
-//                user.clickAndWait(Until.newWindow(), WAIT_TIME);
-                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
-                mDevice.waitForIdle();
-                //com.bbk.personal:id/btn_ok 登录激活
-                //com.bbk.personal:id/checkbox 不再提示
-            }
-            //com.bbk.personal:id/beta_edt_current_main 编辑信息
-            //com.bbk.personal:id/user_grade_editabl 年级信息编辑
-            //年级列表切换 com.bbk.personal:id/pop_add_grade_list 滚动 查找高中年级
-            //保存信息 com.bbk.personal:id/save_person_btn
-            //回到桌面 等待加载完即为学科同步页面。
-        }
+public class SynStudyTestCase extends PerforTestCase {
+    @Override
+    public void initSetup() throws UiObjectNotFoundException {
+        mPkg = SynStudy.PACKAGE;
+        initMiddleSetup();
     }
-
 
     // 学科同步
     @Test
-    public void launchDisciplineSynMath() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchSynStudy() throws IOException, UiObjectNotFoundException, JSONException,
             InterruptedException {
         mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
         UiObject2 icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_chinese"));
@@ -63,7 +39,7 @@ public class DisciplineTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()/2);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 2);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);

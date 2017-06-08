@@ -18,6 +18,8 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.support.test.uiautomator.UiScrollable;
+import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.util.Xml;
 
 import com.eebbk.test.automator.Automator;
 import com.eebbk.test.common.BitmapHelper;
+import com.eebbk.test.common.PackageConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +62,8 @@ public class PerforTestCase extends Automator {
     protected int mCount = 3;
     protected int mType = 0;
     protected String mNumber = "unknown";
+
+    protected String mPkg = "unknown";//当前的被测应用包名
 
 
     protected int mSys = 0;
@@ -103,8 +108,72 @@ public class PerforTestCase extends Automator {
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
+        initSetup();
+        clearRunprocess();
     }
 
+    public void initSetup() throws UiObjectNotFoundException {
+        initPrimarySetup();
+    }
+
+    public void initPrimarySetup() throws UiObjectNotFoundException {
+        mDevice.waitForIdle();
+        UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
+        if (!user.getText().contains("小学")) {
+            user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
+            if (user != null) {
+                user.click();//点击不再提示
+                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
+                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                        WAIT_TIME);
+            }
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
+            gradeList.scrollBackward(20);
+            user = mDevice.findObject(By.textContains("三年级"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.pressHome();
+            mDevice.waitForIdle(10000);
+        }
+
+    }
+
+    public void initMiddleSetup() throws UiObjectNotFoundException {
+        mDevice.waitForIdle();
+        UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
+        if (!user.getText().contains("中学")) {
+            user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
+            if (user != null) {
+                user.click();//点击不再提示
+                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
+                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                        WAIT_TIME);
+            }
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
+            gradeList.scrollForward(20);
+            user = mDevice.findObject(By.textContains("高中"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.pressHome();
+            mDevice.waitForIdle(10000);
+        }
+    }
 
     public void startTestRecord() {
         Log.i(TAG, "record start time ");
@@ -219,14 +288,31 @@ public class PerforTestCase extends Automator {
     }
 
     public void doStartActivity(int flag) throws IOException {
+        JSONObject obj = new JSONObject();
         if (flag == 0 || mType == 0) {
-            if ((mSys & mApp) > 0) {
+            if (mSys > 0 && mApp > 0) {
+                try {
+                    obj.put("dostart:mSys&mApp ", (mSys & mApp));
+                    obj.put("dostart:mSys ", mSys);
+                    obj.put("dostart:mApp ", mApp);
+                    obj.put("pkg:pkg ", mPkg);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 doStartActivity(mSys, "1");
                 doStartActivity(mApp, "0");
             } else {
+                try {
+                    obj.put("dostart else:mSys & mApp ", (mSys & mApp));
+                    obj.put("dostart else:mSys ", mSys);
+                    obj.put("dostart else:mApp ", mApp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 doStartActivity(mSys > 0 ? mSys : mApp, mSys > 0 ? "1" : "0");
             }
         }
+        instrumentationStatusOut(obj);
     }
 
 
@@ -244,14 +330,17 @@ public class PerforTestCase extends Automator {
         List<PackageInfo> pis = mManager.getInstalledPackages(0);
         if (num > pis.size()) num = pis.size();
         for (PackageInfo pi : pis) {
-            if (packages.size() >= num) {break;}
+            if (packages.size() >= num) {
+                break;
+            }
             if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == Integer.parseInt(type)) {
                 for (String category : categories) {
                     Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(
                             category).setPackage(pi.packageName);
                     List<ResolveInfo> ris = mManager.queryIntentActivities(intent, 0);
                     for (ResolveInfo ri : ris) {
-                        if (ri.activityInfo.name != null) {
+                        if ((ri.activityInfo.name != null) && (pi.packageName != mPkg) && (Integer.parseInt(type)
+                                == 0 ? (!pi.packageName.contains("com.eebbk")&&!pi.packageName.contains("com.bbk")):true)) {
                             mDevice.executeShellCommand("am start -W " + pi.packageName + "/" + ri.activityInfo.name);
                             packages.add(pi.packageName + "/" + ri.activityInfo.name);
                             mDevice.waitForIdle(5000);
@@ -263,11 +352,10 @@ public class PerforTestCase extends Automator {
             }
         }
         try {
-            obj.put("===", packages);
+            obj.put("packages", packages);
         } catch (JSONException je) {
             //
         }
-
         instrumentationStatusOut(obj);
     }
 
@@ -343,14 +431,15 @@ public class PerforTestCase extends Automator {
                 refreshResult = loadResult;
             }
             obj.put(String.valueOf(m) + "refreshResult:", refreshResult);
-            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4)||(loadResult <= 1 & refreshResult <= 1)) {
+            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 & refreshResult <=
+                    1)) {
                 if (!compareResult.containsKey("loadTime")) {
                     compareResult.put("loadTime", getCurrentDate());
                     compareResult.put("loadResult", String.valueOf(loadResult));
                 }
                 compareResult.put("refreshTime", getCurrentDate());
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-                mHelper.saveScreenshot(des_png,mNumber);
+                mHelper.saveScreenshot(des_png, mNumber);
                 SystemClock.sleep(1000);
                 break;
             }
@@ -411,15 +500,15 @@ public class PerforTestCase extends Automator {
     }
 
 
-    public Rect getLoadRect(Bitmap source_png){
-        Rect loadPngRect=new Rect(0,source_png.getHeight()-70,source_png.getWidth(),source_png.getHeight());
+    public Rect getLoadRect(Bitmap source_png) {
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         return loadPngRect;
     }
-    public Rect getRefreshRect(Bitmap source_png){
-        Rect refreshPngRect=new Rect(0,0,source_png.getWidth(),source_png.getHeight()-200);
+
+    public Rect getRefreshRect(Bitmap source_png) {
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 200);
         return refreshPngRect;
     }
-
 }
 
 

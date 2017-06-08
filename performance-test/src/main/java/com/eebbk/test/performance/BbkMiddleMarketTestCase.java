@@ -31,6 +31,11 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
 
     }
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = BbkMiddleMarket.PACKAGE;
+    }
 
     @Test
     public void launchBbkMiddleMarket() throws IOException, UiObjectNotFoundException, JSONException,
@@ -66,7 +71,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
                 }
             }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
-            mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME);
+            //mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
