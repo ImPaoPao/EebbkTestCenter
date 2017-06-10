@@ -147,25 +147,34 @@ public class AutomatorHelper {
         return getBitmap(obj.getVisibleBounds());
     }
 
-    public Bitmap takeScreenshot(String fileName) throws FileNotFoundException {
-        mDevice.takeScreenshot(new File("/sdcard/performance-test/" + fileName + "/" + fileName + ".png"));
-        FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + fileName + "/" + fileName + "" +
+    public Bitmap takeScreenshot(String folder) throws FileNotFoundException {
+        return takeScreenshot(folder,"source");
+    }
+
+    public Bitmap takeScreenshot(String folder,String fileName) throws FileNotFoundException {
+        mDevice.takeScreenshot(new File("/sdcard/performance-test/" + folder + "/" + fileName + ".png"));
+        FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + folder + "/" + fileName + "" +
                 ".png");
         Bitmap source_png = BitmapFactory.decodeStream(source_fis);
         return source_png;
     }
 
-    public boolean saveScreenshot(Bitmap screenshot, String fileName) {
+
+    public boolean saveScreenshot(Bitmap screenshot, String folder) {
+        return saveScreenshot(screenshot,folder,null);
+    }
+
+    public boolean saveScreenshot(Bitmap screenshot, String folder,String fileName) {
         if (screenshot == null) {
             return false;
         }
         BufferedOutputStream bos = null;
         try {
             Log.v("UiAutomatorHelper", "I am log");
-            bos = new BufferedOutputStream(new FileOutputStream(new File("/sdcard/performance-test/" + fileName +
-                    "/"+fileName+"_target.png")));
+            bos = new BufferedOutputStream(new FileOutputStream(new File("/sdcard/performance-test/" + folder +
+                    "/"+fileName+".png")));
             if (bos != null) {
-                screenshot.compress(Bitmap.CompressFormat.PNG, 90, bos);
+                screenshot.compress(Bitmap.CompressFormat.PNG, 100, bos);
                 bos.flush();
             }
         } catch (IOException ioe) {

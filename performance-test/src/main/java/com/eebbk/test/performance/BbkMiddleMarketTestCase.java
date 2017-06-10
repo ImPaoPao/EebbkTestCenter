@@ -2,6 +2,7 @@ package com.eebbk.test.performance;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.media.ThumbnailUtils;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -28,7 +29,11 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     @Test
     public void compareTest() throws JSONException, FileNotFoundException {
         //匹配度测试
-
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        SystemClock.sleep(2000);
+        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(Bitmap.createBitmap(source_png,50,40,70,70), mDevice
+                .getDisplayWidth(), mDevice.getDisplayHeight());
+        mHelper.saveScreenshot(thumbnail,mNumber);
     }
 
     @Override
@@ -53,8 +58,10 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+        UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));
+        Rect loadPngRect = menu.getVisibleBounds();
+        menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_viewpager"));
+        Rect refreshPngRect = menu.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -70,7 +77,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             //mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

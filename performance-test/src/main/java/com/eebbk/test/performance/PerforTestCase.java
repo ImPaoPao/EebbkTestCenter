@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
@@ -108,7 +109,7 @@ public class PerforTestCase extends Automator {
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
-        initSetup();
+//        initSetup();
 //        clearRunprocess();
     }
 
@@ -338,7 +339,6 @@ public class PerforTestCase extends Automator {
     @type 启动apk的类型 sys 1 3app 0
      */
     public void doStartActivity(int num, String type) throws IOException {
-//        if (num<1) return;
         PackageManager mManager = mContext.getPackageManager();
         String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
         List<String> packages = new ArrayList();
@@ -413,17 +413,26 @@ public class PerforTestCase extends Automator {
 
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp) throws
             JSONException {
+        return doCompare(sourcePng, loadPngRect, refreshPngRect, timeStamp, 0);
+    }
+
+    public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
+            count) throws
+            JSONException {
         JSONObject obj = new JSONObject();
         int m = 0;
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
         boolean loadFlag = true;
+        Bitmap refreshPng = null;
+        Bitmap loadPng = null;
+        Bitmap thumbnail;//= null;
         do {
             m++;
             Bitmap des_png = mAutomation.takeScreenshot();
             if (loadFlag) {
-                Bitmap loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
+                loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
                         loadPngRect.width(), loadPngRect.height()), loadPng);
@@ -437,27 +446,36 @@ public class PerforTestCase extends Automator {
                 loadFlag = false;
             }
             if (refreshPngRect != null) {
-                Bitmap refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
+                refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
                         refreshPngRect.width(), refreshPngRect.height());
                 refreshResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, refreshPngRect.left,
                         refreshPngRect.top,
                         refreshPngRect.width(), refreshPngRect.height()), refreshPng);
-//                if (refreshPng != null && !refreshPng.isRecycled()) {
-//                    refreshPng.recycle();
-//                }
             } else {
                 refreshResult = loadResult;
             }
             obj.put(String.valueOf(m) + "refreshResult:", refreshResult);
             if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 & refreshResult <=
                     1)) {
+                obj.put(String.valueOf(m) + "timeout or result:", "saveScreenShot");
                 if (!compareResult.containsKey("loadTime")) {
                     compareResult.put("loadTime", getCurrentDate());
                     compareResult.put("loadResult", String.valueOf(loadResult));
                 }
                 compareResult.put("refreshTime", getCurrentDate());
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-                mHelper.saveScreenshot(des_png, mNumber);
+                thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice
+                        .getDisplayWidth(), mDevice.getDisplayHeight());
+                String forloop;
+                if (count > 0) {
+                    forloop = String.valueOf(count);
+                } else {
+                    forloop = String.valueOf(mCount);
+                }
+                mHelper.saveScreenshot(thumbnail, mNumber, "load_" + forloop);
+                thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
+                        .getDisplayHeight());
+                mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + forloop);
                 SystemClock.sleep(1000);
                 break;
             }
