@@ -40,8 +40,16 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 6);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+        UiObject2 view = mDevice.findObject(By.text("首页"));
+        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
+        Rect loadPngRect = view.getVisibleBounds();
+        view = mDevice.findObject(By.res(Vtraining.PACKAGE, "homepage_fragment_recyclerview"));//菜单上方全部
+        Rect refreshPngRect = view.getVisibleBounds();
+        //mianpage_introduce_type02 中间部分刷新
+        //下方menu菜单 com.eebbk.vtraining:id/home_tab_view
+        //com.eebbk.vtraining:id/tab_view_item_name  首页？ text
+        //homepage_fragment_recyclerview  menu 上方全部
+
 
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -58,8 +66,7 @@ public class VtrainingTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date());
-            mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME);
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();

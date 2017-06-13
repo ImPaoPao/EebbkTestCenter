@@ -32,7 +32,6 @@ public class SyncMathTestCase extends PerforTestCase {
         mPkg = SynMath.PACKAGE;
     }
 
-    // 同步数学
     @Test
     public void launchSynMath() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
         Object icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
@@ -48,7 +47,12 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refreshBtnId")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        UiObject2 view = mDevice.findObject(By.text("同步数学"));
+        //UiObject2 view = mDevice.findObject(By.res(SynMath.PACKAGE, "refreshBtnId")); //刷新按钮
+        Rect loadPngRect = new Rect(0,0,mDevice.getDisplayWidth(),100);
+        //view = mDevice.findObject(By.res(SynChinese.PACKAGE, "operate_guide_root_view"));//整个界面
+        view = mDevice.findObject(By.clazz("android.widget.ListView"));//书本列表
+        Rect refreshPngRect = view.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -58,13 +62,13 @@ public class SyncMathTestCase extends PerforTestCase {
                 ((UiObject2) icon).click();
             } else {
                 try {
-                    //startTestRecord();
+                    startTestRecord();
                     ((UiObject) icon).click();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date(), (i + 1));
             mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refresh")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

@@ -60,7 +60,7 @@ public class PerforTestCase extends Automator {
     protected XmlSerializer mXml;
     protected String mStartTime;
 
-    protected int mCount = 3;
+    protected int mCount = 2;
     protected int mType = 0;
     protected String mNumber = "unknown";
 
@@ -74,7 +74,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "3");
+        String count = getArguments().getString("count", "2");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         String sys = getArguments().getString("sysnum", "0");
@@ -109,8 +109,8 @@ public class PerforTestCase extends Automator {
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
-//        initSetup();
-//        clearRunprocess();
+        initSetup();
+        clearRunprocess();
     }
 
     public void initSetup() throws UiObjectNotFoundException, IOException {
@@ -407,7 +407,12 @@ public class PerforTestCase extends Automator {
 
     //图片对比
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Date timeStamp) throws JSONException {
-        return doCompare(sourcePng, loadPngRect, null, timeStamp);
+        return doCompare(sourcePng, loadPngRect, null, timeStamp, 0);
+    }
+
+    public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Date timeStamp, int count) throws
+            JSONException {
+        return doCompare(sourcePng, loadPngRect, null, timeStamp, count);
 
     }
 
@@ -466,16 +471,18 @@ public class PerforTestCase extends Automator {
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
                 thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice
                         .getDisplayWidth(), mDevice.getDisplayHeight());
-                String forloop;
+                String cycle;
                 if (count > 0) {
-                    forloop = String.valueOf(count);
+                    cycle = String.valueOf(count);
                 } else {
-                    forloop = String.valueOf(mCount);
+                    cycle = String.valueOf(mCount);
                 }
-                mHelper.saveScreenshot(thumbnail, mNumber, "load_" + forloop);
-                thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
-                        .getDisplayHeight());
-                mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + forloop);
+                mHelper.saveScreenshot(thumbnail, mNumber, "load_" + cycle);
+                if(refreshPngRect!=null){
+                    thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
+                            .getDisplayHeight());
+                    mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + cycle);
+                }
                 SystemClock.sleep(1000);
                 break;
             }
@@ -518,7 +525,7 @@ public class PerforTestCase extends Automator {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

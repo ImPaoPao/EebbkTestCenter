@@ -58,7 +58,8 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));
+        UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));//下方菜单
+        //UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tab_home"));//首页
         Rect loadPngRect = menu.getVisibleBounds();
         menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_viewpager"));
         Rect refreshPngRect = menu.getVisibleBounds();
@@ -78,7 +79,6 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
                 }
             }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
-            //mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
@@ -125,7 +125,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name"));
             startTestRecord();
             apk.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);

@@ -47,7 +47,7 @@ public class SynStudyTestCase extends PerforTestCase {
             icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
             startTestRecord();
             icon.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

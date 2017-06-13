@@ -44,9 +44,13 @@ public class VisionTestCase extends PerforTestCase {
                 // Nothing to do
             }
         }
-        SystemClock.sleep(3000);
+        SystemClock.sleep(2000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight());
+        UiObject2 view = mDevice.findObject(By.text("视力保护，为你的视力保驾护航"));
+        Rect loadPngRect = view.getVisibleBounds();
+        Rect refreshPngRect = new Rect(0, loadPngRect.bottom, source_png.getWidth(), source_png.getHeight());
+//        view = mDevice.findObject(By.text("护眼模式"));
+//        loadPngRect=view.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -56,13 +60,13 @@ public class VisionTestCase extends PerforTestCase {
                 ((UiObject2) icon).click();
             } else {
                 try {
-                    //startTestRecord();
+                    startTestRecord();
                     ((UiObject) icon).click();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();

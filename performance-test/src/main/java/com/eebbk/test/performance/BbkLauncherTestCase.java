@@ -35,7 +35,6 @@ public class BbkLauncherTestCase extends PerforTestCase {
     public void loadBbkLauncher() throws RemoteException, IOException, JSONException, UiObjectNotFoundException {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = loadPngRect;
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -43,7 +42,7 @@ public class BbkLauncherTestCase extends PerforTestCase {
             mDevice.waitForIdle();
             startTestRecord();
             mDevice.pressHome();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(3000);
