@@ -252,13 +252,13 @@ public class SyncEglishTestCase extends PerforTestCase {
     }
 
     //书本内容界面点击flash按钮→flash页面加载完成
-    @Test
+    //@Test
     public void syncEnglishFlash() {
 
     }
 
     //点读页面，点击句子选择单词--查，点击反查→词典列表弹出框加载完成
-    @Test
+    //@Test
     public void syncEnglishAccessDict() {
 
     }

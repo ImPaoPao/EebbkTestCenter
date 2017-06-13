@@ -49,14 +49,24 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        //UiObject2 view = mDevice.findObject(By.res(SynChinese.PACKAGE, "refresh"));
-        UiObject2 view = mDevice.findObject(By.clazz("android.widget.ListView"));//书本列表
-        Rect refreshPngRect = view.getVisibleBounds();
+//        UiObject2 view = mDevice.findObject(By.res(SynChinese.PACKAGE, "bookshelf_top_rly"));
+
+//        UiObject2 view = mDevice.findObject(By.clazz("android.widget.ListView"));//书本列表
+//        Rect refreshPngRect = view.getVisibleBounds();
 //        Rect loadPngRect = new Rect(source_png.getWidth() / 2 - 40, source_png.getHeight() / 2 - 40,
 //                source_png.getWidth() / 2 + 40, source_png.getHeight() / 2 + 40);
-        view = mDevice.findObject(By.res(SynChinese.PACKAGE, "operate_guide_root_view"));//整个界面
-        Rect loadPngRect = new Rect(0,0,mDevice.getDisplayWidth(),100);
-        //new Rect(rt.left,rt.top,rt.width(), refreshPngRect.top);
+        //view = mDevice.findObject(By.res(SynChinese.PACKAGE, "operate_guide_root_view"));//整个界面
+//        view = mDevice.findObject(By.res(SynChinese.PACKAGE, "bookshelf_top_rly"));
+//        Rect loadPngRect =view.getVisibleBounds();
+//        Rect loadPngRect = new Rect(refreshPngRect.left, refreshPngRect.bottom, mDevice.getDisplayWidth(), mDevice
+//                .getDisplayHeight());
+
+        UiObject2 view = mDevice.findObject(By.res(SynChinese.PACKAGE,"introduct_button_id"));
+        Rect rt = view.getVisibleBounds();
+        Rect loadPngRect = new Rect(0, rt.top, mDevice.getDisplayWidth(), rt.bottom);
+        //Rect loadPngRect =new Rect(0,0,source_png.getWidth(),source_png.getHeight());
+        view = mDevice.findObject(By.clazz("android.widget.ListView"));//书本列表
+        Rect refreshPngRect = view.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -105,7 +115,6 @@ public class SynChineseTestCase extends PerforTestCase {
     //添加按钮 界面加载完成
     @Test
     public void addChineseBook() throws IOException, JSONException {
-        //保存源图片
         mHelper.openSynChinese();
         mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
         UiObject2 booklist = mDevice.findObject(By.clazz(ListView.class));
@@ -125,6 +134,7 @@ public class SynChineseTestCase extends PerforTestCase {
         SystemClock.sleep(1000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
+            SystemClock.sleep(3000);
             mHelper.openSynChinese();
             mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
             booklist = mDevice.findObject(By.clazz(ListView.class));
@@ -133,11 +143,12 @@ public class SynChineseTestCase extends PerforTestCase {
             add = child.getChildren().get(0);
             startTestRecord();
             add.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
+            mDevice.pressHome();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -161,11 +172,12 @@ public class SynChineseTestCase extends PerforTestCase {
             UiObject2 add = child.getChildren().get(1);//中间本书
             startTestRecord();
             add.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
+            mDevice.pressHome();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -187,11 +199,12 @@ public class SynChineseTestCase extends PerforTestCase {
             openOneChineseBook();
             startTestRecord();
             mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             SystemClock.sleep(2000);
+            mDevice.pressHome();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -217,7 +230,7 @@ public class SynChineseTestCase extends PerforTestCase {
             SystemClock.sleep(5000);//跳转到有查字词的界面
             startTestRecord();
             mHelper.longClick(640, 65);//点击查字词坐标
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.wait(Until.hasObject(By.res(EebbkDict.PACKAGE, "miaohong_dictedit")), WAIT_TIME);//描红词典界面
@@ -229,11 +242,9 @@ public class SynChineseTestCase extends PerforTestCase {
     }
 
     //书本内容界面点击头像→个人信息页面加载完成
-    @Test
-    public void synChineseSelfInfo() {
-
-
-    }
+//    @Test
+//    public void synChineseSelfInfo() {
+//    }
 
     //生字页面，点击一个生字，点击写一写→进入写一写界面
     @Test
@@ -265,7 +276,7 @@ public class SynChineseTestCase extends PerforTestCase {
             newWord = mDevice.findObject(By.res(SynChinese.PACKAGE, "new_word_goWriteBtnId"));
             startTestRecord();
             newWord.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.wait(Until.hasObject(By.res(HanziLearning.PACKAGE, "hanziZoomWriteView")), WAIT_TIME);//汉子学习
@@ -280,9 +291,6 @@ public class SynChineseTestCase extends PerforTestCase {
     //书架界面10本书，点击刷新→刷新完成
     @Test
     public void synChineseRefresh() throws IOException, JSONException {
-        //首页:刷新 com.eebbk.synchinese:id/refresh
-        //图书列表:android.widget.ListView
-        //删除 com.eebbk.synchinese:id/edit
         mHelper.openSynChinese();
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
@@ -293,15 +301,17 @@ public class SynChineseTestCase extends PerforTestCase {
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynChinese();
+            mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
             UiObject2 refresh = mDevice.findObject(By.res(SynChinese.PACKAGE, "refresh"));
             startTestRecord();
             refresh.clickAndWait(Until.newWindow(), WAIT_TIME);
             SystemClock.sleep(200);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             SystemClock.sleep(2000);
+            mDevice.pressHome();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();

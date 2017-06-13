@@ -40,8 +40,8 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 6);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.text("首页"));
-        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
+        //UiObject2 view = mDevice.findObject(By.text("首页"));
+        UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
         Rect loadPngRect = view.getVisibleBounds();
         view = mDevice.findObject(By.res(Vtraining.PACKAGE, "homepage_fragment_recyclerview"));//菜单上方全部
         Rect refreshPngRect = view.getVisibleBounds();

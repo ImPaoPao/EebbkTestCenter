@@ -148,10 +148,10 @@ public class AutomatorHelper {
     }
 
     public Bitmap takeScreenshot(String folder) throws FileNotFoundException {
-        return takeScreenshot(folder,"source");
+        return takeScreenshot(folder, "source");
     }
 
-    public Bitmap takeScreenshot(String folder,String fileName) throws FileNotFoundException {
+    public Bitmap takeScreenshot(String folder, String fileName) throws FileNotFoundException {
         mDevice.takeScreenshot(new File("/sdcard/performance-test/" + folder + "/" + fileName + ".png"));
         FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + folder + "/" + fileName + "" +
                 ".png");
@@ -161,10 +161,10 @@ public class AutomatorHelper {
 
 
     public boolean saveScreenshot(Bitmap screenshot, String folder) {
-        return saveScreenshot(screenshot,folder,null);
+        return saveScreenshot(screenshot, folder, null);
     }
 
-    public boolean saveScreenshot(Bitmap screenshot, String folder,String fileName) {
+    public boolean saveScreenshot(Bitmap screenshot, String folder, String fileName) {
         if (screenshot == null) {
             return false;
         }
@@ -172,7 +172,7 @@ public class AutomatorHelper {
         try {
             Log.v("UiAutomatorHelper", "I am log");
             bos = new BufferedOutputStream(new FileOutputStream(new File("/sdcard/performance-test/" + folder +
-                    "/"+fileName+".png")));
+                    "/" + fileName + ".png")));
             if (bos != null) {
                 screenshot.compress(Bitmap.CompressFormat.PNG, 100, bos);
                 bos.flush();
@@ -338,7 +338,16 @@ public class AutomatorHelper {
 
     //打开同步英语初始化首页
     public void openSyncEnglish() {
-        openIcon("同步英语", SyncEnglish.PACKAGE);
+        Object icon = openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
         mDevice.waitForIdle();
         if (mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "change_book_layout_id")), WAIT_TIME * 1)) {
             UiObject2 changBook = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "change_book_layout_id"));
@@ -386,7 +395,16 @@ public class AutomatorHelper {
 
     //打开同步数学首页 添加和刷新界面页
     public void openSynMathBook() {
-        openIcon("同步数学", SynMath.PACKAGE);
+        Object icon = openIcon("数学学习", "同步数学", SynMath.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
         mDevice.waitForIdle();
         if (!mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menu_back_btn")), WAIT_TIME)) {
             mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
@@ -399,7 +417,8 @@ public class AutomatorHelper {
     }
 
     public void openSynMath() {
-        openIcon("同步数学", SynMath.PACKAGE);
+        Object icon = openIcon("数学学习", "同步数学", SynMath.PACKAGE);
+
         mDevice.waitForIdle();
         if (mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menu_back_btn")), WAIT_TIME)) {
             UiObject2 changBook = mDevice.findObject(By.res(SynMath.PACKAGE, "menu_back_btn"));
@@ -412,7 +431,16 @@ public class AutomatorHelper {
     }
 
     public void openSynChinese() {
-        openIcon("同步语文", SynChinese.PACKAGE);
+        Object icon = openIcon("语文学习", "同步语文", SynChinese.PACKAGE);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
         mDevice.waitForIdle();
     }
 
