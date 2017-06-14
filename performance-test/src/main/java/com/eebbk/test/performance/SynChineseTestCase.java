@@ -124,13 +124,12 @@ public class SynChineseTestCase extends PerforTestCase {
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "book_list")), WAIT_TIME * 4);
         UiObject2 bookList = mDevice.findObject(By.res(SynChinese.PACKAGE, "book_list"));
-        Rect rt = bookList.getVisibleBounds();
+        Rect refreshPngRect = bookList.getVisibleBounds();
+        bookList = mDevice.findObject(By.res(SynChinese.PACKAGE, "search"));
+        Rect loadPngRect = bookList.getVisibleBounds();
         mDevice.waitForIdle();
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), 80);
-        //界面刷新出来
-        Rect refreshPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
         SystemClock.sleep(1000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -160,7 +159,9 @@ public class SynChineseTestCase extends PerforTestCase {
     public void showSynChineseBook() throws IOException, JSONException {
         openOneChineseBook();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+//        UiObject2 view = mDevice.findObject(By.text("课文"));
+//        Rect loadPngRect =view.getVisibleBounds();
         SystemClock.sleep(1000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -190,15 +191,16 @@ public class SynChineseTestCase extends PerforTestCase {
     public void showDetailsSynChineseBook() throws IOException, JSONException {
         openOneChineseBook();
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-        SystemClock.sleep(10000);
+        SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), 180);
+        UiObject2 view = mDevice.findObject(By.text("课文"));
+        Rect loadPngRect =view.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openOneChineseBook();
             startTestRecord();
-            mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
+            mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
@@ -240,11 +242,6 @@ public class SynChineseTestCase extends PerforTestCase {
             source_png.recycle();
         }
     }
-
-    //书本内容界面点击头像→个人信息页面加载完成
-//    @Test
-//    public void synChineseSelfInfo() {
-//    }
 
     //生字页面，点击一个生字，点击写一写→进入写一写界面
     @Test

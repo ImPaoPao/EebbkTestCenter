@@ -77,6 +77,7 @@ public class PerforTestCase extends Automator {
         String count = getArguments().getString("count", "2");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
+        mPkg = getArguments().getString("package", "unknown");
         String sys = getArguments().getString("sysnum", "0");
         String app = getArguments().getString("appnum", "0");
         if (TextUtils.isDigitsOnly(sys)) {
@@ -262,6 +263,7 @@ public class PerforTestCase extends Automator {
         UiObject2 cleanAllObj = mDevice.findObject(cleanAll);
         cleanAllObj.clickAndWait(Until.newWindow(), WAIT_TIME * 2);
         mDevice.pressHome();
+        mDevice.executeShellCommand("am force-stop " + mPkg);
         mDevice.waitForIdle();
     }
 
@@ -478,7 +480,7 @@ public class PerforTestCase extends Automator {
                     cycle = String.valueOf(mCount);
                 }
                 mHelper.saveScreenshot(thumbnail, mNumber, "load_" + cycle);
-                if(refreshPngRect!=null){
+                if (refreshPngRect != null) {
                     thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
                             .getDisplayHeight());
                     mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + cycle);
@@ -525,7 +527,7 @@ public class PerforTestCase extends Automator {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
@@ -537,7 +539,7 @@ public class PerforTestCase extends Automator {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }

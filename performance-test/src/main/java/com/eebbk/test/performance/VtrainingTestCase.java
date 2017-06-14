@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class VtrainingTestCase extends PerforTestCase {
-    @Test
+    //@Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
         Object icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
         if (icon instanceof UiObject2) {
@@ -45,12 +45,6 @@ public class VtrainingTestCase extends PerforTestCase {
         Rect loadPngRect = view.getVisibleBounds();
         view = mDevice.findObject(By.res(Vtraining.PACKAGE, "homepage_fragment_recyclerview"));//菜单上方全部
         Rect refreshPngRect = view.getVisibleBounds();
-        //mianpage_introduce_type02 中间部分刷新
-        //下方menu菜单 com.eebbk.vtraining:id/home_tab_view
-        //com.eebbk.vtraining:id/tab_view_item_name  首页？ text
-        //homepage_fragment_recyclerview  menu 上方全部
-
-
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -89,11 +83,11 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "mainpage_introduce_more_layout")), WAIT_TIME * 4);
         UiObject2 more = mDevice.findObject(By.res(Vtraining.PACKAGE, "mainpage_introduce_more_layout"));
         more.clickAndWait(Until.newWindow(), WAIT_TIME);
-        //mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "homerecommended_more_recyclerview")), WAIT_TIME * 4);
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "homerecommended_more_relativelayout_id")), WAIT_TIME
                 * 4);//等待列表中item加载出来。
         more = mDevice.findObject(By.res(Vtraining.PACKAGE, "homerecommended_more_title_bar_id"));
         Rect loadPngRect = more.getVisibleBounds();
+        mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "homerecommended_more_recyclerview")), WAIT_TIME);
         more = mDevice.findObject(By.res(Vtraining.PACKAGE, "homerecommended_more_recyclerview"));
         Rect refreshPngRect = more.getVisibleBounds();
         SystemClock.sleep(5000);
@@ -106,7 +100,7 @@ public class VtrainingTestCase extends PerforTestCase {
             more = mDevice.findObject(By.res(Vtraining.PACKAGE, "mainpage_introduce_more_layout"));
             startTestRecord();
             more.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -141,7 +135,7 @@ public class VtrainingTestCase extends PerforTestCase {
             course = mDevice.findObject(By.res(Vtraining.PACKAGE, "select_course_class_type_view"));
             startTestRecord();
             course.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -179,7 +173,7 @@ public class VtrainingTestCase extends PerforTestCase {
             mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "select_course_teacher")), WAIT_TIME * 2);
             startTestRecord();
             mDevice.click(crt.right / 10, crt.top + 25);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -191,7 +185,7 @@ public class VtrainingTestCase extends PerforTestCase {
     }
 
 
-    //点击名师头像→名师详情加载完成
+    //点击名师头像→名师详情加载完成 showVtTeacherInfo
     @Test
     public void showVtTeacherInfo() throws IOException, JSONException {
         //点击头像 显示名师信息 一页加载完全 不区分切换和刷新
@@ -215,7 +209,7 @@ public class VtrainingTestCase extends PerforTestCase {
             course = mDevice.findObject(By.res(Vtraining.PACKAGE, "item_famousteacher_img_head_1"));
             startTestRecord();
             course.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -235,10 +229,18 @@ public class VtrainingTestCase extends PerforTestCase {
         rank.clickAndWait(Until.newWindow(), WAIT_TIME);
         //排行列表刷新出来
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "item_week_item_click_id")), WAIT_TIME * 6);
+        mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "list")), WAIT_TIME);
         rank = mDevice.findObject(By.res(PackageConstants.Android.PACKAGE, "list"));
         Rect refreshPngRect =rank.getVisibleBounds();//list 包含了整个排行榜页面，不包含最上方的return bar
-        rank = mDevice.findObject(By.res(Vtraining.PACKAGE, "week_rank_title_bar_id"));//最上方的视频学习榜挑战习题榜
-        Rect loadPngRect = rank.getVisibleBounds();
+        mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "week_rank_video_study_id")), WAIT_TIME);
+        rank = mDevice.findObject(By.res(Vtraining.PACKAGE, "week_rank_video_study_id"));//最上方的视频学习榜挑战习题榜
+        Rect loadPngRect;
+        if(rank!=null){
+            loadPngRect = rank.getVisibleBounds();
+        }else{
+            loadPngRect = new Rect(0,40,mDevice.getDisplayWidth(),100);
+        }
+
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
         mDevice.pressBack();
@@ -247,7 +249,7 @@ public class VtrainingTestCase extends PerforTestCase {
             rank = mDevice.findObject(By.res(Vtraining.PACKAGE, "mine_rank_layout"));
             startTestRecord();
             rank.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -284,7 +286,7 @@ public class VtrainingTestCase extends PerforTestCase {
             join = mDevice.findObject(by);
             startTestRecord();
             join.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -320,7 +322,7 @@ public class VtrainingTestCase extends PerforTestCase {
             download = mDevice.findObject(by);
             startTestRecord();
             download.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -333,11 +335,11 @@ public class VtrainingTestCase extends PerforTestCase {
 
     //点击课程包封面→视频播放界面加载完成
     //@Test
-    public void showVtCourseVideo() {
-    }
+//    public void showVtCourseVideo() {
+//    }
 
     //点击首页视频缩略图→视频播放加载完成
-    @Test
+    //@Test
     public void showVtVideo() throws FileNotFoundException, JSONException {
         mHelper.openVtraining();
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "mainpage_introduce_item_image")), WAIT_TIME * 4);
@@ -357,7 +359,7 @@ public class VtrainingTestCase extends PerforTestCase {
             more = mDevice.findObject(By.res(Vtraining.PACKAGE, "mainpage_introduce_item_image"));
             startTestRecord();
             more.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);

@@ -389,7 +389,7 @@ public class AutomatorHelper {
             UiObject2 booklist = mDevice.findObject(By.clazz(ListView.class));
             List<UiObject2> children = booklist.getChildren();
             UiObject2 child = children.get(children.size() / 2);
-            child.getChildren().get(1).clickAndWait(Until.newWindow(), WAIT_TIME);
+            child.getChildren().get(0).clickAndWait(Until.newWindow(), WAIT_TIME);
         }
     }
 
@@ -418,7 +418,15 @@ public class AutomatorHelper {
 
     public void openSynMath() {
         Object icon = openIcon("数学学习", "同步数学", SynMath.PACKAGE);
-
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
         mDevice.waitForIdle();
         if (mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menu_back_btn")), WAIT_TIME)) {
             UiObject2 changBook = mDevice.findObject(By.res(SynMath.PACKAGE, "menu_back_btn"));

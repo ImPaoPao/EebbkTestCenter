@@ -36,7 +36,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
                 // Nothing to do
             }
         }
-        mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "main_player_controller")), WAIT_TIME*2);//下方的播放菜单
+        mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "main_player_controller")), WAIT_TIME * 2);//下方的播放菜单
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         UiObject2 view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "main_player_controller"));
@@ -45,8 +45,8 @@ public class EnglishTalkTestCase extends PerforTestCase {
         view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_banner_view_layout_id"));
         Rect bt = view.getVisibleBounds();
         view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_refresh_listview_id"));
-        Rect rt =view.getVisibleBounds();
-        Rect refreshPngRect = new Rect(rt.left,bt.bottom,rt.width(),rt.height()-loadPngRect.height());
+        Rect rt = view.getVisibleBounds();
+        Rect refreshPngRect = new Rect(rt.left, bt.bottom, rt.width(), rt.height() - loadPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -62,9 +62,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect,refreshPngRect, new Date(),(i+1));
-//            mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "homepage_banner_view_layout_id")), WAIT_TIME);
-//            sleep(3000);
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
@@ -79,20 +77,17 @@ public class EnglishTalkTestCase extends PerforTestCase {
             source_png.recycle();
         }
     }
-
-    //打开英语听说界面后 com.eebbk.englishtalk:id/main_mp3_play 暂停播放
-    //item_join_book_child_info_layout_id 书列表
-
     //选择教材添加后，点击教材目录→进入播放界面
     @Test
     public void showEtPlayUi() throws IOException, UiObjectNotFoundException, InterruptedException,
             JSONException {
         mHelper.openEnglishTalkContent();
         mDevice.waitForIdle();
+        SystemClock.sleep(2000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "detail_book_top_layout_id")), WAIT_TIME);
-        UiObject2 top  = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "detail_book_top_layout_id"));
+        UiObject2 top = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "detail_book_top_layout_id"));
         Rect loadPngRect = top.getVisibleBounds();
         Rect refreshPngRect = new Rect(0, loadPngRect.bottom, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
@@ -104,7 +99,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
             UiObject2 addBook = children.get(0);
             startTestRecord();
             addBook.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
@@ -120,7 +115,6 @@ public class EnglishTalkTestCase extends PerforTestCase {
     public void showEtPlayAudioContent() throws IOException, UiObjectNotFoundException, InterruptedException,
             JSONException {
         mHelper.openEnglishTalkContent();
-        //播放界面的 目录菜单 com.eebbk.englishtalk:id/play_more
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id")), WAIT_TIME);
         UiObject2 bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id"));
         bookChild.clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -137,7 +131,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
         SystemClock.sleep(2000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(rt.left,rt.top,rt.right,rt.bottom);
+        Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
         Rect refreshPngRect = loadPngRect;
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
@@ -145,7 +139,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
             bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "play_more"));
             startTestRecord();
             bookChild.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -160,25 +154,17 @@ public class EnglishTalkTestCase extends PerforTestCase {
     @Test
     public void showEtPlayAudio() throws IOException, UiObjectNotFoundException, InterruptedException,
             JSONException {
-        //播放按钮 play_pause
-        //com.eebbk.englishtalk:id/item_book_menu_child_root_id 目录条目
-        //播放界面dump不下来
         mHelper.openEnglishTalkContent();
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id")), WAIT_TIME);
         UiObject2 bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id"));
         bookChild.clickAndWait(Until.newWindow(), WAIT_TIME);
         SystemClock.sleep(1000);
-        //mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "play_pause")), WAIT_TIME);
-        //bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "play_pause"));
-        //bookChild.click();
-        //播放暂停
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 40);
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "player_function_bottom_layout_id")), WAIT_TIME);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = loadPngRect;
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -186,38 +172,31 @@ public class EnglishTalkTestCase extends PerforTestCase {
             bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id"));
             startTestRecord();
             bookChild.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png!=null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
 
-    //点击banner口语达人→界面内容加载完成
-    @Test
-    public void showSpokenEnglish() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-
-    }
-
-
     //点击我的排行→排行榜加载完成
     @Test
     public void showEtRanking() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        //com.eebbk.englishtalk:id/homepage_func_rank_id
         mHelper.openEnglishTalk();
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "homepage_func_rank_id")), WAIT_TIME);
         UiObject2 ranking = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_func_rank_id"));
-        ranking.clickAndWait(Until.newWindow(),WAIT_TIME);
+        ranking.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "list")), WAIT_TIME);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, source_png.getHeight()-80, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()-100);;
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 100);
+        ;
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -225,7 +204,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
             ranking = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_func_rank_id"));
             startTestRecord();
             ranking.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "list")), WAIT_TIME);
@@ -235,5 +214,4 @@ public class EnglishTalkTestCase extends PerforTestCase {
             source_png.recycle();
         }
     }
-
 }

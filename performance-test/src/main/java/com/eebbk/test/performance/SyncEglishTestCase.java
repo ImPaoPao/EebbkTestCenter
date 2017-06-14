@@ -54,10 +54,6 @@ public class SyncEglishTestCase extends PerforTestCase {
         Rect loadPngRect = view.getVisibleBounds();
         view = mDevice.findObject(By.clazz("android.widget.ListView"));//列表
         Rect refreshPngRect = view.getVisibleBounds();
-//
-//        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 3);
-//        Rect refreshPngRect = new Rect(source_png.getWidth() / 2 - 40, source_png.getHeight() / 2 - 40,
-//                source_png.getWidth() / 2 + 40, source_png.getHeight() / 2 + 40);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -104,7 +100,7 @@ public class SyncEglishTestCase extends PerforTestCase {
             startTestRecord();
             refresh.clickAndWait(Until.newWindow(), WAIT_TIME);
             SystemClock.sleep(200);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
@@ -120,28 +116,34 @@ public class SyncEglishTestCase extends PerforTestCase {
     public void addSyncEnglishBook() throws IOException, JSONException {
         //获取屏幕截图
         mHelper.openSyncEnglishMain();
+
         UiObject2 add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "add_id"));
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "iv_cover")), WAIT_TIME * 4);
-        SystemClock.sleep(20000);
+        SystemClock.sleep(15000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), 80);
-        //中间 "正在加载"刷新框
-        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
+//        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
+        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "search"));
+        Rect loadPngRect = add.getVisibleBounds();
+        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "nd_gridview"));
+        Rect refreshPngRect = add.getVisibleBounds(); //new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
         SystemClock.sleep(1000);
         mDevice.pressBack();
         mDevice.waitForIdle();
+        mDevice.pressHome();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSyncEnglishMain();
-            mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "add_id")), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "add_id")), WAIT_TIME * 2);
             UiObject2 add2 = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "add_id"));
             startTestRecord();
             add2.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             mDevice.pressBack();
+            mDevice.waitForIdle();
+            mDevice.pressHome();
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
@@ -166,19 +168,21 @@ public class SyncEglishTestCase extends PerforTestCase {
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSyncEnglishMain();
-            mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
-            booklist = mDevice.findObject(By.clazz(ListView.class));
+            mDevice.wait(Until.hasObject(By.clazz("android.widget.ListView")), WAIT_TIME);
+            booklist = mDevice.findObject(By.clazz("android.widget.ListView"));
             children = booklist.getChildren();
             child = children.get(children.size() / 2);
             UiObject2 click = child.getChildren().get(1);
             startTestRecord();
             click.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressBack();
             mDevice.waitForIdle();
+            mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
@@ -187,6 +191,7 @@ public class SyncEglishTestCase extends PerforTestCase {
     @Test
     public void syncEnglishSelfInfo() throws FileNotFoundException, JSONException {
         mHelper.openSyncEnglishBook();
+        mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id")), WAIT_TIME * 1);
         UiObject2 dropDown = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id"));
         Rect rt = dropDown.getVisibleBounds();
         //点击下拉环
@@ -209,11 +214,14 @@ public class SyncEglishTestCase extends PerforTestCase {
             //点击头像
             //mHelper.longClick(60, rt.height() / 2);
             mDevice.click(60, rt.height() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
+        }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
         }
     }
 
@@ -233,7 +241,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -243,24 +251,15 @@ public class SyncEglishTestCase extends PerforTestCase {
             startTestRecord();
             //点击趣味测试
             mHelper.longClick(rt.right - 45, rt.height() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
         }
-    }
-
-    //书本内容界面点击flash按钮→flash页面加载完成
-    //@Test
-    public void syncEnglishFlash() {
-
-    }
-
-    //点读页面，点击句子选择单词--查，点击反查→词典列表弹出框加载完成
-    //@Test
-    public void syncEnglishAccessDict() {
-
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+        }
     }
 
     //趣味测验点击欧拉学英语→跳转到商店页面加载完成
@@ -284,7 +283,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
+        Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() - 80);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 40, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         mDevice.waitForIdle();
@@ -296,12 +295,14 @@ public class SyncEglishTestCase extends PerforTestCase {
             //点击欧拉英语
             mDevice.click(mDevice.getDisplayWidth() / 4, mDevice.getDisplayHeight() / 2);
             //mHelper.longClick(mDevice.getDisplayWidth() / 4, mDevice.getDisplayHeight() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
         }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+        }
     }
-
 }

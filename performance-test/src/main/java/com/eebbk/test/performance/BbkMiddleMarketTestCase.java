@@ -2,7 +2,6 @@ package com.eebbk.test.performance;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.media.ThumbnailUtils;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -25,15 +24,12 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class BbkMiddleMarketTestCase extends PerforTestCase {
+//
 
     @Test
-    public void compareTest() throws JSONException, FileNotFoundException {
+    public void compareTest() throws JSONException, IOException {
         //匹配度测试
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
-        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(Bitmap.createBitmap(source_png,50,40,70,70), mDevice
-                .getDisplayWidth(), mDevice.getDisplayHeight());
-        mHelper.saveScreenshot(thumbnail,mNumber);
+        clearRunprocess();
     }
 
     @Override
@@ -58,10 +54,10 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));//下方菜单
+        UiObject2 menu = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));//下方菜单
         //UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tab_home"));//首页
         Rect loadPngRect = menu.getVisibleBounds();
-        menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_viewpager"));
+        menu = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_viewpager"));
         Rect refreshPngRect = menu.getVisibleBounds();
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -78,7 +74,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
@@ -94,44 +90,36 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         }
     }
 
-    //com.eebbk.bbkmiddlemarket:id/tab_category 分类
-    //com.eebbk.bbkmiddlemarket:id/tab_home 首页
-    //com.eebbk.bbkmiddlemarket:id/tab_special 专题
-    //com.eebbk.bbkmiddlemarket:id/tab_mine 我
-    //com.eebbk.bbkmiddlemarket:id/home_tab_radioGroup 下方的tab
-
-
     //首页点击应用→应用详情加载完成
     @Test
     public void showBbkMAppDetails() throws FileNotFoundException, JSONException {
         mHelper.openBbkMiddleMarket();
-        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME*6);
+        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 6);
         UiObject2 apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name"));
         apk.click();
-        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "success_view")), WAIT_TIME * 4);
-        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "success_view"));
-        Rect rt = apk.getVisibleBounds();
+        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager")), WAIT_TIME * 6);
+        SystemClock.sleep(5000);
+        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager"));
+        Rect refreshPngRect = apk.getVisibleBounds();
         //详情
         apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager_detail_tv"));
-        Rect rtd = apk.getVisibleBounds();
+        Rect loadPngRect  = apk.getVisibleBounds();
 
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(rtd.left, rtd.top, rtd.right, rtd.bottom);
-        Rect refreshPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name")), WAIT_TIME);
             apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name"));
             startTestRecord();
             apk.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
@@ -161,21 +149,15 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             category = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tagNameTv"));
             startTestRecord();
             category.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
-    }
-
-    //进入专题，点击APP竞品推荐→界面加载完成
-    @Test
-    public void showBbkMRecomend() {
-
     }
 
     //个人中心未登录，点击头像→个人中心页面加载完成
@@ -186,31 +168,25 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         user.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(Personal.PACKAGE, "layout_userinfo")), WAIT_TIME * 2);
         user = mDevice.findObject(By.res(Personal.PACKAGE, "layout_userinfo"));
-        Rect rt = user.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
-        Rect refreshPngRect = loadPngRect;
+        Rect loadPngRect = user.getVisibleBounds();;
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id")), WAIT_TIME);
             user = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id"));
             startTestRecord();
             user.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
-
-    //com.eebbk.bbkmiddlemarket:id/download_center_item_id 下载中心
-    //com.eebbk.bbkmiddlemarket:id/copyright_declare_item_id版权声明
-
 
     //点击版权声明→页面加载完成
     @Test
@@ -220,11 +196,9 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         copyright.click();
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "tv_copy_right_content")), WAIT_TIME);
         copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tv_copy_right_content"));
-        Rect rt = copyright.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
-        Rect refreshPngRect = loadPngRect;
+        Rect loadPngRect = copyright.getVisibleBounds();
         mDevice.pressBack();
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
@@ -232,13 +206,13 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "copyright_declare_item_id"));
             startTestRecord();
             copyright.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
@@ -247,12 +221,12 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     @Test
     public void showBbkMDownloadList() throws FileNotFoundException, JSONException {
         openBbkMine();
-        UiObject2 download= mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "download_center_item_id"));
+        UiObject2 download = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "download_center_item_id"));
         download.click();
-        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name")), WAIT_TIME*4);
+        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name")), WAIT_TIME * 4);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight()/2);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 2);
         Rect refreshPngRect = loadPngRect;
         mDevice.pressBack();
         SystemClock.sleep(1000);
@@ -261,13 +235,13 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             download = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "download_center_item_id"));
             startTestRecord();
             download.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }

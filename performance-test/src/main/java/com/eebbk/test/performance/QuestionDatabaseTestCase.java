@@ -84,13 +84,13 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         openQd();
         UiObject2 exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_text_title"));
         exam.clickAndWait(Until.newWindow(), WAIT_TIME);
-        Rect loadPngRect = new Rect(80, 20, 160, 60);
         mDevice.wait(Until.gone(By.res(QuestionDatabase.PACKAGE, "exercise_text_title")), WAIT_TIME * 4);
         mDevice.wait(Until.gone(By.res(QuestionDatabase.PACKAGE, "exercise_webview")), WAIT_TIME * 2);
         SystemClock.sleep(10000);
+        Rect loadPngRect = new Rect(80, 20, 160, 60);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 6);
+        Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() / 6);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
@@ -98,7 +98,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_text_title"));
             startTestRecord();
             exam.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -130,7 +130,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_select_exercises"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -164,7 +164,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -201,7 +201,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = children.get(0);
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -234,7 +234,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             rank = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_rank"));
             startTestRecord();
             rank.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date());
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
