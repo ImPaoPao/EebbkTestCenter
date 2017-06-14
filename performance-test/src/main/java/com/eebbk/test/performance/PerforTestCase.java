@@ -263,7 +263,7 @@ public class PerforTestCase extends Automator {
         UiObject2 cleanAllObj = mDevice.findObject(cleanAll);
         cleanAllObj.clickAndWait(Until.newWindow(), WAIT_TIME * 2);
         mDevice.pressHome();
-        mDevice.executeShellCommand("am force-stop " + mPkg);
+//        mDevice.executeShellCommand("am force-stop " + mPkg);
         mDevice.waitForIdle();
     }
 
@@ -493,7 +493,8 @@ public class PerforTestCase extends Automator {
         return compareResult;
     }
 
-    public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi) throws
+    public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi,long timeout)
+            throws
             IOException, JSONException {
         Object icon = mHelper.openIcon(folder, title, packageName);
         if (icon instanceof UiObject2) {
@@ -507,10 +508,9 @@ public class PerforTestCase extends Automator {
         }
         mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
         mDevice.waitForIdle();
+        SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        //Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        //下方菜单条
-        Rect loadPngRect = getLoadRect(source_png);
+        Rect loadPngRect = getLoadRect(source_png);//默认最下方一条
         Rect refreshPngRect = getRefreshRect(source_png);//除了下方条外的其它部分。
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -537,6 +537,9 @@ public class PerforTestCase extends Automator {
             } else {
                 clearRunprocess();
             }
+            if(folder!=null){
+                mDevice.pressHome();
+            }
             mDevice.waitForIdle();
         }
         if (source_png != null && !source_png.isRecycled()) {
@@ -551,7 +554,7 @@ public class PerforTestCase extends Automator {
     }
 
     public Rect getRefreshRect(Bitmap source_png) {
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 200);
+        Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() - 200);
         return refreshPngRect;
     }
 }

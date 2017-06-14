@@ -49,18 +49,6 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-//        UiObject2 view = mDevice.findObject(By.res(SynChinese.PACKAGE, "bookshelf_top_rly"));
-
-//        UiObject2 view = mDevice.findObject(By.clazz("android.widget.ListView"));//书本列表
-//        Rect refreshPngRect = view.getVisibleBounds();
-//        Rect loadPngRect = new Rect(source_png.getWidth() / 2 - 40, source_png.getHeight() / 2 - 40,
-//                source_png.getWidth() / 2 + 40, source_png.getHeight() / 2 + 40);
-        //view = mDevice.findObject(By.res(SynChinese.PACKAGE, "operate_guide_root_view"));//整个界面
-//        view = mDevice.findObject(By.res(SynChinese.PACKAGE, "bookshelf_top_rly"));
-//        Rect loadPngRect =view.getVisibleBounds();
-//        Rect loadPngRect = new Rect(refreshPngRect.left, refreshPngRect.bottom, mDevice.getDisplayWidth(), mDevice
-//                .getDisplayHeight());
-
         UiObject2 view = mDevice.findObject(By.res(SynChinese.PACKAGE,"introduct_button_id"));
         Rect rt = view.getVisibleBounds();
         Rect loadPngRect = new Rect(0, rt.top, mDevice.getDisplayWidth(), rt.bottom);
@@ -99,6 +87,11 @@ public class SynChineseTestCase extends PerforTestCase {
         }
     }
 
+
+    @Test
+    public void launchCommonSynChinese() throws IOException, JSONException {
+        clickLauncherIconStartApp("语文学习","同步语文",SynChinese.PACKAGE,"refresh",0);
+    }
     private void openOneChineseBook() {
         mHelper.openSynChinese();
         if (mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME)) {

@@ -25,7 +25,7 @@ import java.util.Map;
 public class OneSearchDarkTestCase extends PerforTestCase {
     @Test
     public void launchOneSearch() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        clickLauncherIconStartApp(null,"一键搜",OneSearchDark.PACKAGE,"btn_start_one_search");
+        //clickLauncherIconStartApp(null,"一键搜",OneSearchDark.PACKAGE,"btn_start_one_search",0);
         Object icon = mHelper.openIcon(null,"一键搜",OneSearchDark.PACKAGE);
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
