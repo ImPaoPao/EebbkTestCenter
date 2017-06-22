@@ -59,7 +59,6 @@ public class PackageManagerProxy extends ServiceProxy {
                 }
             }
         }
-
         sendResult(jobj);
     }
 }

@@ -1,6 +1,5 @@
 package com.eebbk.test.performance;
 
-import android.graphics.Rect;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.json.JSONException;
@@ -17,10 +16,10 @@ public class ThirdAppTestCase extends PerforTestCase{
     private String taoBao = "com.taobao.taobao";///com.taobao.tao.homepage.MainActivity3
     private String qqMusic = "com.tencent.qqmusic";///.activity.AppStarterActivity
     private String king = "com.tencent.tmgp.sgame";///.SGameActivity
-    private Rect rt = new Rect(0,0,mDevice.getDisplayWidth(),mDevice.getDisplayHeight());
+    //private Rect rt = new Rect(0,0,mDevice.getDisplayWidth(),mDevice.getDisplayHeight());
     @Test
     public void launchMeiYan() throws IOException, JSONException {
-        clickLauncherIconStartApp(null, "美颜相机", meiYan, "waitui", 20000,rt);
+        clickLauncherIconStartApp(null, "美颜相机", meiYan, "waitui", 20000);
     }
 
 

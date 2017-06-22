@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -71,6 +72,9 @@ public class PerforTestCase extends Automator {
     protected int mSys = 0;
     protected int mApp = 0;
 
+    protected String osVersion = SystemProperties.get("ro.build.version.sdk");//ro.build.version.sdk
+
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -113,12 +117,12 @@ public class PerforTestCase extends Automator {
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
-        //initSetup();
-//        clearRunprocess();
+        initSetup();
+        clearRunprocess();
     }
 
     public void initSetup() throws UiObjectNotFoundException, IOException {
-        //initPrimarySetup();
+        initPrimarySetup();
     }
 
     public void initPrimarySetup() throws UiObjectNotFoundException, IOException {
@@ -206,14 +210,12 @@ public class PerforTestCase extends Automator {
         Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
             try {
-                if (mXml != null) {
-                    mXml.text("\n");
-                    mXml.startTag(null, "Segment");
-                    mXml.attribute(null, "starttime", mStartTime);
-                    mXml.attribute(null, "memory", value);
-                    mXml.attribute(null, "endtime", getCurrentDate());
-                    mXml.endTag(null, "Segment");
-                }
+                mXml.text("\n");
+                mXml.startTag(null, "Segment");
+                mXml.attribute(null, "starttime", mStartTime);
+                mXml.attribute(null, "memory", value);
+                mXml.attribute(null, "endtime", getCurrentDate());
+                mXml.endTag(null, "Segment");
 
             } catch (IOException e) {
                 // Nothing to do
@@ -262,20 +264,19 @@ public class PerforTestCase extends Automator {
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
         mDevice.waitForIdle();
-        //bbk
-//        try {
-//            mDevice.pressRecentApps();
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
-//        mDevice.waitForIdle();
-//        BySelector cleanBtn = By.res("com.android.systemui", "clean_all");
-//        mDevice.wait(Until.hasObject(cleanBtn), WAIT_TIME);
-//        UiObject2 cleanAll = mDevice.findObject(cleanBtn);
-//        if (cleanAll != null) {
-//            cleanAll.clickAndWait(Until.newWindow(), WAIT_TIME * 2);
-//            mDevice.pressHome();
-//        }
+        try {
+            mDevice.pressRecentApps();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        mDevice.waitForIdle();
+        BySelector cleanBtn = By.res("com.android.systemui", "clean_all");
+        mDevice.wait(Until.hasObject(cleanBtn), WAIT_TIME);
+        UiObject2 cleanAll = mDevice.findObject(cleanBtn);
+        if (cleanAll != null) {
+            cleanAll.clickAndWait(Until.newWindow(), WAIT_TIME * 2);
+            mDevice.pressHome();
+        }
         String serialno = SystemProperties.get("ro.serialno");
         try {
             sysout.put("serial no start  ", "serialno start ");
@@ -284,32 +285,7 @@ public class PerforTestCase extends Automator {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mDevice.executeShellCommand("am force-stop "+mPkg);
-        mDevice.waitForIdle();
-        SystemClock.sleep(3000);
-
-//        if (serialno == "231SC1709026431") {
-//            //京
-//            mDevice.click(mDevice.getDisplayWidth() / 2, 120);//全部清除
-//            SystemClock.sleep(5000);
-//        } else if (serialno == "JVHAF6BUY9RSQKZD") {
-//            //小米
-//            mDevice.wait(Until.hasObject(By.res("com.android.systemui", "clearButton")), WAIT_TIME*2);
-//            cleanAll = mDevice.findObject(By.res("com.android.systemui", "clearButton"));
-//            cleanAll.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            SystemClock.sleep(5000);
-//        } else if (serialno == "0123456789ABCDEF") {
-//            //电台和酷比魔方 都无序列号 区分不开。
-//            //com.android.systemui:id/task_view_thumbnail  右滑
-//            //mDevice.pressMenu();com.android.systemui:id/task_view_thumbnail
-//            cleanBtn = By.res("com.android.systemui", "task_view_thumbnail");
-//            mDevice.wait(Until.hasObject(cleanBtn), WAIT_TIME);
-//            cleanAll = mDevice.findObject(cleanBtn);
-//            cleanAll.swipe(Direction.RIGHT, 0.8f);
-//            SystemClock.sleep(5000);
-//        }
         mDevice.pressHome();
-//      mDevice.executeShellCommand("am force-stop " + mPkg);
         mDevice.waitForIdle();
     }
 
@@ -323,13 +299,11 @@ public class PerforTestCase extends Automator {
     @After
     public void tearDown() throws IOException {
         instrumentationStatusOut(sysout);
-        if (mXml != null) {
-            mXml.text("\n");
-            mXml.endTag(null, "Record");
-            mXml.endDocument();
-            mWriter.flush();
-            mWriter.close();
-        }
+        mXml.text("\n");
+        mXml.endTag(null, "Record");
+        mXml.endDocument();
+        mWriter.flush();
+        mWriter.close();
     }
 
     public String getCurrentDate() {
@@ -518,8 +492,13 @@ public class PerforTestCase extends Automator {
                 }
                 compareResult.put("refreshTime", getCurrentDate());
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-                thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice
-                        .getDisplayWidth(), mDevice.getDisplayHeight());
+                if (Integer.valueOf(osVersion) <= 22) {
+                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, loadPng.getWidth(), loadPng.getHeight());
+                } else {
+                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice.getDisplayWidth(), mDevice
+                            .getDisplayHeight());
+                }
+
                 String cycle;
                 if (count > 0) {
                     cycle = String.valueOf(count);
@@ -528,8 +507,12 @@ public class PerforTestCase extends Automator {
                 }
                 mHelper.saveScreenshot(thumbnail, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
-                    thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
-                            .getDisplayHeight());
+                    if (Integer.valueOf(osVersion) <= 22) {
+                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, refreshPng.getWidth(), refreshPng.getHeight());
+                    } else {
+                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
+                                .getDisplayHeight());
+                    }
                     mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + cycle);
                 }
                 SystemClock.sleep(1000);
@@ -543,7 +526,7 @@ public class PerforTestCase extends Automator {
     }
 
     public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi, long
-            timeout,Rect rt) throws IOException, JSONException {
+            timeout, Rect rt) throws IOException, JSONException {
         Object icon = mHelper.openIcon(folder, title, packageName);
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -559,11 +542,12 @@ public class PerforTestCase extends Automator {
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect loadPngRect = getRefreshRect(source_png);//默认最下方一条
-        if(rt!=null){
+        Rect refreshPngRect = getRefreshRect(source_png);
+        if (rt != null) {
             loadPngRect = rt;
         }
         clearRunprocess();
-        mDevice.executeShellCommand("am force-stop " + mPkg);
+//        mDevice.executeShellCommand("am force-stop " + mPkg);
         mDevice.waitForIdle();
         sysout.put("am force-stop:", mPkg);
         for (int i = 0; i < mCount; i++) {
@@ -580,7 +564,7 @@ public class PerforTestCase extends Automator {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
@@ -605,7 +589,7 @@ public class PerforTestCase extends Automator {
     public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi, long timeout)
             throws
             IOException, JSONException {
-        clickLauncherIconStartApp(folder,title,packageName,waitUi,timeout,null);
+        clickLauncherIconStartApp(folder, title, packageName, waitUi, timeout, null);
     }
 
     public Rect getLoadRect(Bitmap source_png) {

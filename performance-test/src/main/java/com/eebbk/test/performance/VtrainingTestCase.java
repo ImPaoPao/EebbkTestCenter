@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class VtrainingTestCase extends PerforTestCase {
-    //@Test
+    @Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
         Object icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
         if (icon instanceof UiObject2) {
