@@ -9,7 +9,6 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -99,7 +98,6 @@ public class PerforTestCase extends Automator {
         }
         File out = new File("/sdcard/performance-test/", mNumber);
         if (out.exists()) {
-            sysout.put("system out exist  ", "=========");
             File[] files = out.listFiles();
             if (files != null) {
                 for (File file : files) {
@@ -455,7 +453,7 @@ public class PerforTestCase extends Automator {
         boolean loadFlag = true;
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
-        Bitmap thumbnail = null;
+//        Bitmap thumbnail = null;
         do {
             m++;
             Bitmap des_png = mAutomation.takeScreenshot();
@@ -492,12 +490,12 @@ public class PerforTestCase extends Automator {
                 }
                 compareResult.put("refreshTime", getCurrentDate());
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-                if (Integer.valueOf(osVersion) <= 22) {
-                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, loadPng.getWidth(), loadPng.getHeight());
-                } else {
-                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice.getDisplayWidth(), mDevice
-                            .getDisplayHeight());
-                }
+//                if (Integer.valueOf(osVersion) <= 22) {
+//                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, loadPng.getWidth(), loadPng.getHeight());
+//                } else {
+//                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice.getDisplayWidth(), mDevice
+//                            .getDisplayHeight());
+//                }
 
                 String cycle;
                 if (count > 0) {
@@ -505,20 +503,20 @@ public class PerforTestCase extends Automator {
                 } else {
                     cycle = String.valueOf(mCount);
                 }
-                mHelper.saveScreenshot(thumbnail, mNumber, "load_" + cycle);
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
-                    if (Integer.valueOf(osVersion) <= 22) {
-                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, refreshPng.getWidth(), refreshPng.getHeight());
-                    } else {
-                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
-                                .getDisplayHeight());
-                    }
-                    mHelper.saveScreenshot(thumbnail, mNumber, "refresh_" + cycle);
+//                    if (Integer.valueOf(osVersion) <= 22) {
+//                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, refreshPng.getWidth(), refreshPng.getHeight());
+//                    } else {
+//                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
+//                                .getDisplayHeight());
+//                    }
+                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
                 SystemClock.sleep(1000);
-                if (thumbnail != null && !thumbnail.isRecycled()) {
-                    thumbnail.recycle();
-                }
+//                if (thumbnail != null && !thumbnail.isRecycled()) {
+//                    thumbnail.recycle();
+//                }
                 break;
             }
         } while (loadResult > 1 || refreshResult > 1);
@@ -547,7 +545,6 @@ public class PerforTestCase extends Automator {
             loadPngRect = rt;
         }
         clearRunprocess();
-//        mDevice.executeShellCommand("am force-stop " + mPkg);
         mDevice.waitForIdle();
         sysout.put("am force-stop:", mPkg);
         for (int i = 0; i < mCount; i++) {
