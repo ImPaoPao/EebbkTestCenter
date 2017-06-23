@@ -61,7 +61,7 @@ public class PerforTestCase extends Automator {
     protected XmlSerializer mXml;
     protected String mStartTime;
 
-    protected int mCount = 2;
+    protected int mCount = 5;
     protected int mType = 0;
     protected String mNumber = "unknown";
 
@@ -453,7 +453,6 @@ public class PerforTestCase extends Automator {
         boolean loadFlag = true;
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
-//        Bitmap thumbnail = null;
         do {
             m++;
             Bitmap des_png = mAutomation.takeScreenshot();
@@ -466,9 +465,6 @@ public class PerforTestCase extends Automator {
             if (loadResult <= 1 && loadFlag) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
                 compareResult.put("loadTime", getCurrentDate());
-                sysout.put(String.valueOf(m) + "loadResult***************:", loadResult);
-                sysout.put(String.valueOf(m) + "loadtime***************:", getCurrentDate());
-                sysout.put(String.valueOf(m) + "mStartTime***************:", mStartTime);
                 loadFlag = false;
             }
             if (refreshPngRect != null) {
@@ -480,7 +476,6 @@ public class PerforTestCase extends Automator {
             } else {
                 refreshResult = loadResult;
             }
-            sysout.put(String.valueOf(m) + "refreshResult:", refreshResult);
             if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 & refreshResult <=
                     1)) {
                 sysout.put(String.valueOf(m) + "timeout or result:", "saveScreenShot");
@@ -490,13 +485,6 @@ public class PerforTestCase extends Automator {
                 }
                 compareResult.put("refreshTime", getCurrentDate());
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-//                if (Integer.valueOf(osVersion) <= 22) {
-//                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, loadPng.getWidth(), loadPng.getHeight());
-//                } else {
-//                    thumbnail = ThumbnailUtils.extractThumbnail(loadPng, mDevice.getDisplayWidth(), mDevice
-//                            .getDisplayHeight());
-//                }
-
                 String cycle;
                 if (count > 0) {
                     cycle = String.valueOf(count);
@@ -505,18 +493,9 @@ public class PerforTestCase extends Automator {
                 }
                 mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
-//                    if (Integer.valueOf(osVersion) <= 22) {
-//                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, refreshPng.getWidth(), refreshPng.getHeight());
-//                    } else {
-//                        thumbnail = ThumbnailUtils.extractThumbnail(refreshPng, mDevice.getDisplayWidth(), mDevice
-//                                .getDisplayHeight());
-//                    }
                     mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
                 SystemClock.sleep(1000);
-//                if (thumbnail != null && !thumbnail.isRecycled()) {
-//                    thumbnail.recycle();
-//                }
                 break;
             }
         } while (loadResult > 1 || refreshResult > 1);

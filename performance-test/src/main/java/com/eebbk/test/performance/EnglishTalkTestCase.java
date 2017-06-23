@@ -39,14 +39,8 @@ public class EnglishTalkTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "main_player_controller")), WAIT_TIME * 2);//下方的播放菜单
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "main_player_controller"));
-        Rect loadPngRect = view.getVisibleBounds();
-        mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "homepage_banner_view_layout_id")), WAIT_TIME);
-        view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_banner_view_layout_id"));
-        Rect bt = view.getVisibleBounds();
-        view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_refresh_listview_id"));
-        Rect rt = view.getVisibleBounds();
-        Rect refreshPngRect = new Rect(rt.left, bt.bottom, rt.width(), rt.height() - loadPngRect.height());
+        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() - 80);
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);

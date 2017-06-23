@@ -25,7 +25,6 @@ import java.util.Map;
 public class OneSearchDarkTestCase extends PerforTestCase {
     @Test
     public void launchOneSearch() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        //clickLauncherIconStartApp(null,"一键搜",OneSearchDark.PACKAGE,"btn_start_one_search",0);
         Object icon = mHelper.openIcon(null,"一键搜",OneSearchDark.PACKAGE);
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -38,10 +37,13 @@ public class OneSearchDarkTestCase extends PerforTestCase {
         }
         mDevice.wait(Until.hasObject(By.res(OneSearchDark.PACKAGE, "btn_start_one_search")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.res(OneSearchDark.PACKAGE, "btn_start_one_search"));
-        Rect loadPngRect =view.getVisibleBounds();
-        view = mDevice.findObject(By.res(OneSearchDark.PACKAGE, "overlay_view"));
-        Rect refreshPngRect =view.getVisibleBounds() ;
+//        UiObject2 view = mDevice.findObject(By.res(OneSearchDark.PACKAGE, "btn_start_one_search"));
+//        Rect loadPngRect =view.getVisibleBounds();
+//        view = mDevice.findObject(By.res(OneSearchDark.PACKAGE, "overlay_view"));
+//        Rect refreshPngRect =view.getVisibleBounds() ;
+////
+        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight()-100);
+        Rect loadPngRect = new Rect(0,source_png.getHeight()-100,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -72,9 +74,6 @@ public class OneSearchDarkTestCase extends PerforTestCase {
         if (!source_png.isRecycled()) {
             source_png.recycle();
         }
-
-
-
     }
 
 

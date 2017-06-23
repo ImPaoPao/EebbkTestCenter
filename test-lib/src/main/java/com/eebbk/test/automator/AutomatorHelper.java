@@ -188,7 +188,9 @@ public class AutomatorHelper {
                     /* ignore */
                 }
             }
-            screenshot.recycle();
+            if (screenshot != null && !screenshot.isRecycled()) {
+                screenshot.recycle();
+            }
         }
         return true;
     }

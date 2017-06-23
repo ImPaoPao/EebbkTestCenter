@@ -50,10 +50,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard")), WAIT_TIME * 2);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "refresh"));
-        Rect loadPngRect = view.getVisibleBounds();
-        view = mDevice.findObject(By.clazz("android.widget.ListView"));//列表
-        Rect refreshPngRect = view.getVisibleBounds();
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -69,7 +66,7 @@ public class SyncEglishTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();

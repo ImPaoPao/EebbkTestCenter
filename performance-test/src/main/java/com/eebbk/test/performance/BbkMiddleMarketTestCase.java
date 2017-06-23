@@ -54,11 +54,8 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 menu = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_tab_radioGroup"));//下方菜单
-        //UiObject2 menu =  mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tab_home"));//首页
-        Rect loadPngRect = menu.getVisibleBounds();
-        menu = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "home_viewpager"));
-        Rect refreshPngRect = menu.getVisibleBounds();
+        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() - 80);
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);

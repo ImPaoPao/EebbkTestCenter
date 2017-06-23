@@ -41,11 +41,8 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习
-        //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方menu菜单
-        Rect loadPngRect =view.getVisibleBounds();
-        view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager"));
-        Rect refreshPngRect =view.getVisibleBounds() ;
+        Rect refreshPngRect = new Rect(0,100,source_png.getWidth(),source_png.getHeight()-60);
+        Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
