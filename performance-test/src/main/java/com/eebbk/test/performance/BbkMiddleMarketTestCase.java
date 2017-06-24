@@ -54,7 +54,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
         mDevice.waitForIdle(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() - 80);
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -62,11 +62,11 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             icon = mHelper.openIcon(null, "应用商店", BbkMiddleMarket.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }

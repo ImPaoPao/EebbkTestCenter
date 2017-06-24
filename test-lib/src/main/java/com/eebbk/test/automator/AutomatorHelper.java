@@ -152,17 +152,36 @@ public class AutomatorHelper {
     }
 
     public Bitmap takeScreenshot(String folder, String fileName) throws FileNotFoundException {
-        mDevice.takeScreenshot(new File("/sdcard/performance-test/" + folder + "/" + fileName + ".png"));
+        String sourcePath = "/sdcard/performance-test/" + folder + "/" + fileName +".png";
+        mDevice.takeScreenshot(new File(sourcePath));
         FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + folder + "/" + fileName + "" +
                 ".png");
         Bitmap source_png = BitmapFactory.decodeStream(source_fis);
+
+
+        //预计修改加载到内存中的像素大小
+
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true; // 只获取图片的大小信息，而不是将整张图片载入在内存中，避免内存溢出
+//        BitmapFactory.decodeFile(sourcePath, options);
+//        int height = options.outHeight;
+//        int width= options.outWidth;
+//        int inSampleSize = 2; // 默认像素压缩比例，压缩为原图的1/2
+//        int minLen = Math.min(height, width); // 原图的最小边长
+//        if(minLen > 100) { // 如果原始图像的最小边长大于100dp（此处单位我认为是dp，而非px）
+//            float ratio = (float)minLen / 100.0f; // 计算像素压缩比例
+//            inSampleSize = (int)ratio;
+//        }
+//        options.inJustDecodeBounds = false; // 计算好压缩比例后，这次可以去加载原图了
+//        options.inSampleSize = inSampleSize; // 设置为刚才计算的压缩比例
+//        Bitmap source_png = BitmapFactory.decodeFile(sourcePath, options); // 解码文件
         return source_png;
     }
 
 
-    public boolean saveScreenshot(Bitmap screenshot, String folder) {
-        return saveScreenshot(screenshot, folder, null);
-    }
+//    public boolean saveScreenshot(Bitmap screenshot, String folder) {
+//        return saveScreenshot(screenshot, folder, null);
+//    }
 
     public boolean saveScreenshot(Bitmap screenshot, String folder, String fileName) {
         if (screenshot == null) {
@@ -294,7 +313,7 @@ public class AutomatorHelper {
             }
         }
         Object icon = folder != null ? findIcon(folder, title) : findIcon(title);
-        assertThat(String.format("没有找到图标folde%s", title), icon, notNullValue());
+        assertThat(String.format("没有找到图标folder%s", title), icon, notNullValue());
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {

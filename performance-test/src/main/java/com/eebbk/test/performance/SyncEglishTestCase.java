@@ -61,7 +61,7 @@ public class SyncEglishTestCase extends PerforTestCase {
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
@@ -77,8 +77,9 @@ public class SyncEglishTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 

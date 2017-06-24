@@ -41,7 +41,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0,100,source_png.getWidth(),source_png.getHeight()-60);
+        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight()-60);
         Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -49,11 +49,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             icon = mHelper.openIcon(null, "好题精练", QuestionDatabase.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
@@ -101,8 +101,9 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 

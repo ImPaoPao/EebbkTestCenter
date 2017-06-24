@@ -40,7 +40,7 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 6);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() - 70);
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -48,11 +48,11 @@ public class VtrainingTestCase extends PerforTestCase {
             icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
@@ -68,8 +68,9 @@ public class VtrainingTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 

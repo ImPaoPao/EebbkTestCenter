@@ -49,24 +49,24 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect =new Rect(0,100,source_png.getWidth(),source_png.getHeight());
+        Rect loadPngRect =new Rect(0,0,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
             icon = mHelper.openIcon("语文学习", "同步语文", SynChinese.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
             }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
+            //mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "refresh")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
@@ -77,8 +77,9 @@ public class SynChineseTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 

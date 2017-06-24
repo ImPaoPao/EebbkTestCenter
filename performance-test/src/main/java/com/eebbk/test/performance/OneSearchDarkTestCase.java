@@ -50,11 +50,11 @@ public class OneSearchDarkTestCase extends PerforTestCase {
             icon = mHelper.openIcon(null,"一键搜",OneSearchDark.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
@@ -71,8 +71,9 @@ public class OneSearchDarkTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 

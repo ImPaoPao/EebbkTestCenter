@@ -78,7 +78,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "2");
+        String count = getArguments().getString("count", "4");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -105,8 +105,7 @@ public class PerforTestCase extends Automator {
                 }
             }
         } else {
-            Boolean mout = out.mkdirs();
-            sysout.put("system mout ", mout);
+            out.mkdirs();
         }
 
         mWriter = new FileWriter(new File(out, "result.xml"));
@@ -261,6 +260,7 @@ public class PerforTestCase extends Automator {
 
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
+        SystemClock.sleep(2000);
         mDevice.waitForIdle();
         try {
             mDevice.pressRecentApps();
@@ -273,17 +273,11 @@ public class PerforTestCase extends Automator {
         UiObject2 cleanAll = mDevice.findObject(cleanBtn);
         if (cleanAll != null) {
             cleanAll.clickAndWait(Until.newWindow(), WAIT_TIME * 2);
+            SystemClock.sleep(1000);
             mDevice.pressHome();
         }
-        String serialno = SystemProperties.get("ro.serialno");
-        try {
-            sysout.put("serial no start  ", "serialno start ");
-            sysout.put("serial no ", serialno);
-            sysout.put("serial no end   ", "serialno end");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         mDevice.pressHome();
+        SystemClock.sleep(2000);
         mDevice.waitForIdle();
     }
 
@@ -296,7 +290,6 @@ public class PerforTestCase extends Automator {
 
     @After
     public void tearDown() throws IOException {
-        instrumentationStatusOut(sysout);
         mXml.text("\n");
         mXml.endTag(null, "Record");
         mXml.endDocument();
@@ -328,31 +321,14 @@ public class PerforTestCase extends Automator {
     }
 
     public void doStartActivity(int flag) throws IOException {
-//        JSONObject obj = new JSONObject();
-        if (flag == 0 || mType == 0) {
-            if (mSys > 0 && mApp > 0) {
-                try {
-                    sysout.put("dostart:mSys&mApp ", (mSys & mApp));
-                    sysout.put("dostart:mSys ", mSys);
-                    sysout.put("dostart:mApp ", mApp);
-                    sysout.put("pkg:pkg ", mPkg);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                doStartActivity(mSys, "1");
-                doStartActivity(mApp, "0");
-            } else {
-                try {
-                    sysout.put("dostart else:mSys & mApp ", (mSys & mApp));
-                    sysout.put("dostart else:mSys ", mSys);
-                    sysout.put("dostart else:mApp ", mApp);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                doStartActivity(mSys > 0 ? mSys : mApp, mSys > 0 ? "1" : "0");
-            }
-        }
-//        instrumentationStatusOut(obj);
+//        if (flag == 0 || mType == 0) {
+//            if (mSys > 0 && mApp > 0) {
+//                doStartActivity(mSys, "1");
+//                doStartActivity(mApp, "0");
+//            } else {
+//                doStartActivity(mSys > 0 ? mSys : mApp, mSys > 0 ? "1" : "0");
+//            }
+//        }
     }
 
 
@@ -365,7 +341,6 @@ public class PerforTestCase extends Automator {
         String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
         List<String> packages = new ArrayList();
         mDevice.waitForIdle(5000);
-//        JSONObject obj = new JSONObject();
         List<PackageInfo> pis = mManager.getInstalledPackages(0);
         if (num > pis.size()) num = pis.size();
         for (PackageInfo pi : pis) {
@@ -391,12 +366,6 @@ public class PerforTestCase extends Automator {
                 }
             }
         }
-        try {
-            sysout.put("packages", packages);
-        } catch (JSONException je) {
-            //
-        }
-//        instrumentationStatusOut(obj);
     }
 
     //截图
@@ -422,10 +391,10 @@ public class PerforTestCase extends Automator {
     }
 
 
-    protected Bitmap getHomeSourceScreen(BySelector bySelector, String startPackage, long waitTime) throws
-            IOException, InterruptedException {
-        return getHomeSourceScreen(bySelector, startPackage, null, waitTime);
-    }
+//    protected Bitmap getHomeSourceScreen(BySelector bySelector, String startPackage, long waitTime) throws
+//            IOException, InterruptedException {
+//        return getHomeSourceScreen(bySelector, startPackage, null, waitTime);
+//    }
 
     //图片对比
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Date timeStamp) throws JSONException {
@@ -444,41 +413,40 @@ public class PerforTestCase extends Automator {
     }
 
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
-            count) throws
-            JSONException {
-        int m = 0;
+            count) throws JSONException {
+//        int m = 0;
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
         boolean loadFlag = true;
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
+        Bitmap des_png = null;
         do {
-            m++;
-            Bitmap des_png = mAutomation.takeScreenshot();
+//            m++;
+            des_png = mAutomation.takeScreenshot();
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
                         loadPngRect.width(), loadPngRect.height()), loadPng);
             }
-            if (loadResult <= 1 && loadFlag) {
+            if (loadFlag && loadResult <= 1) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
                 compareResult.put("loadTime", getCurrentDate());
                 loadFlag = false;
             }
-            if (refreshPngRect != null) {
+            if (refreshPngRect == null) {
+                refreshResult = loadResult;
+            } else {
                 refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
                         refreshPngRect.width(), refreshPngRect.height());
                 refreshResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, refreshPngRect.left,
                         refreshPngRect.top,
                         refreshPngRect.width(), refreshPngRect.height()), refreshPng);
-            } else {
-                refreshResult = loadResult;
             }
-            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 & refreshResult <=
+            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 && refreshResult <=
                     1)) {
-                sysout.put(String.valueOf(m) + "timeout or result:", "saveScreenShot");
                 if (!compareResult.containsKey("loadTime")) {
                     compareResult.put("loadTime", getCurrentDate());
                     compareResult.put("loadResult", String.valueOf(loadResult));
@@ -495,7 +463,14 @@ public class PerforTestCase extends Automator {
                 if (refreshPngRect != null) {
                     mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
-                SystemClock.sleep(1000);
+                if (loadPng != null && !loadPng.isRecycled()) {
+                    loadPng.recycle();
+                    loadPng = null;
+                }
+                if (refreshPng != null && !refreshPng.isRecycled()) {
+                    refreshPng.recycle();
+                    refreshPng = null;
+                }
                 break;
             }
         } while (loadResult > 1 || refreshResult > 1);
@@ -525,7 +500,6 @@ public class PerforTestCase extends Automator {
         }
         clearRunprocess();
         mDevice.waitForIdle();
-        sysout.put("am force-stop:", mPkg);
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
             icon = mHelper.openIcon(folder, title, packageName);

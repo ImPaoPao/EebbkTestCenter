@@ -45,24 +45,24 @@ public class SyncMathTestCase extends PerforTestCase {
         }
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refreshBtnId")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect  = new Rect(0,100,source_png.getWidth(),source_png.getHeight());
+        Rect loadPngRect  = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
             icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).click();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).click();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
             }
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refresh")), WAIT_TIME);
+            //mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refresh")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
@@ -73,8 +73,9 @@ public class SyncMathTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 
