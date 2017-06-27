@@ -44,7 +44,7 @@ public class VisionTestCase extends PerforTestCase {
                 // Nothing to do
             }
         }
-        SystemClock.sleep(2000);
+        SystemClock.sleep(1000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
@@ -53,11 +53,11 @@ public class VisionTestCase extends PerforTestCase {
             icon = mHelper.openIcon(null, "视力保护", Vision.PACKAGE);
             if (icon instanceof UiObject2) {
                 startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+                ((UiObject2) icon).click();
             } else {
                 try {
                     startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
+                    ((UiObject) icon).click();
                 } catch (UiObjectNotFoundException e) {
                     // Nothing to do
                 }
@@ -75,7 +75,7 @@ public class VisionTestCase extends PerforTestCase {
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
-            source_png=null;
+            source_png = null;
         }
     }
 
@@ -92,7 +92,7 @@ public class VisionTestCase extends PerforTestCase {
             Bitmap source_png = mHelper.takeScreenshot(mNumber);
             UiObject2 vision = mDevice.findObject(By.text("第一节"));
             Rect loadPngRect = vision.getVisibleBounds();
-            Rect refreshPngRect = new Rect(0, 0, source_png.getWidth()/2, source_png.getHeight()/3);
+            Rect refreshPngRect = new Rect(0, 0, source_png.getWidth() / 2, source_png.getHeight() / 3);
             mDevice.pressBack();
             SystemClock.sleep(1000);
             for (int i = 0; i < mCount; i++) {
@@ -123,7 +123,7 @@ public class VisionTestCase extends PerforTestCase {
         UiObject2 vision = mDevice.findObject(By.res(Vision.PACKAGE, "rl_head"));
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0,20,vision.getVisibleBounds().width(),vision.getVisibleBounds().bottom);
+        Rect loadPngRect = new Rect(0, 20, vision.getVisibleBounds().width(), vision.getVisibleBounds().bottom);
         mDevice.pressBack();
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {

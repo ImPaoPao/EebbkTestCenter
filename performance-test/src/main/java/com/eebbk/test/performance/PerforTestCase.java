@@ -1,6 +1,7 @@
 package com.eebbk.test.performance;
 
 import android.app.Instrumentation;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -78,7 +79,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "4");
+        String count = getArguments().getString("count", "2");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -337,6 +338,7 @@ public class PerforTestCase extends Automator {
     @type 启动apk的类型 sys 1 3app 0
      */
     public void doStartActivity(int num, String type) throws IOException {
+        Context mContext = null;
         PackageManager mManager = mContext.getPackageManager();
         String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
         List<String> packages = new ArrayList();

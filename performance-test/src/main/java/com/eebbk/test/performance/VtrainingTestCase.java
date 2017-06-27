@@ -40,8 +40,10 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 6);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
+        Rect loadPngRect = view.getVisibleBounds();
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);

@@ -154,6 +154,8 @@ public class AutomatorHelper {
     public Bitmap takeScreenshot(String folder, String fileName) throws FileNotFoundException {
         String sourcePath = "/sdcard/performance-test/" + folder + "/" + fileName +".png";
         mDevice.takeScreenshot(new File(sourcePath));
+
+        
         FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + folder + "/" + fileName + "" +
                 ".png");
         Bitmap source_png = BitmapFactory.decodeStream(source_fis);

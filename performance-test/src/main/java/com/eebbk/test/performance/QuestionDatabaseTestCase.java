@@ -40,9 +40,12 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         }
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
         SystemClock.sleep(5000);
+        //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习
+        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方menu菜单
+        Rect loadPngRect =view.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight()-60);
-        Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
+        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
+        //Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -98,7 +101,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            SystemClock.sleep(1000);
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
