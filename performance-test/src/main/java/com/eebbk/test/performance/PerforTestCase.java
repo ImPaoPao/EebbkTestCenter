@@ -71,7 +71,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "10");
+        String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -406,6 +406,92 @@ public class PerforTestCase extends Automator {
         return doCompare(sourcePng, loadPngRect, refreshPngRect, timeStamp, 0);
     }
 
+    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect,Bitmap loadSource,
+                                         Bitmap refreshSource,Date timeStamp, int count) throws JSONException {
+        JSONObject obj =new JSONObject();
+        Map<String, String> compareResult = new HashMap();
+        int loadResult = 0;
+        int refreshResult = 0;
+        boolean loadFlag = true;
+        Bitmap refreshPng = null;
+        Bitmap loadPng = null;
+        Bitmap des_png = null;
+        int m =0;
+        do {
+            m++;
+            obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"start:",getCurrentDate());
+            des_png = mAutomation.takeScreenshot();
+            obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"end:",getCurrentDate());
+            if (loadFlag) {
+                loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
+                        loadPngRect.height());
+                loadResult = BitmapHelper.compare(loadSource, loadPng);
+                obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"loadresult",loadResult);
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count)+"_"+String.valueOf(m));
+                obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"save:",getCurrentDate());
+            }
+//            obj.put(String.valueOf(m)+"loadresult",loadResult);
+            if (loadFlag && loadResult <= 1) {
+                compareResult.put("loadResult", String.valueOf(loadResult));
+                compareResult.put("loadTime", getCurrentDate());
+                loadFlag = false;
+            }
+            if (refreshPngRect == null) {
+                refreshResult = loadResult;
+            } else {
+                refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
+                        refreshPngRect.width(), refreshPngRect.height());
+                refreshResult = BitmapHelper.compare(refreshSource, refreshPng);
+                obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"refreshResult",loadResult);
+//                mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + String.valueOf(m));
+            }
+            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 && refreshResult <=
+                    1)) {
+                if (!compareResult.containsKey("loadTime")) {
+                    compareResult.put("loadTime", getCurrentDate());
+                    compareResult.put("loadResult", String.valueOf(loadResult));
+                }
+                compareResult.put("refreshTime", getCurrentDate());
+                compareResult.put("refreshResult", String.valueOf(refreshResult));
+                obj.put(String.valueOf(count)+"mstartTime",mStartTime);
+                obj.put(String.valueOf(count)+"loadTime",compareResult.get("loadTime"));
+//                String cycle;
+//                if (count > 0) {
+//                    cycle = String.valueOf(count);
+//                } else {
+//                    cycle = String.valueOf(mCount);
+//                }
+                //mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+//                if (refreshPngRect != null) {
+//                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
+//                }
+                if (loadPng != null && !loadPng.isRecycled()) {
+                    loadPng.recycle();
+                    loadPng = null;
+                }
+                if (refreshPng != null && !refreshPng.isRecycled()) {
+                    refreshPng.recycle();
+                    refreshPng = null;
+                }
+                break;
+            } else {
+                if (loadFlag) {
+                    if (loadPng != null && !loadPng.isRecycled()) {
+                        loadPng.recycle();
+                        loadPng = null;
+                    }
+                }
+                if (refreshPng != null && !refreshPng.isRecycled()) {
+                    refreshPng.recycle();
+                    refreshPng = null;
+                }
+            }
+        } while (loadResult > 1 || refreshResult > 1);
+        instrumentationStatusOut(obj);
+        return compareResult;
+    }
+
+
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
             count) throws JSONException {
         JSONObject obj =new JSONObject();
@@ -419,16 +505,15 @@ public class PerforTestCase extends Automator {
         int m =0;
         do {
             m++;
-            obj.put(String.valueOf(m)+"start time 0 :\n",getCurrentDate());
+            obj.put(String.valueOf(m)+"start time",getCurrentDate());
             des_png = mAutomation.takeScreenshot();
-            obj.put(String.valueOf(m)+"end time 0:",getCurrentDate()+"\n");
+            obj.put(String.valueOf(m)+"end time",getCurrentDate());
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
-                obj.put(String.valueOf(m)+"start create:",getCurrentDate());
+//                obj.put(String.valueOf(m)+"start create:",getCurrentDate());
                 loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
                         loadPngRect.width(), loadPngRect.height()), loadPng);
-                obj.put(String.valueOf(m)+"end create:",getCurrentDate());
             }
             if (loadFlag && loadResult <= 1) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
