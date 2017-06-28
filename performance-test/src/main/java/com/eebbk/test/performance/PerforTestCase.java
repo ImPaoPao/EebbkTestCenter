@@ -1,12 +1,6 @@
 package com.eebbk.test.performance;
 
 import android.app.Instrumentation;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -44,10 +38,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -79,7 +71,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "2");
+        String count = getArguments().getString("count", "10");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -317,8 +309,8 @@ public class PerforTestCase extends Automator {
     @app 启动三方应用个数
     */
     public void doStartActivity(int sys, int app) throws IOException {
-        doStartActivity(sys, "1");
-        doStartActivity(app, "0");
+//        doStartActivity(sys, "1");
+//        doStartActivity(app, "0");
     }
 
     public void doStartActivity(int flag) throws IOException {
@@ -338,36 +330,36 @@ public class PerforTestCase extends Automator {
     @type 启动apk的类型 sys 1 3app 0
      */
     public void doStartActivity(int num, String type) throws IOException {
-        Context mContext = null;
-        PackageManager mManager = mContext.getPackageManager();
-        String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
-        List<String> packages = new ArrayList();
-        mDevice.waitForIdle(5000);
-        List<PackageInfo> pis = mManager.getInstalledPackages(0);
-        if (num > pis.size()) num = pis.size();
-        for (PackageInfo pi : pis) {
-            if (packages.size() >= num) {
-                break;
-            }
-            if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == Integer.parseInt(type)) {
-                for (String category : categories) {
-                    Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(
-                            category).setPackage(pi.packageName);
-                    List<ResolveInfo> ris = mManager.queryIntentActivities(intent, 0);
-                    for (ResolveInfo ri : ris) {
-                        if ((ri.activityInfo.name != null) && (pi.packageName != mPkg) && (Integer.parseInt(type)
-                                == 0 ? (!pi.packageName.contains("com.eebbk") && !pi.packageName.contains("com.bbk"))
-                                : true)) {
-                            mDevice.executeShellCommand("am start -W " + pi.packageName + "/" + ri.activityInfo.name);
-                            packages.add(pi.packageName + "/" + ri.activityInfo.name);
-                            mDevice.waitForIdle(5000);
-                            mDevice.pressHome();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+//        Context mContext = null;
+//        PackageManager mManager = mContext.getPackageManager();
+//        String[] categories = {Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_HOME};
+//        List<String> packages = new ArrayList();
+//        mDevice.waitForIdle(5000);
+//        List<PackageInfo> pis = mManager.getInstalledPackages(0);
+//        if (num > pis.size()) num = pis.size();
+//        for (PackageInfo pi : pis) {
+//            if (packages.size() >= num) {
+//                break;
+//            }
+//            if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == Integer.parseInt(type)) {
+//                for (String category : categories) {
+//                    Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(
+//                            category).setPackage(pi.packageName);
+//                    List<ResolveInfo> ris = mManager.queryIntentActivities(intent, 0);
+//                    for (ResolveInfo ri : ris) {
+//                        if ((ri.activityInfo.name != null) && (pi.packageName != mPkg) && (Integer.parseInt(type)
+//                                == 0 ? (!pi.packageName.contains("com.eebbk") && !pi.packageName.contains("com.bbk"))
+//                                : true)) {
+//                            mDevice.executeShellCommand("am start -W " + pi.packageName + "/" + ri.activityInfo.name);
+//                            packages.add(pi.packageName + "/" + ri.activityInfo.name);
+//                            mDevice.waitForIdle(5000);
+//                            mDevice.pressHome();
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     //截图
@@ -416,7 +408,7 @@ public class PerforTestCase extends Automator {
 
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
             count) throws JSONException {
-//        int m = 0;
+        JSONObject obj =new JSONObject();
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
@@ -424,14 +416,19 @@ public class PerforTestCase extends Automator {
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
         Bitmap des_png = null;
+        int m =0;
         do {
-//            m++;
+            m++;
+            obj.put(String.valueOf(m)+"start time 0 :\n",getCurrentDate());
             des_png = mAutomation.takeScreenshot();
+            obj.put(String.valueOf(m)+"end time 0:",getCurrentDate()+"\n");
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
+                obj.put(String.valueOf(m)+"start create:",getCurrentDate());
                 loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
                         loadPngRect.width(), loadPngRect.height()), loadPng);
+                obj.put(String.valueOf(m)+"end create:",getCurrentDate());
             }
             if (loadFlag && loadResult <= 1) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
@@ -474,8 +471,20 @@ public class PerforTestCase extends Automator {
                     refreshPng = null;
                 }
                 break;
+            } else {
+                if (loadFlag) {
+                    if (loadPng != null && !loadPng.isRecycled()) {
+                        loadPng.recycle();
+                        loadPng = null;
+                    }
+                }
+                if (refreshPng != null && !refreshPng.isRecycled()) {
+                    refreshPng.recycle();
+                    refreshPng = null;
+                }
             }
         } while (loadResult > 1 || refreshResult > 1);
+        instrumentationStatusOut(obj);
         return compareResult;
     }
 

@@ -41,11 +41,13 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
         SystemClock.sleep(5000);
         //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习
-        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方menu菜单
-        Rect loadPngRect =view.getVisibleBounds();
+//        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方menu菜单
+//        Rect loadPngRect =view.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
-        //Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
+//        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
+//        //Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 60);
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 60, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -61,7 +63,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_default_banner")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
@@ -73,7 +75,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             }
             mDevice.waitForIdle();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
@@ -98,7 +100,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_text_title"));
             startTestRecord();
             exam.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
 //            SystemClock.sleep(1000);
@@ -106,7 +108,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
-            source_png=null;
+            source_png = null;
         }
     }
 
@@ -131,7 +133,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_select_exercises"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -165,7 +167,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -202,7 +204,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = children.get(0);
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
@@ -235,7 +237,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             rank = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_rank"));
             startTestRecord();
             rank.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);

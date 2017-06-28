@@ -69,7 +69,6 @@ public class EnglishTalkTestCase extends PerforTestCase {
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
-            source_png=null;
         }
     }
     //选择教材添加后，点击教材目录→进入播放界面
