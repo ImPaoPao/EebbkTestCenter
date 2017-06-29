@@ -39,8 +39,17 @@ public class EnglishTalkTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "main_player_controller")), WAIT_TIME * 2);//下方的播放菜单
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
+
+        UiObject2 view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "main_player_controller"));
+        Rect loadPngRect =view.getVisibleBounds();
+
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
+                .width(), refreshPngRect.height());
+
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -56,7 +65,8 @@ public class EnglishTalkTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new
+                    Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();

@@ -40,14 +40,22 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         }
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
         SystemClock.sleep(5000);
-        //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习
-//        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方menu菜单
-//        Rect loadPngRect =view.getVisibleBounds();
+        //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习home_linear_tab_container
+        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_infos_layout"));
+        // exercise_main_default_banner exercise_main_infos_layout
+        Rect loadPngRect =view.getVisibleBounds();
+        view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "e_list_chpaters"));
+        Rect refreshPngRect =view.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 //        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
 //        //Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 60);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 60, source_png.getWidth(), source_png.getHeight());
+        //Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 60);
+        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 60, source_png.getWidth(), source_png.getHeight());
+
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
+                .width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -63,7 +71,8 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new
+                    Date(), (i +1));
             mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_default_banner")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));

@@ -406,9 +406,9 @@ public class PerforTestCase extends Automator {
         return doCompare(sourcePng, loadPngRect, refreshPngRect, timeStamp, 0);
     }
 
-    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect,Bitmap loadSource,
-                                         Bitmap refreshSource,Date timeStamp, int count) throws JSONException {
-        JSONObject obj =new JSONObject();
+    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource, Bitmap
+            refreshSource, Date timeStamp, int count, int match) throws JSONException {
+        JSONObject obj = new JSONObject();
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
@@ -416,24 +416,24 @@ public class PerforTestCase extends Automator {
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
         Bitmap des_png = null;
-        int m =0;
+        int m = 0;
         do {
             m++;
-            //obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"start:",getCurrentDate());
+            String startScreenTime = getCurrentDate();
+            obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "start:", startScreenTime);
             des_png = mAutomation.takeScreenshot();
-            //obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"end:",getCurrentDate());
+            obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "end:", startScreenTime);
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
-                //obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"loadresult",loadResult);
-                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count)+"_"+String.valueOf(m)
-                        +"_"+String.valueOf(loadResult));
-                //obj.put(String.valueOf(count)+"_"+String.valueOf(m)+"save:",getCurrentDate());
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
+                        + "_" + String.valueOf(loadResult));
+                obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "save:", startScreenTime);
             }
-            if (loadFlag && loadResult <= 1) {
+            if (loadFlag && loadResult <= match) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
-                compareResult.put("loadTime", getCurrentDate());
+                compareResult.put("loadTime", startScreenTime);
                 loadFlag = false;
             }
             if (refreshPngRect == null) {
@@ -443,16 +443,14 @@ public class PerforTestCase extends Automator {
                         refreshPngRect.width(), refreshPngRect.height());
                 refreshResult = BitmapHelper.compare(refreshSource, refreshPng);
             }
-            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 && refreshResult <=
-                    1)) {
+            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= match &&
+                    refreshResult <= match)) {
                 if (!compareResult.containsKey("loadTime")) {
-                    compareResult.put("loadTime", getCurrentDate());
+                    compareResult.put("loadTime", startScreenTime);
                     compareResult.put("loadResult", String.valueOf(loadResult));
                 }
-                compareResult.put("refreshTime", getCurrentDate());
+                compareResult.put("refreshTime", startScreenTime);
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
-                obj.put(String.valueOf(count)+"mstartTime",mStartTime);
-                obj.put(String.valueOf(count)+"refreshTime",compareResult.get("refreshTime"));
                 String cycle;
 //                if (count > 0) {
 //                    cycle = String.valueOf(count);
@@ -460,13 +458,12 @@ public class PerforTestCase extends Automator {
 //                    cycle = String.valueOf(mCount);
 //                }
 //                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
-//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count)+"_"+String.valueOf(m)
-//                        +"_"+String.valueOf(loadResult));
-//                if (refreshPngRect != null) {
-//                    //mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
-//                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + String.valueOf(count)+"_"+String.valueOf(m)
-//                            +"_"+String.valueOf(refreshResult));
-//                }
+                if (refreshPngRect != null) {
+                    //mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
+                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + String.valueOf(count) + "_" + String
+                            .valueOf(m)
+                            + "_" + String.valueOf(refreshResult));
+                }
                 if (loadPng != null && !loadPng.isRecycled()) {
                     loadPng.recycle();
                     loadPng = null;
@@ -481,10 +478,6 @@ public class PerforTestCase extends Automator {
                 }
                 break;
             } else {
-                if (refreshPngRect != null) {
-                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + String.valueOf(count)+"_"+String.valueOf(m)
-                            +"_"+String.valueOf(refreshResult));
-                }
                 if (loadFlag) {
                     if (loadPng != null && !loadPng.isRecycled()) {
                         loadPng.recycle();
@@ -496,20 +489,31 @@ public class PerforTestCase extends Automator {
                     refreshPng = null;
                 }
             }
-
             if (des_png != null && !des_png.isRecycled()) {
                 des_png.recycle();
                 des_png = null;
             }
-        } while (loadResult > 1 || refreshResult > 1);
+        } while (loadResult > match || refreshResult > match);
         instrumentationStatusOut(obj);
         return compareResult;
     }
 
+    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource,
+                                         Bitmap refreshSource, Date timeStamp, int count) throws JSONException {
+        return doCompare(loadPngRect, refreshPngRect, loadSource,
+                refreshSource, timeStamp, count, 1);
+    }
+
+
+    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count) throws
+            JSONException {
+        return doCompare(loadPngRect, null, loadSource,
+                null, timeStamp, count, 1);
+    }
 
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
             count) throws JSONException {
-        JSONObject obj =new JSONObject();
+        JSONObject obj = new JSONObject();
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
@@ -517,7 +521,7 @@ public class PerforTestCase extends Automator {
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
         Bitmap des_png = null;
-        int m =0;
+        int m = 0;
         do {
             m++;
             des_png = mAutomation.takeScreenshot();
