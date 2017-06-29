@@ -56,6 +56,10 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
         Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
+                .width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -71,7 +75,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new Date(), (i +1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
