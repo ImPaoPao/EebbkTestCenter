@@ -427,8 +427,8 @@ public class PerforTestCase extends Automator {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
-//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
-//                        + "_" + String.valueOf(loadResult));
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
+                        + "_" + String.valueOf(loadResult));
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "loadResult:", loadResult);
 //                obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "save:", getCurrentDate());
             }
@@ -459,7 +459,7 @@ public class PerforTestCase extends Automator {
                 } else {
                     cycle = String.valueOf(mCount);
                 }
-                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+                //mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
                     mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
