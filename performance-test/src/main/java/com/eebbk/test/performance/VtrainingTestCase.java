@@ -42,14 +42,14 @@ public class VtrainingTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 4);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
-        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "tab_view_item_name"));
+        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
+        UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "tab_view_item_name"));
         Rect loadPngRect = view.getVisibleBounds();
 //        Rect loadPngRect = new Rect(source_png.getWidth()/3,source_png.getHeight()*4/5,source_png.getWidth()*2/3,
 //                source_png.getHeight());
 //        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
 //        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         //Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());

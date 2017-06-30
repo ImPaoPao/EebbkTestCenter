@@ -41,9 +41,9 @@ public class EnglishTalkTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 
         UiObject2 view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "main_player_controller"));
-        Rect loadPngRect =view.getVisibleBounds();
+        Rect loadPngRect = view.getVisibleBounds();
 
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         //Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
@@ -65,7 +65,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
                     // Nothing to do
                 }
             }
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1));
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
@@ -81,6 +81,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
             source_png.recycle();
         }
     }
+
     //选择教材添加后，点击教材目录→进入播放界面
     @Test
     public void showEtPlayUi() throws IOException, UiObjectNotFoundException, InterruptedException,
@@ -182,7 +183,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
             mDevice.waitForIdle();
             mDevice.pressBack();
         }
-        if (source_png!=null && !source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
         }
     }
