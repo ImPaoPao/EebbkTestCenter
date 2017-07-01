@@ -41,54 +41,58 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     @Test
     public void launchBbkMiddleMarket() throws IOException, UiObjectNotFoundException, JSONException,
             InterruptedException {
-        Object icon = mHelper.openIcon(null, "应用商店", BbkMiddleMarket.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
-        mDevice.waitForIdle(5000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
-                .width(), refreshPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon(null, "应用商店", BbkMiddleMarket.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new Date(), (i +1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-        }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        Rect refreshPngRect = new Rect(0, 0, mDevice.getWidth(), mDevice.getHeight() - 80);
+        Rect loadPngRect = new Rect(0, mDevice.getHeight() - 70, mDevice.getWidth(), mDevice.getHeight());
+        clickIconStartApp(null, "应用商店", BbkMiddleMarketTestCase.PACKAGE, "apk_button",5000, loadPngRect, refreshPngRect, 10)
+//        Object icon = mHelper.openIcon(null, "应用商店", BbkMiddleMarket.PACKAGE);
+//        if (icon instanceof UiObject2) {
+//            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+//        } else {
+//            try {
+//                ((UiObject) icon).clickAndWaitForNewWindow();
+//            } catch (UiObjectNotFoundException e) {
+//                // Nothing to do
+//            }
+//        }
+//        mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
+//        mDevice.waitForIdle(5000);
+//        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+//        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 80);
+//        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
+//                .width(), refreshPngRect.height());
+//        clearRunprocess();
+//        for (int i = 0; i < mCount; i++) {
+//            doStartActivity(i);
+//            icon = mHelper.openIcon(null, "应用商店", BbkMiddleMarket.PACKAGE);
+//            if (icon instanceof UiObject2) {
+//                startTestRecord();
+//                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+//            } else {
+//                try {
+//                    startTestRecord();
+//                    ((UiObject) icon).clickAndWaitForNewWindow();
+//                } catch (UiObjectNotFoundException e) {
+//                    // Nothing to do
+//                }
+//            }
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new Date(), (i +1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            mDevice.pressHome();
+//            if (mType == 1) {
+//                mDevice.pressHome();
+//            } else {
+//                clearRunprocess();
+//            }
+//            mDevice.waitForIdle();
+//        }
+//        if (source_png != null && !source_png.isRecycled()) {
+//            source_png.recycle();
+//        }
     }
 
     //首页点击应用→应用详情加载完成

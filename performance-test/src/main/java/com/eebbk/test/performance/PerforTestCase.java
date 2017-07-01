@@ -274,13 +274,6 @@ public class PerforTestCase extends Automator {
         mDevice.waitForIdle();
     }
 
-    public void swipeCurrentLauncher() {
-        mDevice.pressHome();
-        for (int j = 0; j < 3; j++)
-            mDevice.swipe(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2, 0, mDevice.getDisplayHeight
-                    () / 2, 20);
-    }
-
     @After
     public void tearDown() throws IOException {
         mXml.text("\n");
@@ -362,35 +355,7 @@ public class PerforTestCase extends Automator {
 //        }
     }
 
-    //截图
-    protected Bitmap getHomeSourceScreen(BySelector bySelector, String startPackage, String widgetFlag, long
-            waitTime) throws IOException, InterruptedException {
-        swipeCurrentLauncher();
-        mDevice.wait(Until.hasObject(bySelector), WAIT_TIME);
-        UiObject2 synChineseObj = mDevice.findObject(bySelector);
-        synChineseObj.clickAndWait(Until.newWindow(), WAIT_TIME);
-        if (widgetFlag == null) {
-            sleep(waitTime);
-        } else {
-            mDevice.wait(Until.hasObject(By.res(startPackage, widgetFlag)), WAIT_TIME);
-            sleep(waitTime);
-        }
-        mDevice.takeScreenshot(new File("/sdcard/performance-test/" + mNumber + "/" + mNumber + ".png"));
-        FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + mNumber + "/" + mNumber + "" +
-                ".png");
-        Bitmap source_png = BitmapFactory.decodeStream(source_fis);
-        mDevice.pressHome();
-        clearRunprocess();
-        return source_png;
-    }
-
-
-//    protected Bitmap getHomeSourceScreen(BySelector bySelector, String startPackage, long waitTime) throws
-//            IOException, InterruptedException {
-//        return getHomeSourceScreen(bySelector, startPackage, null, waitTime);
-//    }
-
-    //图片对比
+    //图片对比:原图和两个待对比区域
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Date timeStamp) throws JSONException {
         return doCompare(sourcePng, loadPngRect, null, timeStamp, 0);
     }
@@ -404,6 +369,179 @@ public class PerforTestCase extends Automator {
     public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp) throws
             JSONException {
         return doCompare(sourcePng, loadPngRect, refreshPngRect, timeStamp, 0);
+    }
+
+    public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
+            count) throws JSONException {
+        JSONObject obj = new JSONObject();
+        Map<String, String> compareResult = new HashMap();
+//        int loadResult = 0;
+//        int refreshResult = 0;
+//        boolean loadFlag = true;
+//        Bitmap refreshPng = null;
+//        Bitmap loadPng = null;
+//        Bitmap des_png = null;
+//        int m = 0;
+//        do {
+//            m++;
+//            des_png = mAutomation.takeScreenshot();
+//            if (loadFlag) {
+//                loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
+//                        loadPngRect.height());
+//                loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
+//                        loadPngRect.width(), loadPngRect.height()), loadPng);
+//            }
+//            if (loadFlag && loadResult <= 1) {
+//                compareResult.put("loadResult", String.valueOf(loadResult));
+//                compareResult.put("loadTime", getCurrentDate());
+//                loadFlag = false;
+//            }
+//            if (refreshPngRect == null) {
+//                refreshResult = loadResult;
+//            } else {
+//                refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
+//                        refreshPngRect.width(), refreshPngRect.height());
+//                refreshResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, refreshPngRect.left,
+//                        refreshPngRect.top,
+//                        refreshPngRect.width(), refreshPngRect.height()), refreshPng);
+//            }
+//            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 && refreshResult <=
+//                    1)) {
+//                if (!compareResult.containsKey("loadTime")) {
+//                    compareResult.put("loadTime", getCurrentDate());
+//                    compareResult.put("loadResult", String.valueOf(loadResult));
+//                }
+//                compareResult.put("refreshTime", getCurrentDate());
+//                compareResult.put("refreshResult", String.valueOf(refreshResult));
+//                String cycle;
+//                if (count > 0) {
+//                    cycle = String.valueOf(count);
+//                } else {
+//                    cycle = String.valueOf(mCount);
+//                }
+//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+//                if (refreshPngRect != null) {
+//                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
+//                }
+//                if (loadPng != null && !loadPng.isRecycled()) {
+//                    loadPng.recycle();
+//                    loadPng = null;
+//                }
+//                if (refreshPng != null && !refreshPng.isRecycled()) {
+//                    refreshPng.recycle();
+//                    refreshPng = null;
+//                }
+//                break;
+//            } else {
+//                if (loadFlag) {
+//                    if (loadPng != null && !loadPng.isRecycled()) {
+//                        loadPng.recycle();
+//                        loadPng = null;
+//                    }
+//                }
+//                if (refreshPng != null && !refreshPng.isRecycled()) {
+//                    refreshPng.recycle();
+//                    refreshPng = null;
+//                }
+//            }
+//        } while (loadResult > 1 || refreshResult > 1);
+//        instrumentationStatusOut(obj);
+        return compareResult;
+    }
+
+    //重构代码:模块启动
+    public void clickIconStartApp(String folder, String title,  String packageName, String waitUi,long timeout, Rect loadPngRect,int match) {
+        clickIconStartApp(folder,title,packageName,waitUi,timeout,loadPngRect,null,match);
+    }
+    /*
+    folder:文件夹名称,可为空
+    title:应用图标名称
+    timeout:首次保存源图片的等待时长
+    packageName:应用包名
+    waitUi:首次判断加载完成的标记UI
+    loadPngRect:加载区域
+    refreshPngRect:刷新区域
+    match:匹配度
+     */
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
+                                  long timeout, Rect loadPngRect, Rect refreshPngRect, int match) {
+        JSONObject obj = new JSONObject();
+        Object icon = mHelper.openIcon(folder, title, packageName);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        SystemClock.sleep(timeout);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = null;
+        if(refreshPngRect!=null){
+            refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                    refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+        }
+        clearRunprocess();
+        for (int i = 0; i < mCount; i++) {
+            doStartActivity(i);
+            icon = mHelper.openIcon(folder, title, packageName);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), match);
+            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+                    ("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressHome();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
+        }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
+        }
+    }
+
+    //无内容加载部分,默认匹配度为10
+    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count,int match) throws
+            JSONException {
+        return doCompare(loadPngRect, null, loadSource,null, timeStamp, count, match);
+    }
+    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count) throws
+            JSONException {
+        return doCompare(loadPngRect, null, loadSource,null, timeStamp, count, 10);
+    }
+
+    //不传递匹配度,则默认为10
+    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource,
+                                         Bitmap refreshSource, Date timeStamp, int count) throws JSONException {
+        return doCompare(loadPngRect, refreshPngRect, loadSource,
+                refreshSource, timeStamp, count, 10);
     }
 
     public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource, Bitmap
@@ -499,171 +637,5 @@ public class PerforTestCase extends Automator {
         } while (loadResult > match || refreshResult > match);
         instrumentationStatusOut(obj);
         return compareResult;
-    }
-
-    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource,
-                                         Bitmap refreshSource, Date timeStamp, int count) throws JSONException {
-        return doCompare(loadPngRect, refreshPngRect, loadSource,
-                refreshSource, timeStamp, count, 10);
-    }
-
-
-    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count) throws
-            JSONException {
-        return doCompare(loadPngRect, null, loadSource,
-                null, timeStamp, count, 10);
-    }
-
-    public Map<String, String> doCompare(Bitmap sourcePng, Rect loadPngRect, Rect refreshPngRect, Date timeStamp, int
-            count) throws JSONException {
-//        JSONObject obj = new JSONObject();
-        Map<String, String> compareResult = new HashMap();
-//        int loadResult = 0;
-//        int refreshResult = 0;
-//        boolean loadFlag = true;
-//        Bitmap refreshPng = null;
-//        Bitmap loadPng = null;
-//        Bitmap des_png = null;
-//        int m = 0;
-//        do {
-//            m++;
-//            des_png = mAutomation.takeScreenshot();
-//            if (loadFlag) {
-//                loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
-//                        loadPngRect.height());
-//                loadResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, loadPngRect.left, loadPngRect.top,
-//                        loadPngRect.width(), loadPngRect.height()), loadPng);
-//            }
-//            if (loadFlag && loadResult <= 1) {
-//                compareResult.put("loadResult", String.valueOf(loadResult));
-//                compareResult.put("loadTime", getCurrentDate());
-//                loadFlag = false;
-//            }
-//            if (refreshPngRect == null) {
-//                refreshResult = loadResult;
-//            } else {
-//                refreshPng = Bitmap.createBitmap(des_png, refreshPngRect.left, refreshPngRect.top,
-//                        refreshPngRect.width(), refreshPngRect.height());
-//                refreshResult = BitmapHelper.compare(Bitmap.createBitmap(sourcePng, refreshPngRect.left,
-//                        refreshPngRect.top,
-//                        refreshPngRect.width(), refreshPngRect.height()), refreshPng);
-//            }
-//            if (((new Date().getTime() - timeStamp.getTime()) > WAIT_TIME * 4) || (loadResult <= 1 && refreshResult <=
-//                    1)) {
-//                if (!compareResult.containsKey("loadTime")) {
-//                    compareResult.put("loadTime", getCurrentDate());
-//                    compareResult.put("loadResult", String.valueOf(loadResult));
-//                }
-//                compareResult.put("refreshTime", getCurrentDate());
-//                compareResult.put("refreshResult", String.valueOf(refreshResult));
-//                String cycle;
-//                if (count > 0) {
-//                    cycle = String.valueOf(count);
-//                } else {
-//                    cycle = String.valueOf(mCount);
-//                }
-//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
-//                if (refreshPngRect != null) {
-//                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
-//                }
-//                if (loadPng != null && !loadPng.isRecycled()) {
-//                    loadPng.recycle();
-//                    loadPng = null;
-//                }
-//                if (refreshPng != null && !refreshPng.isRecycled()) {
-//                    refreshPng.recycle();
-//                    refreshPng = null;
-//                }
-//                break;
-//            } else {
-//                if (loadFlag) {
-//                    if (loadPng != null && !loadPng.isRecycled()) {
-//                        loadPng.recycle();
-//                        loadPng = null;
-//                    }
-//                }
-//                if (refreshPng != null && !refreshPng.isRecycled()) {
-//                    refreshPng.recycle();
-//                    refreshPng = null;
-//                }
-//            }
-//        } while (loadResult > 1 || refreshResult > 1);
-//        instrumentationStatusOut(obj);
-        return compareResult;
-    }
-
-    public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi, long
-            timeout, Rect rt) throws IOException, JSONException {
-        Object icon = mHelper.openIcon(folder, title, packageName);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
-        mDevice.waitForIdle();
-        SystemClock.sleep(timeout);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = getRefreshRect(source_png);//默认最下方一条
-        Rect refreshPngRect = getRefreshRect(source_png);
-        if (rt != null) {
-            loadPngRect = rt;
-        }
-        clearRunprocess();
-        mDevice.waitForIdle();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon(folder, title, packageName);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).click();
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).click();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            SystemClock.sleep(1000);
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            if (folder != null) {
-                mDevice.pressHome();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-        }
-
-    }
-
-    public void clickLauncherIconStartApp(String folder, String title, String packageName, String waitUi, long timeout)
-            throws IOException, JSONException {
-        clickLauncherIconStartApp(folder, title, packageName, waitUi, timeout, null);
-    }
-
-    public Rect getLoadRect(Bitmap source_png) {
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 40, source_png.getWidth(), source_png.getHeight());
-        return loadPngRect;
-    }
-
-    public Rect getRefreshRect(Bitmap source_png) {
-        Rect refreshPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight() -
-                200);
-        return refreshPngRect;
     }
 }
