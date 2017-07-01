@@ -106,8 +106,8 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
+    //原生SystemUI
     public static final class SystemUi {
-
         public static final String PACKAGE = "com.android.systemui";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }

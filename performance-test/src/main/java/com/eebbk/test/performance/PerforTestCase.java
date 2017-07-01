@@ -71,7 +71,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "2");
+        String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -416,25 +416,29 @@ public class PerforTestCase extends Automator {
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
         Bitmap des_png = null;
+        String lastTime = null;
+        String startScreenTime = null;
         int m = 0;
         do {
             m++;
-            String startScreenTime = getCurrentDate();
-            obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "start:", startScreenTime);
+            lastTime = startScreenTime;
+            startScreenTime = getCurrentDate();
             des_png = mAutomation.takeScreenshot();
-//            obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "end:", getCurrentDate());
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
-                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
-                        + "_" + String.valueOf(loadResult));
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "loadResult:", loadResult);
-//                obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "save:", getCurrentDate());
             }
             if (loadFlag && loadResult <= match) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
-                compareResult.put("loadTime", startScreenTime);
+                if (mPkg == PackageConstants.Vtraining.PACKAGE) {
+                    compareResult.put("loadTime", lastTime);
+                } else {
+                    compareResult.put("loadTime", startScreenTime);
+                }
+                obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "lastTime:", lastTime);
+                obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "startScreenTime:", startScreenTime);
                 loadFlag = false;
             }
             if (refreshPngRect == null) {
@@ -459,7 +463,7 @@ public class PerforTestCase extends Automator {
                 } else {
                     cycle = String.valueOf(mCount);
                 }
-                //mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
                     mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }

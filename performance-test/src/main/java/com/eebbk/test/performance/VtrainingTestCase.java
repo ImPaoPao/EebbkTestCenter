@@ -26,6 +26,12 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class VtrainingTestCase extends PerforTestCase {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        mPkg = Vtraining.PACKAGE;
+    }
+
     @Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
         JSONObject obj = new JSONObject();
@@ -45,7 +51,8 @@ public class VtrainingTestCase extends PerforTestCase {
         //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
         //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "tab_view_item_name"));
 //        Rect loadPngRect = view.getVisibleBounds();
-        Rect loadPngRect = new Rect(0,source_png.getHeight()*4/5,source_png.getWidth(),source_png.getHeight());
+        Rect loadPngRect = new Rect(0, source_png.getHeight() * 95 / 100, source_png.getWidth(), source_png.getHeight
+                ());
 //        Rect loadPngRect = new Rect(source_png.getWidth()/3,source_png.getHeight()*4/5,source_png.getWidth()*2/3,
 //                source_png.getHeight());
 //        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
@@ -57,7 +64,7 @@ public class VtrainingTestCase extends PerforTestCase {
         Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
                 .width(), refreshPngRect.height());
         clearRunprocess();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < mCount; i++) {
 //            doStartActivity(i);
             icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
             if (icon instanceof UiObject2) {
@@ -73,7 +80,7 @@ public class VtrainingTestCase extends PerforTestCase {
             }
             SystemClock.sleep(1000);
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
-                    Date(), (i + 1), 20);
+                    Date(), (i + 1), 1);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
