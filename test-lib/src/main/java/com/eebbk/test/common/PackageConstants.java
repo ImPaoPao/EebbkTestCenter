@@ -16,6 +16,13 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
+    public static final class AndroidLauncher {
+        public static final String PACKAGE = "com.android.launcher";
+        public static final String LABEL = "原生Launcher";
+        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+    }
+
+
     public static final class Personal {
         public static final String PACKAGE = "com.bbk.personal";
         public static final String LABEL = "个人中心";
@@ -73,7 +80,7 @@ public class PackageConstants {
     //同步英文 com.eebbk.syncenglish
     public static final class SyncEnglish {
         public static final String PACKAGE = "com.eebbk.syncenglish";
-        public static final String LABEL = "整句翻译";
+        public static final String LABEL = "同步英语";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
@@ -86,7 +93,7 @@ public class PackageConstants {
     //视力保护 com.eebbk.vision
     public static final class Vision {
         public static final String PACKAGE = "com.eebbk.vision";
-        public static final String LABEL = "整句翻译";
+        public static final String LABEL = "视力保护";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
