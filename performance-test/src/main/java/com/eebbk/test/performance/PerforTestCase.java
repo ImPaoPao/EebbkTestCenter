@@ -50,6 +50,10 @@ import static android.support.test.InstrumentationRegistry.getArguments;
 public class PerforTestCase extends Automator {
     public static String TAG = "PerforTestCase";
     public JSONObject sysout = new JSONObject();
+//
+//    private int sWidth = mDevice.getWidth();
+//    private int sHeight=mDevice.getHeight();
+
     protected FileWriter mWriter;
     protected XmlSerializer mXml;
     protected String mStartTime;
@@ -454,6 +458,81 @@ public class PerforTestCase extends Automator {
         clickIconStartApp(folder,title,packageName,waitUi,timeout,loadPngRect,null,match);
     }
     /*
+    传递两个区域代表的控件id
+    */
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
+                                  long timeout, String loadId, String refreshId, int match) {
+        Object icon = mHelper.openIcon(folder, title, packageName);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        SystemClock.sleep(timeout);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+
+        UiObject2 view = mDevice.findObject(By.res(packageName, loadId));
+        Rect loadPngRect =view.getVisibleBounds();
+        Rect refreshPngRect =null;
+        Bitmap refreshSource = null;
+        if(refreshId!=null){
+            view = mDevice.findObject(By.res(packageName, refreshId));
+            refreshPngRect =view.getVisibleBounds() ;
+            refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                    refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+        }else{
+            refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
+        }
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        clearRunprocess();
+        for (int i = 0; i < mCount; i++) {
+            doStartActivity(i);
+            icon = mHelper.openIcon(folder, title, packageName);
+            if (icon instanceof UiObject2) {
+                startTestRecord();
+                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+            } else {
+                try {
+                    startTestRecord();
+                    ((UiObject) icon).clickAndWaitForNewWindow();
+                } catch (UiObjectNotFoundException e) {
+                    // Nothing to do
+                }
+            }
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), match);
+            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+                    ("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressHome();
+            if (mType == 1) {
+                mDevice.pressHome();
+            } else {
+                clearRunprocess();
+            }
+            mDevice.waitForIdle();
+        }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
+        }
+    }
+
+
+    /*
     folder:文件夹名称,可为空
     title:应用图标名称
     timeout:首次保存源图片的等待时长
@@ -479,6 +558,9 @@ public class PerforTestCase extends Automator {
         mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        if(loadPngRect==null){
+            loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+        }
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = null;

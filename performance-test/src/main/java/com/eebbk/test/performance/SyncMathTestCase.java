@@ -33,51 +33,10 @@ public class SyncMathTestCase extends PerforTestCase {
 
     @Test
     public void launchSynMath() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        Object icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "refreshBtnId")), WAIT_TIME);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect  = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon("数学学习", "同步数学", SynMath.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(loadPngRect, loadSource,new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-            source_png=null;
-        }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        clickIconStartApp("数学学习", "同步数学", SynMath.PACKAGE, "refreshBtnId",2000, null, 10);
     }
 
     //addMathBook 点击添加按钮→下载界面加载完成 OK

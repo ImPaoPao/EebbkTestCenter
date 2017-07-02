@@ -28,66 +28,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
     @Test
     public void launchQuestionDatabase() throws IOException, UiObjectNotFoundException, InterruptedException,
             JSONException {
-        Object icon = mHelper.openIcon(null, "好题精练", QuestionDatabase.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        clickIconStartApp(null, "好题精练", QuestionDatabase.PACKAGE, "exercise_view_pager",5000,
+                "exercise_main_infos_layout", "e_list_chpaters", 10);
         }
-        mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_view_pager")), WAIT_TIME * 2);
-        SystemClock.sleep(5000);
-        //UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_exercise"));//智能练习home_linear_tab_container
-        UiObject2 view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_infos_layout"));
-        // exercise_main_default_banner exercise_main_infos_layout
-        Rect loadPngRect =view.getVisibleBounds();
-        view = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "e_list_chpaters"));
-        Rect refreshPngRect =view.getVisibleBounds();
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-//        Rect refreshPngRect = new Rect(0,0,source_png.getWidth(),source_png.getHeight());
-//        //Rect loadPngRect = new Rect(0,source_png.getHeight()-60,source_png.getWidth(),source_png.getHeight());
-        //Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 60);
-        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 60, source_png.getWidth(), source_png.getHeight());
-
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
-                .width(), refreshPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon(null, "好题精练", QuestionDatabase.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect,loadSource,refreshSource, new
-                    Date(), (i +1));
-            mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_default_banner")), WAIT_TIME);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-        }
-    }
 
     //点击智能练习目录→题目加载完成
     @Test

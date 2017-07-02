@@ -34,75 +34,12 @@ public class VtrainingTestCase extends PerforTestCase {
 
     @Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        JSONObject obj = new JSONObject();
-        Object icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(Vtraining.PACKAGE, "my_plan_banner_scale_id")), WAIT_TIME * 4);
-        SystemClock.sleep(5000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "home_tab_view"));
-        //UiObject2 view = mDevice.findObject(By.res(Vtraining.PACKAGE, "tab_view_item_name"));
-//        Rect loadPngRect = view.getVisibleBounds();
-        Rect loadPngRect = new Rect(0, source_png.getHeight() * 95 / 100, source_png.getWidth(), source_png.getHeight
-                ());
-//        Rect loadPngRect = new Rect(source_png.getWidth()/3,source_png.getHeight()*4/5,source_png.getWidth()*2/3,
-//                source_png.getHeight());
-//        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 70);
-//        Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
-        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 70, source_png.getWidth(), source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left, refreshPngRect.top, refreshPngRect
-                .width(), refreshPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-//            doStartActivity(i);
-            icon = mHelper.openIcon(null, "名师辅导班", Vtraining.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            SystemClock.sleep(1000);
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
-                    Date(), (i + 1), 1);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-            source_png = null;
-        }
-        if (loadSource != null && !loadSource.isRecycled()) {
-            loadSource.recycle();
-            loadSource = null;
-        }
-        if (refreshSource != null && !refreshSource.isRecycled()) {
-            refreshSource.recycle();
-            refreshSource = null;
-        }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        Rect loadPngRect = new Rect(0, mDevice.getHeight() * 95 / 100, mDevice.getWidth(), mDevice.getHeight());
+        Rect refreshPngRect = new Rect(0, 0, loadPngRect.width(), loadPngRect.top);
+        clickIconStartApp(null, "名师辅导班", Vtraining.PACKAGE,"my_plan_banner_scale_id" ,5000, loadPngRect, 10);
     }
 
     //点击首页更多精彩→课程列表页面，加载完成

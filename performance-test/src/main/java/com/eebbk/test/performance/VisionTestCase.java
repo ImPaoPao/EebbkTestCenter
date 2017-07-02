@@ -34,51 +34,11 @@ public class VisionTestCase extends PerforTestCase {
 
     @Test
     public void launchVision() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        Object icon = mHelper.openIcon(null, "视力保护", Vision.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        SystemClock.sleep(1000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() * 9 / 10, source_png.getWidth(), source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon(null, "视力保护", Vision.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).click();
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).click();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(loadPngRect, loadSource, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-            source_png = null;
-        }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        Rect loadPngRect = new Rect(0, mDevice.getHeight() * 9 / 10, mDevice.getWidth(), mDevice.getHeight());
+        clickIconStartApp(null, "视力保护", Vision.PACKAGE, null,3000, loadPngRect, 10);
     }
 
     //点击眼保健操→显示眼保健操界面

@@ -37,52 +37,10 @@ public class SyncEglishTestCase extends PerforTestCase {
 
     @Test
     public void launchSyncEnglish() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        Object icon = mHelper.openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
-        if (icon instanceof UiObject2) {
-            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-        } else {
-            try {
-                ((UiObject) icon).clickAndWaitForNewWindow();
-            } catch (UiObjectNotFoundException e) {
-                // Nothing to do
-            }
-        }
-        mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard")), WAIT_TIME * 2);
-        mDevice.waitForIdle(5000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
-            icon = mHelper.openIcon("英语学习", "同步英语", SyncEnglish.PACKAGE);
-            if (icon instanceof UiObject2) {
-                startTestRecord();
-                ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
-            } else {
-                try {
-                    startTestRecord();
-                    ((UiObject) icon).clickAndWaitForNewWindow();
-                } catch (UiObjectNotFoundException e) {
-                    // Nothing to do
-                }
-            }
-            Map<String, String> compareResult = doCompare(loadPngRect,loadSource, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.pressHome();
-            if (mType == 1) {
-                mDevice.pressHome();
-            } else {
-                clearRunprocess();
-            }
-            mDevice.waitForIdle();
-        }
-        if (source_png != null && !source_png.isRecycled()) {
-            source_png.recycle();
-            source_png=null;
-        }
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard",5000, null, 10);
     }
 
     //前置条件：首页下载好十本书
