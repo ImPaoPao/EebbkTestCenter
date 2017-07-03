@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+<cases>
+    <testcase name="methodName" label="图标名称" package="packageName"/>
+</cases>

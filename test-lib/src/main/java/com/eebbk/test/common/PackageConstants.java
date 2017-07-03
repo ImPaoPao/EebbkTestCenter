@@ -90,7 +90,6 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    //同步英文 com.eebbk.syncenglish
     public static final class SyncEnglish {
         public static final String PACKAGE = "com.eebbk.syncenglish";
         public static final String LABEL = "同步英语";
@@ -152,33 +151,9 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Playmanual {
-        public static final String PACKAGE = "com.eebbk.playmanual";
-        public static final String LABEL = "用户手册";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class Servicecenter {
-        public static final String PACKAGE = "com.eebbk.servicecenter";
-        public static final String LABEL = "服务中心";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
     public static final class Recorder {
         public static final String PACKAGE = "com.bbk.recorder";
         public static final String LABEL = "录音";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class TestKit {
-        public static final String PACKAGE = "com.eebbk.test.kit";
-        public static final String LABEL = "test-kit";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class BBKUserSevice {
-        public static final String PACKAGE = "com.eebbk.bfc.app.bfcbehavior";
-        public static final String LABEL = "BBKUserSevice";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
@@ -188,21 +163,9 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Stresstest {
-        public static final String PACKAGE = "com.eebbk.stresstest";
-        public static final String LABEL = "Stresstest";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
     public static final class Deskclock {
         public static final String PACKAGE = "com.eebbk.deskclock";
         public static final String LABEL = "闹钟";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class UScannerService {
-        public static final String PACKAGE = "com.eebbk.uscanner";
-        public static final String LABEL = "UScannerService";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
@@ -224,25 +187,12 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Otaupdate {
-        public static final String PACKAGE = "com.eebbk.tools.otaupdate";
-        public static final String LABEL = "系统升级";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
 
     public static final class Calendar {
         public static final String PACKAGE = "com.eebbk.calendar";
         public static final String LABEL = "日历";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
-
-    public static final class PadStudyOsTheme {
-        public static final String PACKAGE = "com.eebbk.padstudyostheme";
-        public static final String LABEL = "PadStudyOsTheme";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-
 
     public static final class Ancientprose {
         public static final String PACKAGE = "com.eebbk.ancientprose";
@@ -292,27 +242,9 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Kittest {
-        public static final String PACKAGE = "com.eebbk.translation";
-        public static final String LABEL = "com.eebbk.test.kit.test";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class ParentSupport {
-        public static final String PACKAGE = "com.eebbk.parentsupport";
-        public static final String LABEL = "家长管理";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
     public static final class VideoPlayer {
         public static final String PACKAGE = "com.eebbk.videoplayer";
         public static final String LABEL = "影视欣赏";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
-
-    public static final class AbcSysLog {
-        public static final String PACKAGE = "com.bbk.abcsyslog";
-        public static final String LABEL = "AbcSysLog";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
