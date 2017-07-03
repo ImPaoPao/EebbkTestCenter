@@ -41,22 +41,28 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    //语文学习
+    //语文学习：同步语文 快乐学汉字 查字词 轻松作文
     public static final class HanziLearning {
         public static final String PACKAGE = "com.eebbk.hanziLearning.activity";
         public static final String LABEL = "快乐学汉字";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-//    public static final class ChaziCi {
-//        public static final String PACKAGE = "com.eebbk.dict";
-//        public static final String LABEL = "查字典";
-//        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-//    }
+    public static final class Chazici {
+        public static final String PACKAGE = "com.eebbk.dict";
+        public static final String LABEL = "查字词";
+        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+    }
 
     public static final class EebbkDict {
         public static final String PACKAGE = "com.eebbk.dict";
         public static final String LABEL = "描红词典";
+        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+    }
+
+    public static final class Relaxedtheme {
+        public static final String PACKAGE = "com.eebbk.relaxedtheme";
+        public static final String LABEL = "轻松作文";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
@@ -236,11 +242,7 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Relaxedtheme {
-        public static final String PACKAGE = "com.eebbk.relaxedtheme";
-        public static final String LABEL = "轻松作文";
-        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
-    }
+
 
     public static final class Ancientprose {
         public static final String PACKAGE = "com.eebbk.ancientprose";
@@ -296,13 +298,13 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Parentsupport {
+    public static final class ParentSupport {
         public static final String PACKAGE = "com.eebbk.parentsupport";
         public static final String LABEL = "家长管理";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class Videoplayer {
+    public static final class VideoPlayer {
         public static final String PACKAGE = "com.eebbk.videoplayer";
         public static final String LABEL = "影视欣赏";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
@@ -314,7 +316,7 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
-    public static final class BbkMusicplayer {
+    public static final class BbkMusicPlayer {
         public static final String PACKAGE = "com.eebbk.musicplayer";
         public static final String LABEL = "音乐";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
