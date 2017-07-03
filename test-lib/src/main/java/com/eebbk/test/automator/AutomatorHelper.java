@@ -346,6 +346,93 @@ public class AutomatorHelper {
     }
 
 
+    /**
+     *
+     * @param title 控件id或者content-desc
+     * @param packageName 包名
+     * @param flag 标记位 id(true) 或者 content-desc
+     *
+     * @return
+     */
+    public Object openPendant(String title, String packageName,boolean flag) {
+        boolean forceStop = false;
+        if (forceStop) {
+            try {
+                mDevice.executeShellCommand(String.format("am force-stop %s", packageName));
+            } catch (IOException e) {
+                // Nothing to do
+            }
+        }
+        Object icon = findPendant(title,packageName,flag);
+        assertThat(String.format("没有找到挂件%s", title), icon, notNullValue());
+        return icon;
+    }
+
+    public Object findPendant(String title,String packageName ,boolean idFlag) {
+        openLauncher();
+        mDevice.waitForIdle();
+        Object label ;
+        if(idFlag){
+            //控件id
+            label = mDevice.findObject(By.res(packageName,title));
+        }else{
+            //content-desc
+            label = mDevice.findObject(new UiSelector().descriptionContains(title));
+        }
+        if (label == null) {
+            UiObject2 indicator = mDevice.findObject(By.res(Launcher.PACKAGE, "paged_view_indicator"));
+            if (indicator != null) {
+                int flag = 0;
+                List<UiObject2> children = indicator.getChildren();
+                for (int i = children.size() - 1; i > 0; i--) {
+                    if (children.get(i).isChecked()) {
+                        flag = i;
+                        break;
+                    }
+                }
+                if (flag <= children.size() / 2) {
+                    for (int j = 0; j < children.size() - flag; j++) {
+                        SystemClock.sleep(1500);
+                        if(idFlag){
+                            //控件id
+                            label = mDevice.findObject(By.res(packageName,title));
+                        }else{
+                            //content-desc
+                            label = mDevice.findObject(new UiSelector().descriptionContains(title));
+                        }
+                        if (label != null) {
+                            return label;
+                        }
+                        mDevice.swipe(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2, 0, mDevice
+                                .getDisplayHeight() / 2, 20);
+
+                    }
+                } else {
+                    for (int j = 0; j < flag; j++) {
+                        SystemClock.sleep(1500);
+                        if(idFlag){
+                            //控件id
+                            label = mDevice.findObject(By.res(packageName,title));
+                        }else{
+                            //content-desc
+                            label = mDevice.findObject(new UiSelector().descriptionContains(title));
+                        }
+                        if (label != null) {
+                            return label;
+                        }
+                        mDevice.swipe(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2, mDevice
+                                .getDisplayWidth(), mDevice.getDisplayHeight() / 2, 20);
+                    }
+                }
+            }
+        }
+        return label;
+    }
+
+
+
+
+
     public void openIcon(String title, String packageName, boolean forceStop) {
         openIcon(null, title, packageName, forceStop);
     }

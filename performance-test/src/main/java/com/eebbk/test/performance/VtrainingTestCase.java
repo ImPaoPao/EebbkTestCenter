@@ -36,7 +36,7 @@ public class VtrainingTestCase extends PerforTestCase {
                 .getDisplayHeight());
         Rect refreshPngRect = new Rect(0, 0, loadPngRect.width(), loadPngRect.top);
         clickIconStartApp(null, "名师辅导班", Vtraining.PACKAGE, "my_plan_banner_scale_id", 5000, loadPngRect,
-                refreshPngRect, 1);
+                refreshPngRect, 5);
     }
 
     //点击首页更多精彩→课程列表页面，加载完成

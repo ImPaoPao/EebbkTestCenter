@@ -2,8 +2,11 @@ package com.eebbk.test.performance;
 
 import android.os.RemoteException;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
+import android.support.test.uiautomator.Until;
 
 import com.eebbk.test.common.PackageConstants;
 
@@ -42,6 +45,29 @@ public class PendantTestCase extends PerforTestCase {
      *("英语听说"));
      *6.查单词 com.eebbk.dict:id/widget_enterBtn
      */
+    @Test
+    public void launchBubleKid() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+            InterruptedException {
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
+        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
+        clickIconStartApp("语文学习", "同步语文", PackageConstants.SynChinese.PACKAGE, "refresh", 2000, null, 10);
+        Object icon = mHelper.openPendant("widget_paopao_goto","com.eebbk.vtraining",true);
+        if (icon instanceof UiObject2) {
+            ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
+        } else {
+            try {
+                ((UiObject) icon).clickAndWaitForNewWindow();
+            } catch (UiObjectNotFoundException e) {
+                // Nothing to do
+            }
+        }
+//        UiObject obj = mDevice.findObject(new UiSelector().descriptionContains("英语听说"));
+//        obj.clickAndWaitForNewWindow();
+    }
+
+
+
 
     /**
      * 语文挂件
