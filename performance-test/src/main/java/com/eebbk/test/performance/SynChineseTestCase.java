@@ -6,7 +6,6 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -40,11 +39,6 @@ public class SynChineseTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
         clickIconStartApp("语文学习", "同步语文", SynChinese.PACKAGE, "refresh",2000, null, 10);
-    }
-
-    @Test
-    public void launchCommonSynChinese() throws IOException, JSONException {
-        clickLauncherIconStartApp("语文学习", "同步语文", SynChinese.PACKAGE, "refresh", 0);
     }
 
     private void openOneChineseBook() {

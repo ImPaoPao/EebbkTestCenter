@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -41,12 +40,10 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     @Test
     public void launchBbkMiddleMarket() throws IOException, UiObjectNotFoundException, JSONException,
             InterruptedException {
-        Rect refreshPngRect = new Rect(0, 0, mDevice.getWidth(), mDevice.getHeight() - 80);
-        Rect loadPngRect = new Rect(0, mDevice.getHeight() - 70, mDevice.getWidth(), mDevice.getHeight());
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp(null, "应用商店", BbkMiddleMarketTestCase.PACKAGE, "apk_button",5000,
-                loadPngRect, refreshPngRect, 10);
+//        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight() - 80);
+//        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() - 70, mDevice.getDisplayWidth(), mDevice
+// .getDisplayHeight());
+        clickIconStartApp(null, "应用商店", BbkMiddleMarket.PACKAGE, "apk_button", 5000, "home_tab_radioGroup", null, 10);
     }
 
     //首页点击应用→应用详情加载完成
@@ -62,7 +59,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         Rect refreshPngRect = apk.getVisibleBounds();
         //详情
         apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager_detail_tv"));
-        Rect loadPngRect  = apk.getVisibleBounds();
+        Rect loadPngRect = apk.getVisibleBounds();
 
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
@@ -129,7 +126,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         user = mDevice.findObject(By.res(Personal.PACKAGE, "layout_userinfo"));
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = user.getVisibleBounds();;
+        Rect loadPngRect = user.getVisibleBounds();
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id")), WAIT_TIME);

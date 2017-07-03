@@ -475,7 +475,6 @@ public class PerforTestCase extends Automator {
         mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-
         UiObject2 view = mDevice.findObject(By.res(packageName, loadId));
         Rect loadPngRect = view.getVisibleBounds();
         Rect refreshPngRect = null;
@@ -483,11 +482,11 @@ public class PerforTestCase extends Automator {
         if (refreshId != null) {
             view = mDevice.findObject(By.res(packageName, refreshId));
             refreshPngRect = view.getVisibleBounds();
-            refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
-                    refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         } else {
-            refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
+            refreshPngRect = new Rect(0, 0, loadPngRect.width(), loadPngRect.top);
         }
+        refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         clearRunprocess();
@@ -556,7 +555,9 @@ public class PerforTestCase extends Automator {
                 // Nothing to do
             }
         }
-        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        if (waitUi != null) {
+            mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        }
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         if (loadPngRect == null) {

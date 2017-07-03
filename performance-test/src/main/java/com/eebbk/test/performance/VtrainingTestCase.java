@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -15,7 +14,6 @@ import com.eebbk.test.common.PackageConstants;
 import com.eebbk.test.common.PackageConstants.Vtraining;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,12 +32,11 @@ public class VtrainingTestCase extends PerforTestCase {
 
     @Test
     public void launchVtraining() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        Rect loadPngRect = new Rect(0, mDevice.getHeight() * 95 / 100, mDevice.getWidth(), mDevice.getHeight());
+        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() * 95 / 100, mDevice.getDisplayWidth(), mDevice
+                .getDisplayHeight());
         Rect refreshPngRect = new Rect(0, 0, loadPngRect.width(), loadPngRect.top);
-        clickIconStartApp(null, "名师辅导班", Vtraining.PACKAGE,"my_plan_banner_scale_id" ,5000, loadPngRect, 10);
+        clickIconStartApp(null, "名师辅导班", Vtraining.PACKAGE, "my_plan_banner_scale_id", 5000, loadPngRect,
+                refreshPngRect, 1);
     }
 
     //点击首页更多精彩→课程列表页面，加载完成

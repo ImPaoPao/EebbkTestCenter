@@ -6,7 +6,6 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -37,7 +36,7 @@ public class VisionTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        Rect loadPngRect = new Rect(0, mDevice.getHeight() * 9 / 10, mDevice.getWidth(), mDevice.getHeight());
+        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() * 9 / 10, mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
         clickIconStartApp(null, "视力保护", Vision.PACKAGE, null,3000, loadPngRect, 10);
     }
 
