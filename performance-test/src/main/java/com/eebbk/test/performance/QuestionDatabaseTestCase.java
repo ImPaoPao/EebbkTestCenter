@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -31,7 +30,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
         clickIconStartApp(null, "好题精练", QuestionDatabase.PACKAGE, "exercise_view_pager",5000,
-                "exercise_main_infos_layout", "e_list_chpaters", 10);
+                "exercise_main_infos_layout", "e_list_chpaters", 1);
         }
 
     //点击智能练习目录→题目加载完成

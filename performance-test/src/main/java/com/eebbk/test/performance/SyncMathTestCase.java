@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -36,7 +35,7 @@ public class SyncMathTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp("数学学习", "同步数学", SynMath.PACKAGE, "refreshBtnId",2000, null, 10);
+        clickIconStartApp("数学学习", "同步数学", SynMath.PACKAGE, "refreshBtnId",2000, null, 1);
     }
 
     //addMathBook 点击添加按钮→下载界面加载完成 OK

@@ -234,11 +234,18 @@ public class PerforTestCase extends Automator {
 
     public void stopTestRecord(String loadtime, String refreshTime, String loadResult, String refreshResult) {
         Log.i(TAG, "record endtime and infos");
+        stopTestRecord(null, loadtime, refreshTime, loadResult, refreshResult);
+    }
+
+    public void stopTestRecord(String lastTime, String loadtime, String refreshTime, String loadResult, String
+            refreshResult) {
+        Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
             try {
                 mXml.text("\n");
                 mXml.startTag(null, "Segment");
                 mXml.attribute(null, "starttime", mStartTime);
+                mXml.attribute(null, "lasttime", lastTime);
                 mXml.attribute(null, "loadtime", loadtime);
                 mXml.attribute(null, "refreshtime", refreshTime);
                 mXml.attribute(null, "loadresult", loadResult);
@@ -506,7 +513,8 @@ public class PerforTestCase extends Automator {
             }
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1), match);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
             if (mType == 1) {
@@ -587,7 +595,8 @@ public class PerforTestCase extends Automator {
             }
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1), match);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
             if (mType == 1) {
@@ -611,7 +620,7 @@ public class PerforTestCase extends Automator {
         }
     }
 
-    //无内容加载部分,默认匹配度为10
+    //无内容加载部分,默认匹配度为1
     public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count, int match)
             throws
             JSONException {
@@ -620,14 +629,14 @@ public class PerforTestCase extends Automator {
 
     public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count) throws
             JSONException {
-        return doCompare(loadPngRect, null, loadSource, null, timeStamp, count, 10);
+        return doCompare(loadPngRect, null, loadSource, null, timeStamp, count, 1);
     }
 
-    //不传递匹配度,则默认为10
+    //不传递匹配度,则默认为1
     public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource,
                                          Bitmap refreshSource, Date timeStamp, int count) throws JSONException {
         return doCompare(loadPngRect, refreshPngRect, loadSource,
-                refreshSource, timeStamp, count, 10);
+                refreshSource, timeStamp, count, 1);
     }
 
     public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource, Bitmap
@@ -656,11 +665,12 @@ public class PerforTestCase extends Automator {
             }
             if (loadFlag && loadResult <= match) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
-                if (mPkg == PackageConstants.Vtraining.PACKAGE) {
-                    compareResult.put("loadTime", lastTime);
-                } else {
-                    compareResult.put("loadTime", startScreenTime);
-                }
+//                if (mPkg == PackageConstants.Vtraining.PACKAGE) {
+//                    compareResult.put("loadTime", lastTime);
+//                } else {
+                compareResult.put("loadTime", startScreenTime);
+                compareResult.put("lastTime", lastTime);
+//                }
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "lastTime:", lastTime);
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "startScreenTime:", startScreenTime);
                 loadFlag = false;
@@ -677,6 +687,7 @@ public class PerforTestCase extends Automator {
                     refreshResult <= match)) {
                 if (!compareResult.containsKey("loadTime")) {
                     compareResult.put("loadTime", startScreenTime);
+                    compareResult.put("lastTime", lastTime);
                     compareResult.put("loadResult", String.valueOf(loadResult));
                 }
                 compareResult.put("refreshTime", startScreenTime);

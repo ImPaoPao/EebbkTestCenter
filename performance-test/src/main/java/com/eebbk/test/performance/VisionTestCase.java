@@ -37,7 +37,7 @@ public class VisionTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
         Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() * 9 / 10, mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
-        clickIconStartApp(null, "视力保护", Vision.PACKAGE, null,3000, loadPngRect, 10);
+        clickIconStartApp(null, "视力保护", Vision.PACKAGE, null,3000, loadPngRect, 1);
     }
 
     //点击眼保健操→显示眼保健操界面

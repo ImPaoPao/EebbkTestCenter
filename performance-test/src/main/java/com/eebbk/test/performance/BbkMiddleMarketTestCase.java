@@ -13,11 +13,13 @@ import com.eebbk.test.common.PackageConstants.BbkMiddleMarket;
 import com.eebbk.test.common.PackageConstants.Personal;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
 
@@ -27,8 +29,16 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
 
     @Test
     public void compareTest() throws JSONException, IOException {
-        //匹配度测试
+        //获取当前类中方法
         clearRunprocess();
+        JSONObject obj =  new JSONObject();
+        this.getClass().getMethods();
+        Method m[] = this.getClass().getDeclaredMethods();
+        for (int i = 0; i < m.length; i++) {
+            String metName = m[i].getName();
+            obj.put("method:"+String.valueOf(i),metName);
+        }
+        instrumentationStatusOut(obj);
     }
 
     @Override
@@ -43,7 +53,7 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
 //        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight() - 80);
 //        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() - 70, mDevice.getDisplayWidth(), mDevice
 // .getDisplayHeight());
-        clickIconStartApp(null, "应用商店", BbkMiddleMarket.PACKAGE, "apk_button", 5000, "home_tab_radioGroup", null, 10);
+        clickIconStartApp(null, "应用商店", BbkMiddleMarket.PACKAGE, "apk_button", 5000, "home_tab_radioGroup", null, 1);
     }
 
     //首页点击应用→应用详情加载完成

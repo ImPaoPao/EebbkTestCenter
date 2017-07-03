@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -27,7 +26,7 @@ public class OneSearchDarkTestCase extends PerforTestCase {
     public void launchOneSearch() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp(null, "一键搜", OneSearchDark.PACKAGE, "btn_start_one_search",5000, "btn_start_one_search", "overlay_view", 10);
+        clickIconStartApp(null, "一键搜", OneSearchDark.PACKAGE, "btn_start_one_search",5000, "btn_start_one_search", "overlay_view", 1);
     }
     //com.eebbk.onesearchdark:id/btn_start_one_search 拍照按钮
     //com.eebbk.onesearchdark:id/btn_select_search_question 搜难题

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
@@ -40,7 +39,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard",5000, null, 10);
+        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard",5000, null, 1);
     }
 
     //前置条件：首页下载好十本书

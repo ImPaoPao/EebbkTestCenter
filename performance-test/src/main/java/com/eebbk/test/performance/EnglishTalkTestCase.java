@@ -30,7 +30,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
 //        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), loadPngRect.top);
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller",10000,
-                "main_player_controller", null, 10);
+                "main_player_controller", null, 1);
     }
 
     //选择教材添加后，点击教材目录→进入播放界面
