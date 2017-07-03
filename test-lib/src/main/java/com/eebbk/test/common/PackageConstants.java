@@ -41,11 +41,18 @@ public class PackageConstants {
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
 
+    //语文学习
     public static final class HanziLearning {
         public static final String PACKAGE = "com.eebbk.hanziLearning.activity";
         public static final String LABEL = "快乐学汉字";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
+
+//    public static final class ChaziCi {
+//        public static final String PACKAGE = "com.eebbk.dict";
+//        public static final String LABEL = "查字典";
+//        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+//    }
 
     public static final class EebbkDict {
         public static final String PACKAGE = "com.eebbk.dict";

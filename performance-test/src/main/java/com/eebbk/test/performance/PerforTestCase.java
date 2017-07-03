@@ -2,7 +2,6 @@ package com.eebbk.test.performance;
 
 import android.app.Instrumentation;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -34,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -43,7 +41,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static android.os.SystemClock.sleep;
 import static android.support.test.InstrumentationRegistry.getArguments;
 
 @RunWith(AndroidJUnit4.class)
@@ -454,14 +451,17 @@ public class PerforTestCase extends Automator {
     }
 
     //重构代码:模块启动
-    public void clickIconStartApp(String folder, String title,  String packageName, String waitUi,long timeout, Rect loadPngRect,int match) {
-        clickIconStartApp(folder,title,packageName,waitUi,timeout,loadPngRect,null,match);
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
+            loadPngRect, int match) throws IOException, JSONException {
+        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, null, match);
     }
+
     /*
     传递两个区域代表的控件id
     */
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
-                                  long timeout, String loadId, String refreshId, int match) {
+                                  long timeout, String loadId, String refreshId, int match) throws IOException,
+            JSONException {
         Object icon = mHelper.openIcon(folder, title, packageName);
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -477,15 +477,15 @@ public class PerforTestCase extends Automator {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 
         UiObject2 view = mDevice.findObject(By.res(packageName, loadId));
-        Rect loadPngRect =view.getVisibleBounds();
-        Rect refreshPngRect =null;
+        Rect loadPngRect = view.getVisibleBounds();
+        Rect refreshPngRect = null;
         Bitmap refreshSource = null;
-        if(refreshId!=null){
+        if (refreshId != null) {
             view = mDevice.findObject(By.res(packageName, refreshId));
-            refreshPngRect =view.getVisibleBounds() ;
+            refreshPngRect = view.getVisibleBounds();
             refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
                     refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
-        }else{
+        } else {
             refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         }
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
@@ -543,7 +543,8 @@ public class PerforTestCase extends Automator {
     match:匹配度
      */
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
-                                  long timeout, Rect loadPngRect, Rect refreshPngRect, int match) {
+                                  long timeout, Rect loadPngRect, Rect refreshPngRect, int match) throws
+            IOException, JSONException {
         JSONObject obj = new JSONObject();
         Object icon = mHelper.openIcon(folder, title, packageName);
         if (icon instanceof UiObject2) {
@@ -558,13 +559,13 @@ public class PerforTestCase extends Automator {
         mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        if(loadPngRect==null){
+        if (loadPngRect == null) {
             loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         }
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = null;
-        if(refreshPngRect!=null){
+        if (refreshPngRect != null) {
             refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
                     refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         }
@@ -610,13 +611,15 @@ public class PerforTestCase extends Automator {
     }
 
     //无内容加载部分,默认匹配度为10
-    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count,int match) throws
+    public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count, int match)
+            throws
             JSONException {
-        return doCompare(loadPngRect, null, loadSource,null, timeStamp, count, match);
+        return doCompare(loadPngRect, null, loadSource, null, timeStamp, count, match);
     }
+
     public Map<String, String> doCompare(Rect loadPngRect, Bitmap loadSource, Date timeStamp, int count) throws
             JSONException {
-        return doCompare(loadPngRect, null, loadSource,null, timeStamp, count, 10);
+        return doCompare(loadPngRect, null, loadSource, null, timeStamp, count, 10);
     }
 
     //不传递匹配度,则默认为10
