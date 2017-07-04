@@ -21,32 +21,19 @@ import java.lang.reflect.Method;
 @RunWith(AndroidJUnit4.class)
 public class PendantTestCase extends PerforTestCase {
 
-
     @Test
     public void compareTest() throws JSONException, IOException {
         //获取当前类中方法
         clearRunprocess();
-        JSONObject obj =  new JSONObject();
+        JSONObject obj = new JSONObject();
         this.getClass().getMethods();
         Method m[] = this.getClass().getDeclaredMethods();
         for (int i = 0; i < m.length; i++) {
             String metName = m[i].getName();
-            obj.put("method:"+String.valueOf(i),metName);
+            obj.put("method:" + String.valueOf(i), metName);
         }
         instrumentationStatusOut(obj);
     }
-
-
-    //Demo
-//    @Test
-//    public void launchSynChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
-//            InterruptedException {
-//        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-//        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
-//        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-//        clickIconStartApp("语文学习", "同步语文", PackageConstants.SynChinese.PACKAGE, "refresh", 2000, null, 10);
-//        mDevice.findObject(new UiSelector().descriptionContains("英语听说"));
-//    }
 
     //小学
 
@@ -68,12 +55,6 @@ public class PendantTestCase extends PerforTestCase {
     private void startApp(String title, String pkg, int match, boolean isId) throws IOException, JSONException {
         clickIconStartApp(null, title, pkg, null, 5000, null, match, false, isId);
     }
-//    private void startByContentDesc(String title,String pkg,int match) throws IOException, JSONException {
-//        clickIconStartApp(null, title, pkg, null, 5000, null, match, false, false);
-//    }
-//    private void startById(String title,String pkg,int match) throws IOException, JSONException {
-//        clickIconStartApp(null, title, pkg, null, 5000, null, match, false, true);
-//    }
 
     @Test
     public void launchSynEnglishPendant() throws IOException, UiObjectNotFoundException, JSONException,
@@ -110,14 +91,6 @@ public class PendantTestCase extends PerforTestCase {
             InterruptedException {
         startVtraining("widget_jianqiao_goto", 1, true);
     }
-
-//    @Test
-//    public void launchBubleKid() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
-//            InterruptedException {
-//        clickIconStartApp(null, "widget_paopao_goto", PackageConstants.Vtraining.PACKAGE, null, 5000, null,1,false,
-// true);
-//    }
-
 
     /**
      * 语文挂件
@@ -204,21 +177,18 @@ public class PendantTestCase extends PerforTestCase {
         startApp("layout", PackageConstants.QuestionDatabase.PACKAGE, 1, true);
     }
 
+    /**
+     * 一键搜
+     * 智能答疑
+     */
     @Test
     public void launchOneSearchPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startApp("app_widget_iamge1", PackageConstants.OneSearchDark.PACKAGE, 1, true);
     }
-    //中学
-
-    /**
-     * 一键搜 com.bbk.studyos.launcher content-desc 挂件
-     * 名师辅导班 content-desc 名师辅导班 挂件
-     */
     @Test
-    public void launchVtrainingPendant() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchOneVideoStudyPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        initMiddleSetup();
-        startVtraining("fake_goto_home", 1, true);
+        startApp("app_widget_iamge1", PackageConstants.VideosearchStudy.PACKAGE, 1, true);
     }
 }

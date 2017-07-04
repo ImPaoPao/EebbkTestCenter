@@ -83,6 +83,12 @@ public class PackageConstants {
         public static final String LABEL = "一键搜";
         public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
     }
+    public static final class VideosearchStudy {
+        public static final String PACKAGE = "com.bbk.videosearchstudy";
+        public static final String LABEL = "智能答疑";
+        public static final PackageResources R = new PackageResources(getTargetContext(), PACKAGE);
+    }
+
 
     public static final class Vtraining {
         public static final String PACKAGE = "com.eebbk.vtraining";
