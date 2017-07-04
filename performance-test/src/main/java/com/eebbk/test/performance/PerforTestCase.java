@@ -55,7 +55,7 @@ public class PerforTestCase extends Automator {
     protected XmlSerializer mXml;
     protected String mStartTime;
 
-    protected int mCount = 5;
+    protected int mCount = 3;
     protected int mType = 0;
     protected String mNumber = "unknown";
 
@@ -153,24 +153,21 @@ public class PerforTestCase extends Automator {
         if (!user.getText().contains("中学")) {
             user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
-//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
-//            if (user != null) {
-//                user.click();//点击不再提示
-//                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
-//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
-//                        WAIT_TIME);
-//            }
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox")), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "checkbox"));
+            if (user != null) {
+                user.click();//点击不再提示
+                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
+                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                        WAIT_TIME);
+            }
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
 
-
-//
-//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
-//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
-
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location")), WAIT_TIME
-                    * 2);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location"));
+//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location")), WAIT_TIME
+//                    * 2);
+//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location"));
 //            if (user != null) {
             user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换
             SystemClock.sleep(5000);
@@ -184,8 +181,8 @@ public class PerforTestCase extends Automator {
             gradeList.scrollForward(20);
             user = mDevice.findObject(By.textContains("高中"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
-//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+            user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
             clearRunprocess();
@@ -459,6 +456,11 @@ public class PerforTestCase extends Automator {
 
     //重构代码:模块启动
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
+            loadPngRect, int match,boolean isIcon,boolean isId) throws IOException, JSONException {
+        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, null, match,isIcon,isId);
+    }
+
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
             loadPngRect, int match) throws IOException, JSONException {
         clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, null, match);
     }
@@ -466,10 +468,21 @@ public class PerforTestCase extends Automator {
     /*
     传递两个区域代表的控件id
     */
-    public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
-                                  long timeout, String loadId, String refreshId, int match) throws IOException,
-            JSONException {
-        Object icon = mHelper.openIcon(folder, title, packageName);
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout,
+                                  String loadId, String refreshId, int match) throws IOException, JSONException {
+        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadId, refreshId, match, true, true);
+    }
+
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout,
+                                  String loadId, String refreshId, int match, boolean isIcon, boolean isId) throws
+            IOException, JSONException {
+        Object icon;
+        if (isIcon) {
+            icon = mHelper.openIcon(folder, title, packageName);
+        } else {
+            icon = mHelper.openPendant(title, packageName, isId);
+        }
+
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {
@@ -549,11 +562,20 @@ public class PerforTestCase extends Automator {
     refreshPngRect:刷新区域
     match:匹配度
      */
-    public void clickIconStartApp(String folder, String title, String packageName, String waitUi,
-                                  long timeout, Rect loadPngRect, Rect refreshPngRect, int match) throws
-            IOException, JSONException {
-        JSONObject obj = new JSONObject();
-        Object icon = mHelper.openIcon(folder, title, packageName);
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
+            loadPngRect, Rect refreshPngRect, int match) throws IOException, JSONException {
+        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, refreshPngRect, match, true, true);
+    }
+
+    public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
+            loadPngRect, Rect refreshPngRect, int match, boolean isIcon, boolean isId) throws IOException,
+            JSONException {
+        Object icon;
+        if (isIcon) {
+            icon = mHelper.openIcon(folder, title, packageName);
+        } else {
+            icon = mHelper.openPendant(title, packageName, isId);
+        }
         if (icon instanceof UiObject2) {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {
@@ -581,7 +603,11 @@ public class PerforTestCase extends Automator {
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
-            icon = mHelper.openIcon(folder, title, packageName);
+            if (isIcon) {
+                icon = mHelper.openIcon(folder, title, packageName);
+            } else {
+                icon = mHelper.openPendant(title, packageName, isId);
+            }
             if (icon instanceof UiObject2) {
                 startTestRecord();
                 ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);

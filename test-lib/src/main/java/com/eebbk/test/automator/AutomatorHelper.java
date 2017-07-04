@@ -152,10 +152,10 @@ public class AutomatorHelper {
     }
 
     public Bitmap takeScreenshot(String folder, String fileName) throws FileNotFoundException {
-        String sourcePath = "/sdcard/performance-test/" + folder + "/" + fileName +".png";
+        String sourcePath = "/sdcard/performance-test/" + folder + "/" + fileName + ".png";
         mDevice.takeScreenshot(new File(sourcePath));
 
-        
+
         FileInputStream source_fis = new FileInputStream("/sdcard/performance-test/" + folder + "/" + fileName + "" +
                 ".png");
         Bitmap source_png = BitmapFactory.decodeStream(source_fis);
@@ -245,6 +245,7 @@ public class AutomatorHelper {
     public boolean takeScreenshot(UiObject2 obj, File storePath, int quality) {
         return takeScreenshot(obj.getVisibleBounds(), storePath, quality);
     }
+
 
     public Object findIcon(String title) {
         openLauncher();
@@ -347,14 +348,12 @@ public class AutomatorHelper {
 
 
     /**
-     *
-     * @param title 控件id或者content-desc
+     * @param title       控件id或者content-desc
      * @param packageName 包名
-     * @param flag 标记位 id(true) 或者 content-desc
-     *
+     * @param flag        标记位 id(true) 或者 content-desc
      * @return
      */
-    public Object openPendant(String title, String packageName,boolean flag) {
+    public Object openPendant(String title, String packageName, boolean flag) {
         boolean forceStop = false;
         if (forceStop) {
             try {
@@ -363,19 +362,19 @@ public class AutomatorHelper {
                 // Nothing to do
             }
         }
-        Object icon = findPendant(title,packageName,flag);
+        Object icon = findPendant(title, packageName, flag);
         assertThat(String.format("没有找到挂件%s", title), icon, notNullValue());
         return icon;
     }
 
-    public Object findPendant(String title,String packageName ,boolean idFlag) {
+    public Object findPendant(String title, String packageName, boolean idFlag) {
         openLauncher();
         mDevice.waitForIdle();
-        Object label ;
-        if(idFlag){
+        Object label;
+        if (idFlag) {
             //控件id
-            label = mDevice.findObject(By.res(packageName,title));
-        }else{
+            label = mDevice.findObject(By.res(packageName, title));
+        } else {
             //content-desc
             label = mDevice.findObject(new UiSelector().descriptionContains(title));
         }
@@ -393,10 +392,10 @@ public class AutomatorHelper {
                 if (flag <= children.size() / 2) {
                     for (int j = 0; j < children.size() - flag; j++) {
                         SystemClock.sleep(1500);
-                        if(idFlag){
+                        if (idFlag) {
                             //控件id
-                            label = mDevice.findObject(By.res(packageName,title));
-                        }else{
+                            label = mDevice.findObject(By.res(packageName, title));
+                        } else {
                             //content-desc
                             label = mDevice.findObject(new UiSelector().descriptionContains(title));
                         }
@@ -410,10 +409,10 @@ public class AutomatorHelper {
                 } else {
                     for (int j = 0; j < flag; j++) {
                         SystemClock.sleep(1500);
-                        if(idFlag){
+                        if (idFlag) {
                             //控件id
-                            label = mDevice.findObject(By.res(packageName,title));
-                        }else{
+                            label = mDevice.findObject(By.res(packageName, title));
+                        } else {
                             //content-desc
                             label = mDevice.findObject(new UiSelector().descriptionContains(title));
                         }
@@ -428,9 +427,6 @@ public class AutomatorHelper {
         }
         return label;
     }
-
-
-
 
 
     public void openIcon(String title, String packageName, boolean forceStop) {
