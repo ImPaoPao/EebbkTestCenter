@@ -596,8 +596,7 @@ public class PerforTestCase extends Automator {
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1), match);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
-                    ("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();
