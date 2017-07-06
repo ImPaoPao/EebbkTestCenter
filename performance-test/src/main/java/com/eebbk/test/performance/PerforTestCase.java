@@ -551,7 +551,6 @@ public class PerforTestCase extends Automator {
         }
     }
 
-
     /*
     folder:文件夹名称,可为空
     title:应用图标名称

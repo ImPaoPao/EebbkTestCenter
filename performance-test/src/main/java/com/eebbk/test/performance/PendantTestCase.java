@@ -69,25 +69,25 @@ public class PendantTestCase extends PerforTestCase {
     }
 
     @Test
-    public void launchEnDict() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+    public void launchEnDictPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startApp("查单词", PackageConstants.SyncEnglish.PACKAGE, 1, false);
     }
 
     @Test
-    public void launchNew() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+    public void launchNewPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startVtraining("widget_new_goto", 1, true);
     }
 
     @Test
-    public void launchBubleKid() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+    public void launchBubleKidPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startVtraining("widget_paopao_goto", 1, true);
     }
 
     @Test
-    public void launchJianQiao() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
+    public void launchJianQiaoPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startVtraining("widget_jianqiao_goto", 1, true);
     }
@@ -103,13 +103,13 @@ public class PendantTestCase extends PerforTestCase {
      */
 
     @Test
-    public void launchHanziLeaning() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchHanziLeaningPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startApp("widget_enterBtn", "com.eebbk.hanziLearning.activity", 1, true);
     }
 
     @Test
-    public void launchChazici() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchChaziciPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startApp("查字词", PackageConstants.EebbkDict.PACKAGE, 1, false);
     }
@@ -121,19 +121,19 @@ public class PendantTestCase extends PerforTestCase {
     }
 
     @Test
-    public void launchZhuge() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchZhugePendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startVtraining("widget_chinese_zhuge_goto", 1, true);
     }
 
     @Test
-    public void launchRead() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchReadPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startVtraining("widget_chinese_read_goto", 1, true);
     }
 
     @Test
-    public void launchChange() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchChangePendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startVtraining("widget_chinese_change_goto", 1, true);
     }
@@ -148,19 +148,19 @@ public class PendantTestCase extends PerforTestCase {
      * 6.趣味应用题 com.eebbk.interestingapplications_junior:id/widget_enterBtn
      */
     @Test
-    public void launchIntrestingApp() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchIntrestingAppPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startApp("widget_enterBtn", "com.eebbk.interestingapplications_junior", 1, true);
     }
 
     @Test
-    public void launchTigao() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchTigaoPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startVtraining("widget_tigao_goto", 1, true);
     }
 
     @Test
-    public void launchPeiyou() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchPeiyouPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startVtraining("widget_peiyou_goto", 1, true);
     }

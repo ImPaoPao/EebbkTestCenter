@@ -32,14 +32,14 @@ public class MiddlePendantTestCase extends PerforTestCase {
      * 智能答疑
      */
     @Test
-    public void launchOnesearchPendant() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchMiddleOnesearchPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         clickIconStartApp(null, "app_widget_s3_iamge1", PackageConstants.OneSearchDark.PACKAGE, null, 5000, null, 1,
                 false, true);
     }
 
     @Test
-    public void launchVideosearchStudyPendant() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchMiddleVideosearchStudyPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         clickIconStartApp(null, "app_widget_s3_iamge1", PackageConstants.VideosearchStudy.PACKAGE, null, 5000, null, 1,
                 false, true);
