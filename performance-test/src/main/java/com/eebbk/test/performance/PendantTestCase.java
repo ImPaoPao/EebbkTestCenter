@@ -65,7 +65,8 @@ public class PendantTestCase extends PerforTestCase {
     @Test
     public void launchEnglishTalkPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        startApp("英语听说", PackageConstants.EnglishTalk.PACKAGE, 1, false);
+        clickIconStartApp(null, "英语听说", PackageConstants.EnglishTalk.PACKAGE, "main_player_controller", 10000,
+                "main_player_controller", null, 1, false, false);
     }
 
     @Test
@@ -86,7 +87,7 @@ public class PendantTestCase extends PerforTestCase {
         startVtraining("widget_paopao_goto", 1, true);
     }
 
-    @Test
+   // @Test
     public void launchJianQiaoPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startVtraining("widget_jianqiao_goto", 1, true);
@@ -186,6 +187,7 @@ public class PendantTestCase extends PerforTestCase {
             RemoteException, InterruptedException {
         startApp("app_widget_iamge1", PackageConstants.OneSearchDark.PACKAGE, 1, true);
     }
+
     @Test
     public void launchOneVideoStudyPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {

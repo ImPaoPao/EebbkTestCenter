@@ -1,11 +1,14 @@
 package com.eebbk.test.automator;
 
+import android.app.Instrumentation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
@@ -31,6 +34,9 @@ import com.eebbk.test.common.PackageConstants.SyncEnglish;
 import com.eebbk.test.common.PackageConstants.SystemUi;
 import com.eebbk.test.common.PackageConstants.Vision;
 import com.eebbk.test.common.PackageConstants.Vtraining;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -368,18 +374,38 @@ public class AutomatorHelper {
     }
 
     public Object findPendant(String title, String packageName, boolean idFlag) {
+        JSONObject temp = new JSONObject();
         openLauncher();
         mDevice.waitForIdle();
         Object label;
         if (idFlag) {
+            try {
+                temp.put("if id","========");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             //控件id
             label = mDevice.findObject(By.res(packageName, title));
         } else {
             //content-desc
-            label = mDevice.findObject(new UiSelector().descriptionContains(title));
+            try {
+                temp.put("not id content desc ","========");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            label = mDevice.findObject(new UiSelector().description(title));
+            try {
+                temp.put("not id content desc end  ",label);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+        Bundle b = new Bundle();
+        b.putString(Instrumentation.REPORT_KEY_STREAMRESULT, temp.toString());
+        InstrumentationRegistry.getInstrumentation().sendStatus(0, b);
         if (label == null) {
             UiObject2 indicator = mDevice.findObject(By.res(Launcher.PACKAGE, "paged_view_indicator"));
+            mDevice.wait(Until.hasObject(By.res(Launcher.PACKAGE, "paged_view_indicator")), WAIT_TIME);
             if (indicator != null) {
                 int flag = 0;
                 List<UiObject2> children = indicator.getChildren();

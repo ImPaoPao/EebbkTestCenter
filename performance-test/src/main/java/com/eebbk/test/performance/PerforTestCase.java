@@ -72,7 +72,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "3");
+        String count = getArguments().getString("count", "1");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -130,15 +130,23 @@ public class PerforTestCase extends Automator {
                 mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
                         WAIT_TIME);
             }
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                    WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")), WAIT_TIME
+                    * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
             UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
             gradeList.scrollBackward(20);
             user = mDevice.findObject(By.textContains("三年级"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+            if (user == null) {
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+            }
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
@@ -161,27 +169,24 @@ public class PerforTestCase extends Automator {
                 mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
                         WAIT_TIME);
             }
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                    WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")),
+                    WAIT_TIME);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
-
-//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location")), WAIT_TIME
-//                    * 2);
-//            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "add_grade_location"));
-//            if (user != null) {
             user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换
             SystemClock.sleep(5000);
-//                mDevice.pressBack();//点击不再提示后,返回键即可回到信息编辑页面
-//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
-//                        WAIT_TIME);
-//            }
-//
-//            user.clickAndWait(Until.newWindow(), WAIT_TIME);
             UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
             gradeList.scrollForward(20);
             user = mDevice.findObject(By.textContains("高中"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+            if (user == null) {
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+            }
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.pressHome();
             mDevice.waitForIdle(10000);
@@ -456,8 +461,8 @@ public class PerforTestCase extends Automator {
 
     //重构代码:模块启动
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
-            loadPngRect, int match,boolean isIcon,boolean isId) throws IOException, JSONException {
-        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, null, match,isIcon,isId);
+            loadPngRect, int match, boolean isIcon, boolean isId) throws IOException, JSONException {
+        clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, null, match, isIcon, isId);
     }
 
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
@@ -579,11 +584,13 @@ public class PerforTestCase extends Automator {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {
             try {
+                sysout.put("========","**********");
                 ((UiObject) icon).clickAndWaitForNewWindow();
             } catch (UiObjectNotFoundException e) {
                 // Nothing to do
             }
         }
+        instrumentationStatusOut(sysout);
         if (waitUi != null) {
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         }
