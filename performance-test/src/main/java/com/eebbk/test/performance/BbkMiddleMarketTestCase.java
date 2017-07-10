@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
 
@@ -31,13 +30,23 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     public void compareTest() throws JSONException, IOException {
         //获取当前类中方法
         clearRunprocess();
-        JSONObject obj =  new JSONObject();
-        this.getClass().getMethods();
-        Method m[] = this.getClass().getDeclaredMethods();
-        for (int i = 0; i < m.length; i++) {
-            String metName = m[i].getName();
-            obj.put("method:"+String.valueOf(i),metName);
+        JSONObject obj = new JSONObject();
+        long tempTime = 100;
+        long mtime;
+        long mtime2;
+        for (int i = 0; i < 10; i++) {
+            mtime = tempTime / 4 + (20 * i) % (int) (tempTime * 3 / 4);
+            mtime2 = tempTime / 4 + (20 * i) % (int) tempTime;
+            obj.put("time1:" + String.valueOf(i), mtime);
+            obj.put("time2:" + String.valueOf(i), mtime2);
         }
+
+//        this.getClass().getMethods();
+//        Method m[] = this.getClass().getDeclaredMethods();
+//        for (int i = 0; i < m.length; i++) {
+//            String metName = m[i].getName();
+//            obj.put("method:"+String.valueOf(i),metName);
+//        }
         instrumentationStatusOut(obj);
     }
 

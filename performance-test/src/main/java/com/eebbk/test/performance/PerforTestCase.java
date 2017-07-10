@@ -24,6 +24,7 @@ import com.eebbk.test.automator.Automator;
 import com.eebbk.test.automator.SystemProperties;
 import com.eebbk.test.common.BitmapHelper;
 import com.eebbk.test.common.PackageConstants;
+import com.eebbk.test.utils.BbkCommonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,7 +73,7 @@ public class PerforTestCase extends Automator {
     public void setUp() throws Exception {
         super.setUp();
         clearRunprocess();
-        String count = getArguments().getString("count", "1");
+        String count = getArguments().getString("count", "2");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
         mPkg = getArguments().getString("mpackage", "unknown");
@@ -101,6 +102,8 @@ public class PerforTestCase extends Automator {
         } else {
             out.mkdirs();
         }
+        initSetup();
+        clearRunprocess();
 
         mWriter = new FileWriter(new File(out, "result.xml"));
         mXml = Xml.newSerializer();
@@ -108,8 +111,7 @@ public class PerforTestCase extends Automator {
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
-        initSetup();
-        clearRunprocess();
+        sysout.put("=====before=====",mXml);
     }
 
     public void initSetup() throws UiObjectNotFoundException, IOException {
@@ -198,7 +200,7 @@ public class PerforTestCase extends Automator {
         Log.i(TAG, "record start time ");
         mStartTime = getCurrentDate();
     }
-
+//
     public void stopTestRecord(String value) {
         Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
@@ -236,20 +238,26 @@ public class PerforTestCase extends Automator {
 
     public void stopTestRecord(String loadtime, String refreshTime, String loadResult, String refreshResult) {
         Log.i(TAG, "record endtime and infos");
-        stopTestRecord(null, loadtime, refreshTime, loadResult, refreshResult);
+        stopTestRecord("", loadtime, refreshTime, "", loadResult, refreshResult);
     }
 
-    public void stopTestRecord(String lastTime, String loadtime, String refreshTime, String loadResult, String
-            refreshResult) {
+    public void stopTestRecord(String lastTime, String loadtime, String refreshTime, String lastLoadResult, String
+            loadResult, String refreshResult) {
         Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
             try {
+                try {
+                    sysout.put("=====in stop=====",mXml);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 mXml.text("\n");
                 mXml.startTag(null, "Segment");
                 mXml.attribute(null, "starttime", mStartTime);
                 mXml.attribute(null, "lasttime", lastTime);
                 mXml.attribute(null, "loadtime", loadtime);
                 mXml.attribute(null, "refreshtime", refreshTime);
+                mXml.attribute(null, "lastloadresult", lastLoadResult);
                 mXml.attribute(null, "loadresult", loadResult);
                 mXml.attribute(null, "refreshresult", refreshResult);
                 mXml.attribute(null, "endtime", getCurrentDate());
@@ -286,8 +294,14 @@ public class PerforTestCase extends Automator {
 
     @After
     public void tearDown() throws IOException {
+        try {
+            sysout.put("=====after=====",mXml);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        instrumentationStatusOut(sysout);
         mXml.text("\n");
-        mXml.endTag(null, "Record");
+        mXml.endTag(null,"Record");
         mXml.endDocument();
         mWriter.flush();
         mWriter.close();
@@ -481,6 +495,12 @@ public class PerforTestCase extends Automator {
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout,
                                   String loadId, String refreshId, int match, boolean isIcon, boolean isId) throws
             IOException, JSONException {
+//        public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
+//        loadPngRect, Rect refreshPngRect, int match, boolean isIcon, boolean isId) throws IOException,
+//                JSONException {
+
+
+
         Object icon;
         if (isIcon) {
             icon = mHelper.openIcon(folder, title, packageName);
@@ -505,6 +525,7 @@ public class PerforTestCase extends Automator {
         Rect refreshPngRect = null;
         Bitmap refreshSource = null;
         if (refreshId != null) {
+            mDevice.wait(Until.hasObject(By.res(packageName, refreshId)), WAIT_TIME * 2);
             view = mDevice.findObject(By.res(packageName, refreshId));
             refreshPngRect = view.getVisibleBounds();
         } else {
@@ -515,6 +536,7 @@ public class PerforTestCase extends Automator {
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         clearRunprocess();
+        long tempTime = 0;
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
             icon = mHelper.openIcon(folder, title, packageName);
@@ -530,10 +552,14 @@ public class PerforTestCase extends Automator {
                 }
             }
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
-                    Date(), (i + 1), match);
-            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
-                    ("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+                    Date(), (i + 1), match, tempTime);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get
+                            ("loadTime"), compareResult.get("refreshTime"), compareResult.get("lastLoadResult"),
+                    compareResult.get("loadResult"), compareResult.get("refreshResult"));
+            if (tempTime == 0) {
+                //取第一次的 最后两张图片处理时间差做为参考
+                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
+            }
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();
@@ -568,6 +594,7 @@ public class PerforTestCase extends Automator {
      */
     public void clickIconStartApp(String folder, String title, String packageName, String waitUi, long timeout, Rect
             loadPngRect, Rect refreshPngRect, int match) throws IOException, JSONException {
+        //clickIconStartApp(folder, title, packageName, waitUi, timeout, loadId, refreshId, match, true, true);
         clickIconStartApp(folder, title, packageName, waitUi, timeout, loadPngRect, refreshPngRect, match, true, true);
     }
 
@@ -584,13 +611,11 @@ public class PerforTestCase extends Automator {
             ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
         } else {
             try {
-                sysout.put("========","**********");
                 ((UiObject) icon).clickAndWaitForNewWindow();
             } catch (UiObjectNotFoundException e) {
                 // Nothing to do
             }
         }
-        instrumentationStatusOut(sysout);
         if (waitUi != null) {
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         }
@@ -607,6 +632,7 @@ public class PerforTestCase extends Automator {
                     refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         }
         clearRunprocess();
+        long tempTime = 0;
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
             if (isIcon) {
@@ -626,9 +652,14 @@ public class PerforTestCase extends Automator {
                 }
             }
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
-                    Date(), (i + 1), match);
+                    Date(), (i + 1), match, tempTime);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
-                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
+                            ("refreshTime"), compareResult.get("lastLoadResult"), compareResult.get("loadResult"),
+                    compareResult.get("refreshResult"));
+            if (tempTime == 0) {
+                //取第一次的 最后两张图片处理时间差做为参考
+                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
+            }
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();
@@ -672,10 +703,17 @@ public class PerforTestCase extends Automator {
 
     public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource, Bitmap
             refreshSource, Date timeStamp, int count, int match) throws JSONException {
+        return doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, timeStamp, count, match, 0);
+    }
+
+
+    public Map<String, String> doCompare(Rect loadPngRect, Rect refreshPngRect, Bitmap loadSource, Bitmap
+            refreshSource, Date timeStamp, int count, int match, long tempTime) throws JSONException {
         JSONObject obj = new JSONObject();
         Map<String, String> compareResult = new HashMap();
         int loadResult = 0;
         int refreshResult = 0;
+        int lastLoadResult = 0;
         boolean loadFlag = true;
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
@@ -683,25 +721,33 @@ public class PerforTestCase extends Automator {
         String lastTime = null;
         String startScreenTime = null;
         int m = 0;
+        long mtime = 0;
+        //等待一段时间后开始截图比较 temptime 为第一次执行中最后两次处理图片的时间差
+        if (tempTime != 0) {
+            mtime = tempTime / 8 + (20 * count - 20) % (int) (tempTime * 5 / 8);
+        }
+        SystemClock.sleep(mtime);
+        obj.put("temptime:" + String.valueOf(count), tempTime);
+        obj.put("after sleep " + String.valueOf(count), mtime);
         do {
             m++;
             lastTime = startScreenTime;
+            lastLoadResult = loadResult;
             startScreenTime = getCurrentDate();
             des_png = mAutomation.takeScreenshot();
             if (loadFlag) {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
+//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
+//                        + "_" + String.valueOf(loadResult));
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "loadResult:", loadResult);
             }
             if (loadFlag && loadResult <= match) {
                 compareResult.put("loadResult", String.valueOf(loadResult));
-//                if (mPkg == PackageConstants.Vtraining.PACKAGE) {
-//                    compareResult.put("loadTime", lastTime);
-//                } else {
+                compareResult.put("lastLoadResult", String.valueOf(lastLoadResult));
                 compareResult.put("loadTime", startScreenTime);
                 compareResult.put("lastTime", lastTime);
-//                }
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "lastTime:", lastTime);
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "startScreenTime:", startScreenTime);
                 loadFlag = false;
@@ -718,8 +764,9 @@ public class PerforTestCase extends Automator {
                     refreshResult <= match)) {
                 if (!compareResult.containsKey("loadTime")) {
                     compareResult.put("loadTime", startScreenTime);
-                    compareResult.put("lastTime", lastTime);
+                    compareResult.put("lastTime", startScreenTime);
                     compareResult.put("loadResult", String.valueOf(loadResult));
+                    compareResult.put("lastLoadResult", String.valueOf(lastLoadResult));
                 }
                 compareResult.put("refreshTime", startScreenTime);
                 compareResult.put("refreshResult", String.valueOf(refreshResult));
