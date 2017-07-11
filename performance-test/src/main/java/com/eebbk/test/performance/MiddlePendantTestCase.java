@@ -34,8 +34,8 @@ public class MiddlePendantTestCase extends PerforTestCase {
     @Test
     public void launchMiddleOnesearchPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        clickIconStartApp(null, "app_widget_s3_iamge1", PackageConstants.OneSearchDark.PACKAGE, null, 5000, null, 1,
-                false, true);
+        clickIconStartApp(null, "app_widget_s3_iamge1", PackageConstants.OneSearchDark.PACKAGE, null, 5000,
+                "btn_start_one_search", "overlay_view", 1, false, true);
     }
 
     @Test
@@ -43,5 +43,53 @@ public class MiddlePendantTestCase extends PerforTestCase {
             RemoteException, InterruptedException {
         clickIconStartApp(null, "app_widget_s3_iamge1", PackageConstants.VideosearchStudy.PACKAGE, null, 5000, null, 1,
                 false, true);
+    }
+
+
+    //九年级
+
+    /**
+     * 词典
+     * 新英汉
+     * 汉英大辞典
+     * 现代汉语
+     * 古代汉语
+     * 成语大辞典
+     * 专业词典
+     */
+    @Test
+    public void launchAncientChDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "古代汉语", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
+    }
+
+    @Test
+    public void launchModernChDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "现代汉语", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
+    }
+
+    @Test
+    public void launchProChDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "专业词典", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
+    }
+
+    @Test
+    public void launchNewEngChDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "新英汉", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
+    }
+
+    @Test
+    public void launchIdiomDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "成语大辞典", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
+    }
+
+    @Test
+    public void launchChEngDict() throws IOException, JSONException {
+        clickIconStartApp("词典", "汉英大辞典", PackageConstants.EebbkDict.PACKAGE, null, 5000,
+                null, 1);
     }
 }

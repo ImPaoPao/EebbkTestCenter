@@ -175,7 +175,8 @@ public class PendantTestCase extends PerforTestCase {
     @Test
     public void launchQuestionPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        startApp("layout", PackageConstants.QuestionDatabase.PACKAGE, 1, true);
+        clickIconStartApp(null, "layout", PackageConstants.QuestionDatabase.PACKAGE, "exercise_view_pager",5000,
+                "exercise_main_infos_layout", "e_list_chpaters", 1,false,true);
     }
 
     /**
@@ -185,7 +186,8 @@ public class PendantTestCase extends PerforTestCase {
     @Test
     public void launchOneSearchPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        startApp("app_widget_iamge1", PackageConstants.OneSearchDark.PACKAGE, 1, true);
+        clickIconStartApp(null, "app_widget_iamge1", PackageConstants.OneSearchDark.PACKAGE, "btn_start_one_search", 10000,
+                "btn_start_one_search", "overlay_view", 1, false, true);
     }
 
     @Test

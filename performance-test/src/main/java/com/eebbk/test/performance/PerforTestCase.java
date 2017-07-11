@@ -518,7 +518,9 @@ public class PerforTestCase extends Automator {
                 // Nothing to do
             }
         }
-        mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        if (waitUi != null) {
+            mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
+        }
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         mDevice.wait(Until.hasObject(By.res(packageName, loadId)), WAIT_TIME * 2);
@@ -542,7 +544,13 @@ public class PerforTestCase extends Automator {
         long tempTime = 0;
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
-            icon = mHelper.openIcon(folder, title, packageName);
+//            icon = mHelper.openIcon(folder, title, packageName);
+//            Object icon;
+            if (isIcon) {
+                icon = mHelper.openIcon(folder, title, packageName);
+            } else {
+                icon = mHelper.openPendant(title, packageName, isId);
+            }
             if (icon instanceof UiObject2) {
                 startTestRecord();
                 ((UiObject2) icon).clickAndWait(Until.newWindow(), WAIT_TIME);
