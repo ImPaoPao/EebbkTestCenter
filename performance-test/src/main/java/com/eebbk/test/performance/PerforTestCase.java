@@ -1,6 +1,7 @@
 package com.eebbk.test.performance;
 
 import android.app.Instrumentation;
+import android.app.Instrumentation;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
