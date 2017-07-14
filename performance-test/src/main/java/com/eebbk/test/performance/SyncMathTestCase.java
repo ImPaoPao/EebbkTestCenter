@@ -32,10 +32,7 @@ public class SyncMathTestCase extends PerforTestCase {
 
     @Test
     public void launchSynMath() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp("数学学习", "同步数学", SynMath.PACKAGE, "refreshBtnId",2000, null, 1);
+        clickIconStartApp("数学学习", "同步数学", SynMath.PACKAGE, "refreshBtnId", 0, null, 1);
     }
 
     //addMathBook 点击添加按钮→下载界面加载完成 OK

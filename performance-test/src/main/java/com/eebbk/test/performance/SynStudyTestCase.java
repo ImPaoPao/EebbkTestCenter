@@ -39,7 +39,7 @@ public class SynStudyTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
         mDevice.waitForIdle();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight()/3);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 3);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             doStartActivity(i);
@@ -47,7 +47,7 @@ public class SynStudyTestCase extends PerforTestCase {
             icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
             startTestRecord();
             icon.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(),(i+1));
+            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
             mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
             stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
                     ("loadResult"), compareResult.get("refreshResult"));
