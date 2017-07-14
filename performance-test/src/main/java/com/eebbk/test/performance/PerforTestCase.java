@@ -69,7 +69,7 @@ public class PerforTestCase extends Automator {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        clearRunprocess();
+//        clearRunprocess();
         String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
@@ -101,7 +101,7 @@ public class PerforTestCase extends Automator {
             out.mkdirs();
         }
         initSetup();
-        clearRunprocess();
+//        clearRunprocess();
         mWriter = new FileWriter(new File(out, "result.xml"));
         mXml = Xml.newSerializer();
         mXml.setOutput(mWriter);
@@ -115,7 +115,7 @@ public class PerforTestCase extends Automator {
     }
 
     public void initPrimarySetup() throws UiObjectNotFoundException, IOException {
-        mDevice.waitForIdle();
+        //mDevice.waitForIdle();
         UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
         if (!user.getText().contains("小学")) {
             user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
@@ -150,7 +150,6 @@ public class PerforTestCase extends Automator {
             mDevice.waitForIdle(10000);
             clearRunprocess();
         }
-
     }
 
     public void initMiddleSetup() throws UiObjectNotFoundException, IOException {
@@ -267,8 +266,7 @@ public class PerforTestCase extends Automator {
 
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
-//        SystemClock.sleep(2000);
-        mDevice.waitForIdle();
+        //mDevice.waitForIdle();
         try {
             mDevice.pressRecentApps();
         } catch (RemoteException e) {
@@ -284,8 +282,7 @@ public class PerforTestCase extends Automator {
             mDevice.pressHome();
         }
         mDevice.pressHome();
-//        SystemClock.sleep(2000);
-        mDevice.waitForIdle();
+     //   mDevice.waitForIdle();
     }
 
     @After
@@ -643,10 +640,10 @@ public class PerforTestCase extends Automator {
                     Date(), (i + 1), match, tempTime);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
-            if (tempTime == 0) {
-                //取第一次的 最后两张图片处理时间差做为参考
-                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
-            }
+//            if (tempTime == 0) {
+//                //取第一次的 最后两张图片处理时间差做为参考
+//                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
+//            }
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();

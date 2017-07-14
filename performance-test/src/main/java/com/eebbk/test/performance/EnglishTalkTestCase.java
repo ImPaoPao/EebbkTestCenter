@@ -29,7 +29,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
 //        Rect loadPngRect = view.getVisibleBounds();
 //        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), loadPngRect.top);
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-        clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller",10000,
+        clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller",5000,
                 "main_player_controller", null, 1);
     }
 

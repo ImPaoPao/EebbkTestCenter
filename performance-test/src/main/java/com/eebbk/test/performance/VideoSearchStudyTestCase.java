@@ -15,6 +15,6 @@ import java.io.IOException;
 public class VideoSearchStudyTestCase extends PerforTestCase {
     @Test
     public void launchOneVideoStudy() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
-        clickIconStartApp(null, "智能答疑", VideosearchStudy.PACKAGE, null,5000, null, 1);
+        clickIconStartApp(null, "智能答疑", VideosearchStudy.PACKAGE, null,3000, null, 1);
     }
 }

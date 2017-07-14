@@ -270,7 +270,7 @@ public class AutomatorHelper {
                 }
                 if (flag <= children.size() / 2) {
                     for (int j = 0; j < children.size() - flag; j++) {
-                        SystemClock.sleep(1500);
+                        SystemClock.sleep(1000);
                         label = mDevice.findObject(By.text(title));
                         if (label != null) {
                             return label;
@@ -281,7 +281,7 @@ public class AutomatorHelper {
                     }
                 } else {
                     for (int j = 0; j < flag; j++) {
-                        SystemClock.sleep(1500);
+                        SystemClock.sleep(1000);
                         label = mDevice.findObject(By.text(title));
                         if (label != null) {
                             return label;
@@ -417,7 +417,7 @@ public class AutomatorHelper {
                 }
                 if (flag <= children.size() / 2) {
                     for (int j = 0; j < children.size() - flag; j++) {
-                        SystemClock.sleep(1500);
+                        SystemClock.sleep(1000);
                         if (idFlag) {
                             //控件id
                             label = mDevice.findObject(By.res(packageName, title));
@@ -434,7 +434,7 @@ public class AutomatorHelper {
                     }
                 } else {
                     for (int j = 0; j < flag; j++) {
-                        SystemClock.sleep(1500);
+                        SystemClock.sleep(1000);
                         if (idFlag) {
                             //控件id
                             label = mDevice.findObject(By.res(packageName, title));

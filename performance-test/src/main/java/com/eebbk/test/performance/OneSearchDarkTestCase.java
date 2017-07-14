@@ -26,7 +26,8 @@ public class OneSearchDarkTestCase extends PerforTestCase {
     public void launchOneSearch() throws IOException, UiObjectNotFoundException, JSONException, InterruptedException {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp(null, "一键搜", OneSearchDark.PACKAGE, "btn_start_one_search",5000, "btn_start_one_search", "overlay_view", 1);
+        clickIconStartApp(null, "一键搜", OneSearchDark.PACKAGE, "btn_start_one_search",3000, "btn_start_one_search",
+                "overlay_view", 1);
     }
     //com.eebbk.onesearchdark:id/btn_start_one_search 拍照按钮
     //com.eebbk.onesearchdark:id/btn_select_search_question 搜难题
