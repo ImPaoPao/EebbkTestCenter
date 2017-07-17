@@ -38,20 +38,23 @@ public class SyncMathTestCase extends PerforTestCase {
     //addMathBook 点击添加按钮→下载界面加载完成 OK
     @Test
     public void addMathBook() throws IOException, JSONException {
-        //com.eebbk.synmath:id/net_data
         mHelper.openSynMath();
         UiObject2 add = mDevice.findObject(By.res(SynMath.PACKAGE, "net_data"));
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "book_list")), WAIT_TIME * 4);
         UiObject2 bookList = mDevice.findObject(By.res(SynMath.PACKAGE, "book_list"));
-        Rect rt = bookList.getVisibleBounds();
+        Rect refreshPngRect = bookList.getVisibleBounds();
         mDevice.waitForIdle();
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
         //界面刷新出来
-        Rect refreshPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
-        SystemClock.sleep(1000);
+        //Rect refreshPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
+
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynMath();
@@ -59,16 +62,29 @@ public class SyncMathTestCase extends PerforTestCase {
             mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "net_data")), WAIT_TIME);
             add = mDevice.findObject(By.res(SynMath.PACKAGE, "net_data"));
             add.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
