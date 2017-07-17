@@ -12,7 +12,6 @@ import android.support.test.uiautomator.Until;
 import android.widget.ListView;
 
 import com.eebbk.test.common.PackageConstants.EebbkDict;
-import com.eebbk.test.common.PackageConstants.HanziLearning;
 import com.eebbk.test.common.PackageConstants.SynChinese;
 
 import org.json.JSONException;
@@ -35,7 +34,7 @@ public class SynChineseTestCase extends PerforTestCase {
     @Test
     public void launchSynChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
-        clickIconStartApp("语文学习", "同步语文", SynChinese.PACKAGE, "refresh",2000, null, 1);
+        clickIconStartApp("语文学习", "同步语文", SynChinese.PACKAGE, "refresh", 2000, null, 1);
     }
 
     private void openOneChineseBook() {
@@ -55,42 +54,57 @@ public class SynChineseTestCase extends PerforTestCase {
     @Test
     public void addChineseBook() throws IOException, JSONException {
         mHelper.openSynChinese();
-        mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
-        UiObject2 booklist = mDevice.findObject(By.clazz(ListView.class));
-        List<UiObject2> children = booklist.getChildren();
-        UiObject2 child = children.get(0); //第一排书
-        UiObject2 add = child.getChildren().get(0);//"添加"图片
+        mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "add_id")), WAIT_TIME);
+        UiObject2 add = mDevice.findObject(By.res(SynChinese.PACKAGE, "add_id"));
+//        if (add != null) {
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "book_list")), WAIT_TIME * 4);
-        UiObject2 bookList = mDevice.findObject(By.res(SynChinese.PACKAGE, "book_list"));
-        Rect refreshPngRect = bookList.getVisibleBounds();
-        bookList = mDevice.findObject(By.res(SynChinese.PACKAGE, "search"));
-        Rect loadPngRect = bookList.getVisibleBounds();
+        UiObject2 booklist = mDevice.findObject(By.res(SynChinese.PACKAGE, "book_list"));
+        Rect refreshPngRect = booklist.getVisibleBounds();
+        mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "filter_click")), WAIT_TIME);
+        booklist = mDevice.findObject(By.res(SynChinese.PACKAGE, "filter_click"));
+        Rect loadPngRect = booklist.getVisibleBounds();
         mDevice.waitForIdle();
-        SystemClock.sleep(10000);
+        SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
+
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            SystemClock.sleep(3000);
             mHelper.openSynChinese();
-            mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
-            booklist = mDevice.findObject(By.clazz(ListView.class));
-            children = booklist.getChildren();
-            child = children.get(0);
-            add = child.getChildren().get(0);
+            mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "add_id")), WAIT_TIME);
+            add = mDevice.findObject(By.res(SynChinese.PACKAGE, "add_id"));
             startTestRecord();
-            add.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+            add.clickAndWait(Until.newWindow(), WAIT_TIME);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
+        }
+//        }
     }
 
     //点击书本→书本内容界面显示完成
@@ -176,48 +190,6 @@ public class SynChineseTestCase extends PerforTestCase {
                     ("loadResult"), compareResult.get("refreshResult"));
             mDevice.wait(Until.hasObject(By.res(EebbkDict.PACKAGE, "miaohong_dictedit")), WAIT_TIME);//描红词典界面
             clearRunprocess();
-        }
-        if (!source_png.isRecycled()) {
-            source_png.recycle();
-        }
-    }
-
-    //生字页面，点击一个生字，点击写一写→进入写一写界面
-    @Test
-    public void synChineseNewWord() throws IOException, JSONException {
-        //生字 写一写 com.eebbk.synchinese:id/new_word_goWriteBtnId
-        openOneChineseBook();
-        mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-        SystemClock.sleep(5000);
-        mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 30);//点击字词
-        SystemClock.sleep(2000);
-        mHelper.longClick(100, 340);//第一个字
-        mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "new_word_goWriteBtnId")), WAIT_TIME);//写一写
-        UiObject2 newWord = mDevice.findObject(By.res(SynChinese.PACKAGE, "new_word_goWriteBtnId"));
-        newWord.clickAndWait(Until.newWindow(), WAIT_TIME);
-        mDevice.wait(Until.hasObject(By.res(HanziLearning.PACKAGE, "hanziZoomWriteView")), WAIT_TIME);//汉子学习
-        SystemClock.sleep(2000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(0, 0, 400, 400);
-        clearRunprocess();
-        for (int i = 0; i < mCount; i++) {
-            openOneChineseBook();
-            mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-            SystemClock.sleep(5000);
-            mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 30);//点击字词
-            SystemClock.sleep(2000);
-            mHelper.longClick(100, 340);//第一个字
-            mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "new_word_goWriteBtnId")), WAIT_TIME);//写一写
-            newWord = mDevice.findObject(By.res(SynChinese.PACKAGE, "new_word_goWriteBtnId"));
-            startTestRecord();
-            newWord.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.wait(Until.hasObject(By.res(HanziLearning.PACKAGE, "hanziZoomWriteView")), WAIT_TIME);//汉子学习
-            clearRunprocess();
-            SystemClock.sleep(1000);
         }
         if (!source_png.isRecycled()) {
             source_png.recycle();
