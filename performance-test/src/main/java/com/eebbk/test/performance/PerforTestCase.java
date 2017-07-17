@@ -593,15 +593,18 @@ public class PerforTestCase extends Automator {
         }
         SystemClock.sleep(timeout);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        if (loadPngRect == null) {
-            loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
-        }
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
+        Bitmap loadSource = null;
         Bitmap refreshSource = null;
-        if (refreshPngRect != null) {
-            refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
-                    refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+        if (loadPngRect == null) {
+//            loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+            loadSource = source_png;
+        } else {
+            loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                    loadPngRect.width(), loadPngRect.height());
+            if (refreshPngRect != null) {
+                refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                        refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+            }
         }
         clearRunprocess();
         long tempTime = 0;
@@ -698,8 +701,12 @@ public class PerforTestCase extends Automator {
             startScreenTime = getCurrentDate();
             des_png = mAutomation.takeScreenshot();
             if (loadFlag) {
-                loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
-                        loadPngRect.height());
+                if (loadPngRect == null) {
+                    loadPng = des_png;
+                } else {
+                    loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
+                            loadPngRect.height());
+                }
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
 //                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
 //                        + "_" + String.valueOf(loadResult));
