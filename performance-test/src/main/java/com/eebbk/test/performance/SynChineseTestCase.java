@@ -35,9 +35,6 @@ public class SynChineseTestCase extends PerforTestCase {
     @Test
     public void launchSynChinese() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
         clickIconStartApp("语文学习", "同步语文", SynChinese.PACKAGE, "refresh",2000, null, 1);
     }
 

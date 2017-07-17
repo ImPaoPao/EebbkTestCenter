@@ -21,10 +21,8 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.eebbk.test.automator.Automator;
-import com.eebbk.test.automator.SystemProperties;
 import com.eebbk.test.common.BitmapHelper;
 import com.eebbk.test.common.PackageConstants;
-import com.eebbk.test.utils.BbkCommonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +45,6 @@ import static android.support.test.InstrumentationRegistry.getArguments;
 @RunWith(AndroidJUnit4.class)
 public class PerforTestCase extends Automator {
     public static String TAG = "PerforTestCase";
-    public JSONObject sysout = new JSONObject();
 
     protected FileWriter mWriter;
     protected XmlSerializer mXml;
@@ -56,20 +53,14 @@ public class PerforTestCase extends Automator {
     protected int mCount = 3;
     protected int mType = 0;
     protected String mNumber = "unknown";
-
-    protected String mPkg = "unknown";//当前的被测应用包名
-
-
+    protected String mPkg = "unknown";
     protected int mSys = 0;
     protected int mApp = 0;
-
-    protected String osVersion = SystemProperties.get("ro.build.version.sdk");//ro.build.version.sdk
-
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-//        clearRunprocess();
+        clearRunprocess();
         String count = getArguments().getString("count", "3");
         String type = getArguments().getString("type", "0");
         mNumber = getArguments().getString("number", "unknown");
@@ -100,14 +91,14 @@ public class PerforTestCase extends Automator {
         } else {
             out.mkdirs();
         }
-        initSetup();
-//        clearRunprocess();
         mWriter = new FileWriter(new File(out, "result.xml"));
         mXml = Xml.newSerializer();
         mXml.setOutput(mWriter);
         mXml.startDocument("UTF-8", false);
         mXml.text("\n");
         mXml.startTag(null, "Record");
+        initSetup();
+        clearRunprocess();
     }
 
     public void initSetup() throws UiObjectNotFoundException, IOException {
@@ -115,7 +106,7 @@ public class PerforTestCase extends Automator {
     }
 
     public void initPrimarySetup() throws UiObjectNotFoundException, IOException {
-        //mDevice.waitForIdle();
+        mDevice.waitForIdle();
         UiObject2 user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_grade"));
         if (!user.getText().contains("小学")) {
             user = mDevice.findObject(By.res(PackageConstants.Launcher.PACKAGE, "personal_head_layout"));
@@ -196,7 +187,6 @@ public class PerforTestCase extends Automator {
         mStartTime = getCurrentDate();
     }
 
-    //
     public void stopTestRecord(String value) {
         Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
@@ -242,11 +232,6 @@ public class PerforTestCase extends Automator {
         Log.i(TAG, "record endtime and infos");
         if (mStartTime != null) {
             try {
-                try {
-                    sysout.put("=====in stop=====", mXml);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 mXml.text("\n");
                 mXml.startTag(null, "Segment");
                 mXml.attribute(null, "starttime", mStartTime);
@@ -266,7 +251,7 @@ public class PerforTestCase extends Automator {
 
     public void clearRunprocess() throws IOException {
         mDevice.pressHome();
-        //mDevice.waitForIdle();
+        mDevice.waitForIdle();
         try {
             mDevice.pressRecentApps();
         } catch (RemoteException e) {
@@ -282,7 +267,7 @@ public class PerforTestCase extends Automator {
             mDevice.pressHome();
         }
         mDevice.pressHome();
-     //   mDevice.waitForIdle();
+        mDevice.waitForIdle();
     }
 
     @After
@@ -500,7 +485,9 @@ public class PerforTestCase extends Automator {
         if (waitUi != null) {
             mDevice.wait(Until.hasObject(By.res(packageName, waitUi)), WAIT_TIME * 4);
         }
-        SystemClock.sleep(timeout);
+        if (timeout != 0) {
+            SystemClock.sleep(timeout);
+        }
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         mDevice.wait(Until.hasObject(By.res(packageName, loadId)), WAIT_TIME * 2);
         UiObject2 view = mDevice.findObject(By.res(packageName, loadId));
@@ -542,10 +529,10 @@ public class PerforTestCase extends Automator {
                     Date(), (i + 1), match, tempTime);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
-            if (tempTime == 0) {
-                //取第一次的 最后两张图片处理时间差做为参考
-                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
-            }
+//            if (tempTime == 0) {
+//                //取第一次的 最后两张图片处理时间差做为参考
+//                tempTime = BbkCommonUtils.getTime(compareResult.get("loadTime"), compareResult.get("lastTime"));
+//            }
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();
@@ -701,8 +688,8 @@ public class PerforTestCase extends Automator {
         Bitmap refreshPng = null;
         Bitmap loadPng = null;
         Bitmap des_png = null;
-        String lastTime = null;
-        String startScreenTime = null;
+        String lastTime = "";
+        String startScreenTime = "";
         //等待一段时间后开始截图比较 temptime 为第一次执行中最后两次处理图片的时间差
 //        if (temp != 0) {
 //            mtime = temp / 8 + (20 * count - 20) % (int) (temp * 5 / 8);
@@ -726,8 +713,8 @@ public class PerforTestCase extends Automator {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
-//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
-//                        + "_" + String.valueOf(loadResult));
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
+                        + "_" + String.valueOf(loadResult));
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "loadResult:", loadResult);
             }
             if (loadFlag && loadResult <= match) {
@@ -761,9 +748,9 @@ public class PerforTestCase extends Automator {
                 } else {
                     cycle = String.valueOf(mCount);
                 }
-                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+                //mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
-                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
+                    //mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
                 if (loadPng != null && !loadPng.isRecycled()) {
                     loadPng.recycle();

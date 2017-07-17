@@ -59,9 +59,6 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     @Test
     public void launchBbkMiddleMarket() throws IOException, UiObjectNotFoundException, JSONException,
             InterruptedException {
-//        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight() - 80);
-//        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() - 70, mDevice.getDisplayWidth(), mDevice
-// .getDisplayHeight());
         clickIconStartApp(null, "应用商店", BbkMiddleMarket.PACKAGE, "apk_button", 5000, "home_tab_radioGroup", null, 1);
     }
 

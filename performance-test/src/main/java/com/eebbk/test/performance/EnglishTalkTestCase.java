@@ -25,10 +25,6 @@ public class EnglishTalkTestCase extends PerforTestCase {
 
     @Test
     public void launchEnglishTalk() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-//        UiObject2 view = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "main_player_controller"));
-//        Rect loadPngRect = view.getVisibleBounds();
-//        Rect refreshPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), loadPngRect.top);
-        //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller",5000,
                 "main_player_controller", null, 1);
     }
