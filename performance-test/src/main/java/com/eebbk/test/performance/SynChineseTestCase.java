@@ -56,7 +56,6 @@ public class SynChineseTestCase extends PerforTestCase {
         mHelper.openSynChinese();
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "add_id")), WAIT_TIME);
         UiObject2 add = mDevice.findObject(By.res(SynChinese.PACKAGE, "add_id"));
-//        if (add != null) {
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynChinese.PACKAGE, "book_list")), WAIT_TIME * 4);
         UiObject2 booklist = mDevice.findObject(By.res(SynChinese.PACKAGE, "book_list"));
@@ -67,8 +66,6 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.waitForIdle();
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
-
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
@@ -80,10 +77,6 @@ public class SynChineseTestCase extends PerforTestCase {
             add = mDevice.findObject(By.res(SynChinese.PACKAGE, "add_id"));
             startTestRecord();
             add.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
-// 1));
-//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-//                    ("loadResult"), compareResult.get("refreshResult"));
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
@@ -104,7 +97,6 @@ public class SynChineseTestCase extends PerforTestCase {
             refreshSource.recycle();
             refreshSource = null;
         }
-//        }
     }
 
     //点击书本→书本内容界面显示完成
@@ -112,10 +104,9 @@ public class SynChineseTestCase extends PerforTestCase {
     public void showSynChineseBook() throws IOException, JSONException {
         openOneChineseBook();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
-//        UiObject2 view = mDevice.findObject(By.text("课文"));
-//        Rect loadPngRect =view.getVisibleBounds();
-        SystemClock.sleep(1000);
+//        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynChinese();
@@ -126,17 +117,20 @@ public class SynChineseTestCase extends PerforTestCase {
             UiObject2 add = child.getChildren().get(1);//中间本书
             startTestRecord();
             add.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
-
     }
 
     //点击教辅目录→进入课本详情
@@ -146,23 +140,33 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
         UiObject2 view = mDevice.findObject(By.text("课文"));
         Rect loadPngRect = view.getVisibleBounds();
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openOneChineseBook();
             startTestRecord();
             mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
-            SystemClock.sleep(2000);
+            mDevice.waitForIdle();
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 
@@ -176,8 +180,8 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(EebbkDict.PACKAGE, "miaohong_dictedit")), WAIT_TIME);//描红词典界面
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+//        SystemClock.sleep(1000);
+//        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openOneChineseBook();
@@ -185,14 +189,19 @@ public class SynChineseTestCase extends PerforTestCase {
             SystemClock.sleep(5000);//跳转到有查字词的界面
             startTestRecord();
             mHelper.longClick(640, 65);//点击查字词坐标
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            mDevice.wait(Until.hasObject(By.res(EebbkDict.PACKAGE, "miaohong_dictedit")), WAIT_TIME);//描红词典界面
-            clearRunprocess();
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressBack();
+            mDevice.waitForIdle();
+            mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -205,7 +214,8 @@ public class SynChineseTestCase extends PerforTestCase {
         //中间刷新的那个黑色的带彩色点的小方块
         Rect loadPngRect = new Rect(source_png.getWidth() / 2 - 40, source_png.getHeight() / 2 - 40,
                 source_png.getWidth() / 2 + 40, source_png.getHeight() / 2 + 40);
-        SystemClock.sleep(1000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynChinese();
@@ -214,15 +224,24 @@ public class SynChineseTestCase extends PerforTestCase {
             startTestRecord();
             refresh.clickAndWait(Until.newWindow(), WAIT_TIME);
             SystemClock.sleep(200);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
+            mDevice.pressBack();
             mDevice.waitForIdle();
-            SystemClock.sleep(2000);
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 }
