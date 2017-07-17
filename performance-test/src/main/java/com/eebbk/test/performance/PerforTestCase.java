@@ -500,7 +500,7 @@ public class PerforTestCase extends Automator {
             view = mDevice.findObject(By.res(packageName, refreshId));
             refreshPngRect = view.getVisibleBounds();
         } else {
-            refreshPngRect = new Rect(0, 0, loadPngRect.width(), loadPngRect.top);
+            refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         }
         refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
                 refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
@@ -690,19 +690,7 @@ public class PerforTestCase extends Automator {
         Bitmap des_png = null;
         String lastTime = "";
         String startScreenTime = "";
-        //等待一段时间后开始截图比较 temptime 为第一次执行中最后两次处理图片的时间差
-//        if (temp != 0) {
-//            mtime = temp / 8 + (20 * count - 20) % (int) (temp * 5 / 8);
-//        }
         int m = 0;
-//        long mtime = 0;
-        //等待一段时间后开始截图比较 temptime 为第一次执行中最后两次处理图片的时间差
-//        if (tempTime != 0) {
-//            mtime = tempTime / 8 + (20 * count - 20) % (int) (tempTime * 5 / 8);
-//        }
-//        SystemClock.sleep(mtime);
-//        obj.put("temptime:" + String.valueOf(count), tempTime);
-//        obj.put("after sleep " + String.valueOf(count), mtime);
         do {
             m++;
             lastTime = startScreenTime;
@@ -713,8 +701,8 @@ public class PerforTestCase extends Automator {
                 loadPng = Bitmap.createBitmap(des_png, loadPngRect.left, loadPngRect.top, loadPngRect.width(),
                         loadPngRect.height());
                 loadResult = BitmapHelper.compare(loadSource, loadPng);
-                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
-                        + "_" + String.valueOf(loadResult));
+//                mHelper.saveScreenshot(loadPng, mNumber, "load_" + String.valueOf(count) + "_" + String.valueOf(m)
+//                        + "_" + String.valueOf(loadResult));
                 obj.put(String.valueOf(count) + "_" + String.valueOf(m) + "loadResult:", loadResult);
             }
             if (loadFlag && loadResult <= match) {
@@ -748,9 +736,9 @@ public class PerforTestCase extends Automator {
                 } else {
                     cycle = String.valueOf(mCount);
                 }
-                //mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
+                mHelper.saveScreenshot(loadPng, mNumber, "load_" + cycle);
                 if (refreshPngRect != null) {
-                    //mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
+                    mHelper.saveScreenshot(refreshPng, mNumber, "refresh_" + cycle);
                 }
                 if (loadPng != null && !loadPng.isRecycled()) {
                     loadPng.recycle();
