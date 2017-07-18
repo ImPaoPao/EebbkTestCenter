@@ -39,7 +39,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard",3000, null, 1);
+        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard", 3000, null, 1);
     }
 
     //前置条件：首页下载好十本书
@@ -52,19 +52,29 @@ public class SyncEglishTestCase extends PerforTestCase {
         //中间刷新的那个黑色的带彩色点的小方块
         Rect loadPngRect = new Rect(source_png.getWidth() / 2 - 30, source_png.getHeight() / 2 - 30,
                 source_png.getWidth() / 2 + 30, source_png.getHeight() / 2 + 30);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
             startTestRecord();
             refresh.clickAndWait(Until.newWindow(), WAIT_TIME);
             SystemClock.sleep(200);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
-            SystemClock.sleep(2000);
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 
@@ -77,14 +87,17 @@ public class SyncEglishTestCase extends PerforTestCase {
         UiObject2 add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "add_id"));
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "iv_cover")), WAIT_TIME * 4);
-        SystemClock.sleep(15000);
+        SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 //        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
         add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "search"));
         Rect loadPngRect = add.getVisibleBounds();
         add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "nd_gridview"));
         Rect refreshPngRect = add.getVisibleBounds(); //new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
-        SystemClock.sleep(1000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         mDevice.pressBack();
         mDevice.waitForIdle();
         mDevice.pressHome();
@@ -94,16 +107,29 @@ public class SyncEglishTestCase extends PerforTestCase {
             UiObject2 add2 = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "add_id"));
             startTestRecord();
             add2.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -121,7 +147,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight());
+//        Rect loadPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSyncEnglishMain();
@@ -132,15 +158,20 @@ public class SyncEglishTestCase extends PerforTestCase {
             UiObject2 click = child.getChildren().get(1);
             startTestRecord();
             click.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png=null;
         }
     }
 
@@ -159,8 +190,7 @@ public class SyncEglishTestCase extends PerforTestCase {
         SystemClock.sleep(2000);
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 400, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, source_png.getHeight() - 400, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -171,14 +201,19 @@ public class SyncEglishTestCase extends PerforTestCase {
             //点击头像
             //mHelper.longClick(60, rt.height() / 2);
             mDevice.click(60, rt.height() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -197,8 +232,8 @@ public class SyncEglishTestCase extends PerforTestCase {
         SystemClock.sleep(5000);
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+//        SystemClock.sleep(1000);
+//        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -208,9 +243,13 @@ public class SyncEglishTestCase extends PerforTestCase {
             startTestRecord();
             //点击趣味测试
             mHelper.longClick(rt.right - 45, rt.height() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
         }
@@ -240,8 +279,13 @@ public class SyncEglishTestCase extends PerforTestCase {
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() - 80);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 40, source_png.getWidth(), source_png.getHeight());
+
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - 7 * mDevice.getDisplayHeight() / 100, source_png.getWidth(), source_png.getHeight());
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -252,14 +296,26 @@ public class SyncEglishTestCase extends PerforTestCase {
             //点击欧拉英语
             mDevice.click(mDevice.getDisplayWidth() / 4, mDevice.getDisplayHeight() / 2);
             //mHelper.longClick(mDevice.getDisplayWidth() / 4, mDevice.getDisplayHeight() / 2);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource,refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             mDevice.waitForIdle();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 }
