@@ -138,7 +138,7 @@ public class SynChineseTestCase extends PerforTestCase {
     public void showDetailsSynChineseBook() throws IOException, JSONException {
         openOneChineseBook();
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
-        SystemClock.sleep(5000);
+        SystemClock.sleep(3000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         mDevice.wait(Until.hasObject(By.text("课文")), WAIT_TIME);
         UiObject2 view = mDevice.findObject(By.text("课文"));

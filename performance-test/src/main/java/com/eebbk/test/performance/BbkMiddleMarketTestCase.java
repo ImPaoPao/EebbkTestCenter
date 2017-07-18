@@ -24,7 +24,6 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class BbkMiddleMarketTestCase extends PerforTestCase {
-//
 
     @Test
     public void compareTest() throws JSONException, IOException {
@@ -72,28 +71,41 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         apk.click();
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager")), WAIT_TIME * 6);
         SystemClock.sleep(5000);
-        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager"));
-        Rect refreshPngRect = apk.getVisibleBounds();
-        //详情
-        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager_detail_tv"));
+
+        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "success_view"));
         Rect loadPngRect = apk.getVisibleBounds();
 
+//        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager"));
+//        Rect refreshPngRect = apk.getVisibleBounds();
+//        //详情
+//        apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "view_pager_detail_tv"));
+//        Rect loadPngRect = apk.getVisibleBounds();
+
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name")), WAIT_TIME);
             apk = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name"));
             startTestRecord();
             apk.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 
@@ -103,33 +115,37 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         mHelper.openBbkMiddleMarket();
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "tab_category")), WAIT_TIME * 4);
         UiObject2 category = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tab_category"));
-        category.click();
+        category.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "titleTv")), WAIT_TIME);
         category = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tagNameTv"));
         category.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "tabs")), WAIT_TIME);
         category = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tabs"));
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME * 4);
-        Rect rt = category.getVisibleBounds();
+
+        //Rect rt = category.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
-        Rect refreshPngRect = new Rect(0, source_png.getHeight() - rt.bottom, source_png.getWidth(), source_png
-                .getHeight());
+//        Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
+//        Rect refreshPngRect = new Rect(0, source_png.getHeight() - rt.bottom, source_png.getWidth(), source_png .getHeight());
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "titleTv")), WAIT_TIME);
             category = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tagNameTv"));
             startTestRecord();
             category.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -140,24 +156,28 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         UiObject2 user = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id"));
         user.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(Personal.PACKAGE, "layout_userinfo")), WAIT_TIME * 2);
-        user = mDevice.findObject(By.res(Personal.PACKAGE, "layout_userinfo"));
+//        user = mDevice.findObject(By.res(Personal.PACKAGE, "layout_userinfo"));
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
-        Rect loadPngRect = user.getVisibleBounds();
+//        Rect loadPngRect = user.getVisibleBounds();
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id")), WAIT_TIME);
             user = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "user_icon_id"));
             startTestRecord();
             user.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -168,25 +188,27 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
         UiObject2 copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "copyright_declare_item_id"));
         copyright.click();
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "tv_copy_right_content")), WAIT_TIME);
-        copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tv_copy_right_content"));
+        //copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "tv_copy_right_content"));
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
-        Rect loadPngRect = copyright.getVisibleBounds();
+//        Rect loadPngRect = copyright.getVisibleBounds();
         mDevice.pressBack();
-        SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "copyright_declare_item_id")), WAIT_TIME);
             copyright = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "copyright_declare_item_id"));
             startTestRecord();
             copyright.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -195,12 +217,14 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
     public void showBbkMDownloadList() throws FileNotFoundException, JSONException {
         openBbkMine();
         UiObject2 download = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "download_center_item_id"));
-        download.click();
+        download.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_name")), WAIT_TIME * 4);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(2000);
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 2);
-        Rect refreshPngRect = loadPngRect;
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+//        Rect refreshPngRect = loadPngRect;
         mDevice.pressBack();
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
@@ -208,14 +232,22 @@ public class BbkMiddleMarketTestCase extends PerforTestCase {
             download = mDevice.findObject(By.res(BbkMiddleMarket.PACKAGE, "download_center_item_id"));
             startTestRecord();
             download.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 

@@ -340,6 +340,7 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menuBtnId")), WAIT_TIME);
         book = mDevice.findObject(By.res(SynMath.PACKAGE, "menuBtnId"));
         book.clickAndWait(Until.newWindow(), WAIT_TIME);
+        mDevice.wait(Until.hasObject(By.text("知识讲解")), WAIT_TIME);
         UiObject2 explanation = mDevice.findObject(By.text("知识讲解"));
         explanation.clickAndWait(Until.newWindow(), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
