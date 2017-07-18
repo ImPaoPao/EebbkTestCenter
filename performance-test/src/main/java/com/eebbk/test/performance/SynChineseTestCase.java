@@ -140,6 +140,7 @@ public class SynChineseTestCase extends PerforTestCase {
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 3);
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        mDevice.wait(Until.hasObject(By.text("课文")), WAIT_TIME);
         UiObject2 view = mDevice.findObject(By.text("课文"));
         Rect loadPngRect = view.getVisibleBounds();
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
