@@ -196,6 +196,7 @@ public class SynChineseTestCase extends PerforTestCase {
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
+            mDevice.pressBack();
             mDevice.waitForIdle();
             mDevice.pressHome();
         }
