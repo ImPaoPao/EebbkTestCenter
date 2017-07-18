@@ -83,21 +83,21 @@ public class SyncEglishTestCase extends PerforTestCase {
     public void addSyncEnglishBook() throws IOException, JSONException {
         //获取屏幕截图
         mHelper.openSyncEnglishMain();
-
+        mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "add_id")), WAIT_TIME);
         UiObject2 add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "add_id"));
         add.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "iv_cover")), WAIT_TIME * 4);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 //        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
-        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "search"));
-        Rect loadPngRect = add.getVisibleBounds();
-        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "nd_gridview"));
-        Rect refreshPngRect = add.getVisibleBounds(); //new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
-                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+//        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "search"));
+//        Rect loadPngRect = add.getVisibleBounds();
+//        add = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "nd_gridview"));
+//        Rect refreshPngRect = add.getVisibleBounds(); //new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+//                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         mDevice.pressBack();
         mDevice.waitForIdle();
         mDevice.pressHome();
@@ -110,7 +110,7 @@ public class SyncEglishTestCase extends PerforTestCase {
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new Date(), (i + 1),
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
                     1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
@@ -123,14 +123,14 @@ public class SyncEglishTestCase extends PerforTestCase {
             source_png.recycle();
             source_png = null;
         }
-        if (loadSource != null && !loadSource.isRecycled()) {
-            loadSource.recycle();
-            loadSource = null;
-        }
-        if (refreshSource != null && !refreshSource.isRecycled()) {
-            refreshSource.recycle();
-            refreshSource = null;
-        }
+//        if (loadSource != null && !loadSource.isRecycled()) {
+//            loadSource.recycle();
+//            loadSource = null;
+//        }
+//        if (refreshSource != null && !refreshSource.isRecycled()) {
+//            refreshSource.recycle();
+//            refreshSource = null;
+//        }
     }
 
     //点击书本→书本内容界面显示完成
