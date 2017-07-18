@@ -37,7 +37,7 @@ public class VisionTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
         Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() * 9 / 10, mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
-        clickIconStartApp(null, "视力保护", Vision.PACKAGE, null,2000, null, 1);
+        clickIconStartApp(null, "视力保护", Vision.PACKAGE, null, 2000, null, 1);
     }
 
     //点击眼保健操→显示眼保健操界面
@@ -48,30 +48,41 @@ public class VisionTestCase extends PerforTestCase {
         int rotation = mDevice.getDisplayRotation();
         SystemClock.sleep(3000);
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 40);
-        if (mDevice.getDisplayRotation() != rotation) {
-            SystemClock.sleep(100);
-            Bitmap source_png = mHelper.takeScreenshot(mNumber);
-            UiObject2 vision = mDevice.findObject(By.text("第一节"));
-            Rect loadPngRect = vision.getVisibleBounds();
-            Rect refreshPngRect = new Rect(0, 0, source_png.getWidth() / 2, source_png.getHeight() / 3);
+//        if (mDevice.getDisplayRotation() != rotation) {
+        SystemClock.sleep(1000);
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        UiObject2 vision = mDevice.findObject(By.text("第一节"));
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth() / 2, source_png.getHeight() / 3);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+//            Rect loadPngRect = vision.getVisibleBounds();
+        //Rect refreshPngRect = new Rect(0, 0, source_png.getWidth() / 2, source_png.getHeight() / 3);
+        mDevice.pressBack();
+        SystemClock.sleep(1000);
+        for (int i = 0; i < mCount; i++) {
+            SystemClock.sleep(1000);
+            startTestRecord();
+            mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 40);
+//                Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i
+//                        + 1));
+//                stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                        ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
+            SystemClock.sleep(1000);
             mDevice.pressBack();
             SystemClock.sleep(1000);
-            for (int i = 0; i < mCount; i++) {
-                SystemClock.sleep(1000);
-                startTestRecord();
-                mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 40);
-                Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i
-                        + 1));
-                stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                        ("loadResult"), compareResult.get("refreshResult"));
-                SystemClock.sleep(1000);
-                mDevice.pressBack();
-                SystemClock.sleep(1000);
-            }
-            if (!source_png.isRecycled()) {
-                source_png.recycle();
-            }
         }
+        if (source_png != null && !source_png.isRecycled()) {
+            source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+//        }
     }
 
     //点击设置按钮→显示设置界面
@@ -85,19 +96,30 @@ public class VisionTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
         Rect loadPngRect = new Rect(0, 20, vision.getVisibleBounds().width(), vision.getVisibleBounds().bottom);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
         mDevice.pressBack();
         SystemClock.sleep(1000);
         for (int i = 0; i < mCount; i++) {
             startTestRecord();
             mDevice.click(mDevice.getDisplayWidth() - 45, 65);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             SystemClock.sleep(2000);
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
         }
     }
 
@@ -112,22 +134,24 @@ public class VisionTestCase extends PerforTestCase {
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 30);
         mDevice.wait(Until.hasObject(By.text("护眼小知识")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+       // Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         SystemClock.sleep(2000);
         for (int i = 0; i < mCount; i++) {
             startTestRecord();
             mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 30);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new  Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
             SystemClock.sleep(2000);
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 }
