@@ -296,11 +296,6 @@ public class VtrainingTestCase extends PerforTestCase {
         }
     }
 
-    //点击课程包封面→视频播放界面加载完成
-    //@Test
-//    public void showVtCourseVideo() {
-//    }
-
     //点击首页视频缩略图→视频播放加载完成
     //@Test
     public void showVtVideo() throws FileNotFoundException, JSONException {
