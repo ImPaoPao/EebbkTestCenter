@@ -177,7 +177,8 @@ public class SynChineseTestCase extends PerforTestCase {
         openOneChineseBook();
         mDevice.click(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2);
         SystemClock.sleep(5000);//跳转到查字词 界面
-        mHelper.longClick(640, 65);//点击查字典坐标
+//        mHelper.longClick(640, 65);//点击查字典坐标
+        mHelper.longClick(mDevice.getDisplayWidth() * 640 / 768, mDevice.getDisplayHeight() * 65 / 1024);
         mDevice.wait(Until.hasObject(By.res(EebbkDict.PACKAGE, "miaohong_dictedit")), WAIT_TIME);//描红词典界面
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
@@ -189,7 +190,9 @@ public class SynChineseTestCase extends PerforTestCase {
             mHelper.longClick(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2);
             SystemClock.sleep(5000);//跳转到有查字词的界面
             startTestRecord();
-            mHelper.longClick(640, 65);//点击查字词坐标
+//            mHelper.longClick(640, 65);//点击查字词坐标
+            mHelper.longClick(mDevice.getDisplayWidth() * 640 / 768, mDevice.getDisplayHeight() * 65 / 1024);
+            //点击查字词坐标
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));

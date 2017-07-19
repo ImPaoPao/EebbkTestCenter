@@ -47,7 +47,7 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.waitForIdle();
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
+        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), mDevice.getDisplayHeight() * 80 / 1024);
         //界面刷新出来
         //Rect refreshPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
 
@@ -102,7 +102,7 @@ public class SyncMathTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
         mDevice.pressHome();
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynMath();
@@ -135,7 +135,7 @@ public class SyncMathTestCase extends PerforTestCase {
     public void changeSynMathBook() throws IOException, JSONException {
         mHelper.openSynMath();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         SystemClock.sleep(1000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -170,7 +170,7 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(MathAnimation.PACKAGE, "barup")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynMathBook();
@@ -205,8 +205,10 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(MathAnimation.PACKAGE, "actionSlideExpandableListView1")), WAIT_TIME * 4);
         SystemClock.sleep(10000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), 80);
+        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight() * 20 / 1024, source_png.getWidth(), mDevice
+                .getDisplayHeight() * 80 / 1024);
         //中间 "正在加载"刷新框
+        //mDevice.getDisplayWidth() * 640 / 768, mDevice.getDisplayHeight() * 65 / 1024
         Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
@@ -219,10 +221,12 @@ public class SyncMathTestCase extends PerforTestCase {
             download = mDevice.findObject(By.res(SynMath.PACKAGE, "add_download_button"));
             startTestRecord();
             download.clickAndWait(Until.newWindow(), WAIT_TIME);
-//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
@@ -256,7 +260,7 @@ public class SyncMathTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menuBtnId")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
+        //Rect loadPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight());
         //中间 "正在加载"刷新框
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
@@ -271,7 +275,7 @@ public class SyncMathTestCase extends PerforTestCase {
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(null,null , source_png, null, new Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
@@ -308,7 +312,8 @@ public class SyncMathTestCase extends PerforTestCase {
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(loadPngRect, null, loadSource, null, new Date(), (i + 1),
+                    1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
