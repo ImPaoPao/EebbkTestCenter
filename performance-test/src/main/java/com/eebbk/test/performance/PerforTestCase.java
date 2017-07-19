@@ -123,9 +123,8 @@ public class PerforTestCase extends Automator {
                     WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            SystemClock.sleep(3000);
-//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")), WAIT_TIME
-//                    * 2);
+//            SystemClock.sleep(3000);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")), WAIT_TIME);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
             if (user != null) {
                 user.clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -167,12 +166,13 @@ public class PerforTestCase extends Automator {
                 mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
                         WAIT_TIME);
             }
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),WAIT_TIME);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
+                    WAIT_TIME);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")),
-//                        WAIT_TIME);
-            SystemClock.sleep(3000);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")),
+                    WAIT_TIME);
+//            SystemClock.sleep(3000);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
             if (user != null) {
                 user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换

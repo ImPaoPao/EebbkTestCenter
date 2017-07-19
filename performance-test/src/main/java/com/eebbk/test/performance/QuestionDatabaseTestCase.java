@@ -29,9 +29,9 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             JSONException {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp(null, "好题精练", QuestionDatabase.PACKAGE, "exercise_view_pager",5000,
+        clickIconStartApp(null, "好题精练", QuestionDatabase.PACKAGE, "exercise_view_pager", 5000,
                 "exercise_main_infos_layout", "e_list_chpaters", 1);
-        }
+    }
 
     //点击智能练习目录→题目加载完成
     @Test
@@ -44,8 +44,12 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         SystemClock.sleep(10000);
         Rect loadPngRect = new Rect(80, 20, 160, 60);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+//        SystemClock.sleep(2000);
         Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() / 6);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
@@ -53,15 +57,28 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_text_title"));
             startTestRecord();
             exam.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
 //            SystemClock.sleep(1000);
             mDevice.pressBack();
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
             source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -77,7 +94,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "select_exercise_filter_view"));
         Rect loadPngRect = exam.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+//        SystemClock.sleep(2000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
@@ -86,14 +107,28 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_select_exercises"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            SystemClock.sleep(1000);
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -104,8 +139,7 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject")),
                 WAIT_TIME * 4);
         SystemClock.sleep(5000);
-        Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+        mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_search_layout")), WAIT_TIME);
         UiObject2 exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "paper_main_search_layout"));
         Rect rte = exam.getVisibleBounds();
         Rect loadPngRect = new Rect(rte.width() / 4, rte.top, rte.width() * 3 / 4, rte.bottom);
@@ -113,6 +147,12 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         Rect rt = exam.getVisibleBounds();
         exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方的菜单条
         Rect refreshPngRect = new Rect(rt.left, rte.bottom, rt.right, rt.bottom - exam.getVisibleBounds().height());
+        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+        //        SystemClock.sleep(2000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
@@ -120,21 +160,49 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper"));
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            SystemClock.sleep(1000);
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
     //点击真题目录界面目录→题目加载完成
     @Test
     public void showQdRealExamContent() throws IOException, JSONException {
-        openQd("home_img_tab_paper");
+//        openQd("home_img_tab_paper");
+//        openQd("home_img_tab_norisuke");
+
+        mHelper.openQuestionDatabse();
+        mDevice.waitForIdle();
+        BySelector byMenu = By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper");
+        UiObject2 click = mDevice.findObject(byMenu);
+        if (click != null) {
+            click.clickAndWait(Until.newWindow(),WAIT_TIME);
+            mDevice.waitForIdle();
+        }else{
+            click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_norisuke"));
+            click.clickAndWait(Until.newWindow(),WAIT_TIME);
+        }
+
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject")),
                 WAIT_TIME * 4);
         UiObject2 exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject"));
@@ -144,9 +212,13 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_normal_item_text_paper_title")),
                 WAIT_TIME * 4);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+//        SystemClock.sleep(2000);
         Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() / 2);
         Rect loadPngRect = new Rect(0, 24, mDevice.getDisplayWidth(), 90);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd("home_img_tab_paper");
@@ -157,14 +229,28 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             exam = children.get(0);
             startTestRecord();
             exam.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            SystemClock.sleep(1000);
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -182,7 +268,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         rank = mDevice.findObject(By.res(PackageConstants.Android.PACKAGE, "list"));
         Rect refreshPngRect = rank.getVisibleBounds();
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(2000);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+//        SystemClock.sleep(2000);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
@@ -190,14 +280,28 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
             rank = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "exercise_main_rank"));
             startTestRecord();
             rank.clickAndWait(Until.newWindow(), WAIT_TIME);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
-            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            SystemClock.sleep(1000);
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 

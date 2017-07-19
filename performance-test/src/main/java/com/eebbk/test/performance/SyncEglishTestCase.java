@@ -183,10 +183,10 @@ public class SyncEglishTestCase extends PerforTestCase {
         UiObject2 dropDown = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id"));
         Rect rt = dropDown.getVisibleBounds();
         //点击下拉环
-        mHelper.longClick(rt.right - 35, rt.height() / 2);
+        mHelper.longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
         SystemClock.sleep(2000);
         //点击头像
-        mHelper.longClick(60, rt.height() / 2);
+        mHelper.longClick(mDevice.getDisplayWidth()*60/768, rt.height() / 2);
         SystemClock.sleep(2000);
         //截图保存
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
@@ -195,12 +195,12 @@ public class SyncEglishTestCase extends PerforTestCase {
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
             //点击下拉环
-            mHelper.longClick(rt.right - 35, rt.height() / 2);
+            mHelper.longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
             SystemClock.sleep(2000);
             startTestRecord();
             //点击头像
             //mHelper.longClick(60, rt.height() / 2);
-            mDevice.click(60, rt.height() / 2);
+            mDevice.click(mDevice.getDisplayWidth()*60/768, rt.height() / 2);
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
@@ -224,10 +224,10 @@ public class SyncEglishTestCase extends PerforTestCase {
         UiObject2 dropDown = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id"));
         Rect rt = dropDown.getVisibleBounds();
         //点击下拉环
-        mHelper.longClick(rt.right - 35, rt.height() / 2);
+        mHelper.longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
         SystemClock.sleep(2000);
         //点击趣味测试
-        mHelper.longClick(rt.right - 45, rt.height() / 2);
+        mHelper.longClick(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
         mDevice.waitForIdle();
         SystemClock.sleep(5000);
         //截图保存
@@ -238,11 +238,11 @@ public class SyncEglishTestCase extends PerforTestCase {
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
             //点击下拉环
-            mHelper.longClick(rt.right - 35, rt.height() / 2);
+            mHelper.longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
             SystemClock.sleep(2000);
             startTestRecord();
             //点击趣味测试
-            mHelper.longClick(rt.right - 45, rt.height() / 2);
+            mHelper.longClick(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
@@ -265,14 +265,13 @@ public class SyncEglishTestCase extends PerforTestCase {
         UiObject2 dropDown = mDevice.findObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id"));
         Rect rt = dropDown.getVisibleBounds();
         //点击下拉环
-        mHelper.longClick(rt.right - 35, rt.height() / 2);
+        mHelper.longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
         SystemClock.sleep(2000);
         //点击趣味测试
-        mHelper.longClick(rt.right - 45, rt.height() / 2);
+        mHelper.longClick(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
         mDevice.waitForIdle();
         SystemClock.sleep(2000);
         //点击欧拉英语
-        startTestRecord();
         mHelper.longClick(mDevice.getDisplayWidth() / 4, mDevice.getDisplayHeight() / 2);
         mDevice.wait(Until.hasObject(By.res(BbkMiddleMarket.PACKAGE, "apk_button")), WAIT_TIME);
         SystemClock.sleep(10000);
@@ -280,7 +279,8 @@ public class SyncEglishTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
 
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 7 * mDevice.getDisplayHeight() / 100, source_png.getWidth(), source_png.getHeight());
+        Rect loadPngRect = new Rect(0, source_png.getHeight() - mDevice.getDisplayHeight() / 20, source_png.getWidth
+                (), source_png.getHeight());
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());

@@ -90,7 +90,7 @@ public class BbkAppTestCase extends PerforTestCase {
 
     @Test
     public void launchEnglishDict() throws IOException, JSONException {
-        clickIconStartApp(null, "查单词", PackageConstants.EebbkDict.PACKAGE, null, 5000, null, 1);
+        clickIconStartApp("英语学习", "查单词", PackageConstants.EebbkDict.PACKAGE, null, 5000, null, 1);
     }
 
     /**

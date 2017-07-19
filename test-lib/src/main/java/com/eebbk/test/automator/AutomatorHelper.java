@@ -380,7 +380,7 @@ public class AutomatorHelper {
         Object label;
         if (idFlag) {
             try {
-                temp.put("if id","========");
+                temp.put("if id", "========");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -389,13 +389,13 @@ public class AutomatorHelper {
         } else {
             //content-desc
             try {
-                temp.put("not id content desc ","========");
+                temp.put("not id content desc ", "========");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             label = mDevice.findObject(new UiSelector().description(title));
             try {
-                temp.put("not id content desc end  ",label);
+                temp.put("not id content desc end  ", label);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -499,13 +499,14 @@ public class AutomatorHelper {
             if (dropDown != null) {
                 Rect rt = dropDown.getVisibleBounds();
                 //点击下拉环
-                longClick(rt.right - 35, rt.height() / 2);
+                longClick(rt.right - mDevice.getDisplayWidth()*35/768, rt.height() / 2);
                 SystemClock.sleep(1000);
                 //点击头像
-                longClick(60, rt.height() / 2);
+                longClick(mDevice.getDisplayWidth() * 60 / 768, rt.height() / 2);
                 SystemClock.sleep(2000);
                 //更换课本
-                longClick(640, 420);
+//                longClick(640, 420);
+                longClick(mDevice.getDisplayWidth() * 5 / 6, mDevice.getDisplayHeight() * 2 / 5);
                 //点击趣味测试
                 //longClick(rt.right-45,rt.height()/2);
                 mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "add_id")), WAIT_TIME);
@@ -516,7 +517,7 @@ public class AutomatorHelper {
     //打开同步英语课本内容首页
     public void openSyncEnglishBook() {
         openSyncEnglish();
-        if (!mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id")), WAIT_TIME * 1)) {
+        if (!mDevice.wait(Until.hasObject(By.res(SyncEnglish.PACKAGE, "toptoolbar_id")), WAIT_TIME * 2)) {
             mDevice.wait(Until.hasObject(By.clazz(ListView.class)), WAIT_TIME);
             UiObject2 booklist = mDevice.findObject(By.clazz(ListView.class));
             List<UiObject2> children = booklist.getChildren();
