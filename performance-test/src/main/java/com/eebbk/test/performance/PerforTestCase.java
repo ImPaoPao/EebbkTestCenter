@@ -123,21 +123,31 @@ public class PerforTestCase extends Automator {
                     WAIT_TIME * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")), WAIT_TIME
-                    * 2);
+            SystemClock.sleep(3000);
+//            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")), WAIT_TIME
+//                    * 2);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
-            gradeList.scrollBackward(20);
-            user = mDevice.findObject(By.textContains("三年级"));
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME * 2);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
-            if (user == null) {
-                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+            if (user != null) {
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
+                gradeList.scrollBackward(20);
+                user = mDevice.findObject(By.textContains("三年级"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME
+                        * 2);
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+                if (user == null) {
+                    user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+                }
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                mDevice.pressHome();
+            } else {
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "primary_shcool_btn"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                //mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "sure_btn")), WAIT_TIME);
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "sure_btn"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
             }
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.pressHome();
             mDevice.waitForIdle(10000);
             clearRunprocess();
         }
@@ -157,26 +167,35 @@ public class PerforTestCase extends Automator {
                 mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
                         WAIT_TIME);
             }
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),
-                    WAIT_TIME * 2);
+            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main")),WAIT_TIME);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "beta_edt_current_main"));
             user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")),
-                    WAIT_TIME);
+//                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl")),
+//                        WAIT_TIME);
+            SystemClock.sleep(3000);
             user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "user_grade_editabl"));//年级信息编辑
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换
-            SystemClock.sleep(5000);
-            UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
-            gradeList.scrollForward(20);
-            user = mDevice.findObject(By.textContains("高中"));
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME * 2);
-            user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
-            if (user == null) {
-                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+            if (user != null) {
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);//登录界面年级切换
+                SystemClock.sleep(5000);
+                UiScrollable gradeList = new UiScrollable(new UiSelector().className("android.widget.ListView"));
+                gradeList.scrollForward(20);
+                user = mDevice.findObject(By.textContains("高中"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn")), WAIT_TIME
+                        * 2);
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_person_btn"));
+                if (user == null) {
+                    user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "save_infos_btn"));
+                }
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                mDevice.pressHome();
+            } else {
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "middle_school_btn"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
+                //mDevice.wait(Until.hasObject(By.res(PackageConstants.Personal.PACKAGE, "sure_btn")), WAIT_TIME);
+                user = mDevice.findObject(By.res(PackageConstants.Personal.PACKAGE, "sure_btn"));
+                user.clickAndWait(Until.newWindow(), WAIT_TIME);
             }
-            user.clickAndWait(Until.newWindow(), WAIT_TIME);
-            mDevice.pressHome();
             mDevice.waitForIdle(10000);
             clearRunprocess();
         }
