@@ -42,15 +42,17 @@ public class SynStudyTestCase extends PerforTestCase {
         Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 3);
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            doStartActivity(i);
             mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math")), WAIT_TIME);
             icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
             startTestRecord();
-            icon.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+            icon.clickAndWait(Until.newWindow(),WAIT_TIME);
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_add")), WAIT_TIME);
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.pressHome();
             if (mType == 1) {
                 mDevice.pressHome();
