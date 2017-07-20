@@ -209,7 +209,8 @@ public class SyncMathTestCase extends PerforTestCase {
                 .getDisplayHeight() * 80 / 1024);
         //中间 "正在加载"刷新框
         //mDevice.getDisplayWidth() * 640 / 768, mDevice.getDisplayHeight() * 65 / 1024
-        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight());
+        Rect refreshPngRect = new Rect(0, mDevice.getDisplayHeight() * 100 / 1024, source_png.getWidth(), source_png
+                .getHeight());
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
