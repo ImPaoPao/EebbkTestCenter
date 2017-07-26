@@ -9,7 +9,6 @@ import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 
-import com.eebbk.test.common.PackageConstants;
 import com.eebbk.test.common.PackageConstants.SynStudy;
 
 import org.json.JSONException;
@@ -134,7 +133,7 @@ public class SynStudyTestCase extends PerforTestCase {
 
     //书架界面10本书，点击刷新→刷新完成
     @Test
-    public void refreshDiscipline() throws JSONException, FileNotFoundException {
+    public void refreshSynStudy() throws JSONException, FileNotFoundException {
         openSynStudy();
         mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "book_searchbook")), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
@@ -148,21 +147,27 @@ public class SynStudyTestCase extends PerforTestCase {
             startTestRecord();
             refresh.click();
             SystemClock.sleep(200);
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date());
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             SystemClock.sleep(2000);
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
     private void openSynStudy() {
-        mDevice.wait(Until.hasObject(By.res(PackageConstants.SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
-        UiObject2 synStudy = mDevice.findObject(By.res(PackageConstants.SynStudy.PACKAGE, "syn_widget_new_chinese"));
-        synStudy.clickAndWait(Until.newWindow(), WAIT_TIME);
+        mDevice.wait(Until.hasObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math")), WAIT_TIME);
+        UiObject2 icon = mDevice.findObject(By.res(SynStudy.PACKAGE, "syn_widget_new_math"));
+        //mDevice.wait(Until.hasObject(By.res(PackageConstants.SynStudy.PACKAGE, "syn_widget_new_chinese")), WAIT_TIME);
+        //UiObject2 synStudy = mDevice.findObject(By.res(PackageConstants.SynStudy.PACKAGE, "syn_widget_new_chinese"));
+        icon.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.waitForIdle();
     }
 }

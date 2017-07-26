@@ -42,10 +42,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         mDevice.wait(Until.gone(By.res(QuestionDatabase.PACKAGE, "exercise_text_title")), WAIT_TIME * 4);
         mDevice.wait(Until.gone(By.res(QuestionDatabase.PACKAGE, "exercise_webview")), WAIT_TIME * 2);
         SystemClock.sleep(10000);
-        Rect loadPngRect = new Rect(80, 20, 160, 60);
+        Rect loadPngRect = new Rect(0, 0, mDevice
+                .getDisplayWidth()*200/768, mDevice.getDisplayHeight()*200/1024);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 //        SystemClock.sleep(2000);
-        Rect refreshPngRect = new Rect(0, 20, source_png.getWidth(), source_png.getHeight() / 6);
+        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() / 6);
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
@@ -135,18 +136,42 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
     //点击真题密卷科目→真题目录界面加载完成
     @Test
     public void showQdRealExamList() throws IOException, JSONException {
-        openQd("home_img_tab_paper");
+//        openQd("home_img_tab_paper");
+        mHelper.openQuestionDatabse();
+        mDevice.waitForIdle();
+        BySelector byMenu = By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper");
+        UiObject2 click = mDevice.findObject(byMenu);
+        if (click != null) {
+            click.clickAndWait(Until.newWindow(), WAIT_TIME);
+            mDevice.waitForIdle();
+        } else {
+            click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_norisuke"));
+            click.clickAndWait(Until.newWindow(), WAIT_TIME);
+        }
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject")),
-                WAIT_TIME * 4);
+                WAIT_TIME * 2);
         SystemClock.sleep(5000);
+//        UiObject2 exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "select_exercise_view_pager"));
+//        Rect refreshPngRect = exam.getVisibleBounds();
+//        exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "select_exercise_filter_view"));
+//        Rect loadPngRect = exam.getVisibleBounds();
+//        Bitmap source_png = mHelper.takeScreenshot(mNumber);
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+//                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+
+
+
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_search_layout")), WAIT_TIME);
         UiObject2 exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "paper_main_search_layout"));
-        Rect rte = exam.getVisibleBounds();
-        Rect loadPngRect = new Rect(rte.width() / 4, rte.top, rte.width() * 3 / 4, rte.bottom);
-        exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_viewpager_content"));
-        Rect rt = exam.getVisibleBounds();
-        exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方的菜单条
-        Rect refreshPngRect = new Rect(rt.left, rte.bottom, rt.right, rt.bottom - exam.getVisibleBounds().height());
+        Rect loadPngRect = exam.getVisibleBounds();//这儿报错
+//        Rect loadPngRect = new Rect(rte.width() / 4, rte.top, rte.width() * 3 / 4, rte.bottom);
+//        exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_viewpager_content"));
+//        Rect rt = exam.getVisibleBounds();
+//        exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_linear_tab_container"));//下方的菜单条
+        Rect refreshPngRect = new Rect(loadPngRect.left, loadPngRect.bottom, mDevice.getDisplayWidth(), mDevice
+                .getDisplayHeight());
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         //        SystemClock.sleep(2000);
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
@@ -156,15 +181,23 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             openQd();
-            mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper")), WAIT_TIME * 2);
-            exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper"));
-            startTestRecord();
-            exam.click();
+            //mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper")), WAIT_TIME * 2);
+            click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper"));
+            if (click != null) {
+                startTestRecord();
+                click.click();
+            } else {
+                click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_norisuke"));
+                startTestRecord();
+                click.click();
+            }
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
 // 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
 //            SystemClock.sleep(1000);
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
             Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
@@ -196,11 +229,11 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
         BySelector byMenu = By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper");
         UiObject2 click = mDevice.findObject(byMenu);
         if (click != null) {
-            click.clickAndWait(Until.newWindow(),WAIT_TIME);
+            click.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.waitForIdle();
-        }else{
+        } else {
             click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_norisuke"));
-            click.clickAndWait(Until.newWindow(),WAIT_TIME);
+            click.clickAndWait(Until.newWindow(), WAIT_TIME);
         }
 
         mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject")),
@@ -213,19 +246,32 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
                 WAIT_TIME * 4);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
 //        SystemClock.sleep(2000);
-        Rect refreshPngRect = new Rect(0, 100, source_png.getWidth(), source_png.getHeight() / 2);
-        Rect loadPngRect = new Rect(0, 24, mDevice.getDisplayWidth(), 90);
+        Rect refreshPngRect = new Rect(0, mDevice.getDisplayWidth()*100/1024, source_png.getWidth(), source_png
+                .getHeight() / 2);
+        Rect loadPngRect = new Rect(0, mDevice.getDisplayHeight()*24/1024, mDevice.getDisplayWidth(), mDevice
+                .getDisplayHeight()*90/1024);
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
         Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
                 refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
-            openQd("home_img_tab_paper");
+//            openQd("home_img_tab_paper");
+            mHelper.openQuestionDatabse();
+            mDevice.waitForIdle();
+            byMenu = By.res(QuestionDatabase.PACKAGE, "home_img_tab_paper");
+            click = mDevice.findObject(byMenu);
+            if (click != null) {
+                click.click();
+                mDevice.waitForIdle();
+            } else {
+                click = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "home_img_tab_norisuke"));
+                click.click();
+            }
             mDevice.wait(Until.hasObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject")),
                     WAIT_TIME * 4);
             exam = mDevice.findObject(By.res(QuestionDatabase.PACKAGE, "paper_main_item_grid_subject"));
-            children = exam.getChildren();
+            children = exam.getChildren(); //这儿报个错误 空指针
             exam = children.get(0);
             startTestRecord();
             exam.click();
@@ -285,7 +331,9 @@ public class QuestionDatabaseTestCase extends PerforTestCase {
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
 //            SystemClock.sleep(1000);
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));

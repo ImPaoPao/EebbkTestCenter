@@ -1,5 +1,6 @@
 package com.eebbk.test.performance;
 
+import android.graphics.Rect;
 import android.os.RemoteException;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -59,7 +60,13 @@ public class PendantTestCase extends PerforTestCase {
     @Test
     public void launchSynEnglishPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
-        startApp("widgetListenBtn", PackageConstants.SyncEnglish.PACKAGE, 1, true);
+//        startApp("widgetListenBtn", PackageConstants.SyncEnglish.PACKAGE, 1, true);
+        Rect loadPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight()*3/20);
+        Rect refreshPngRect = new Rect(0, loadPngRect.bottom, mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
+        clickIconStartApp(null, "widgetListenBtn", PackageConstants.SyncEnglish.PACKAGE, null, 5000, loadPngRect,
+                refreshPngRect, 1,false,true);
+//        clickIconStartApp("英语学习", "同步英语", PackageConstants.SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard", 3000,
+//                loadPngRect, refreshPngRect,1);
     }
 
     @Test

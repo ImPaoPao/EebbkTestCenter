@@ -55,10 +55,10 @@ public class VtrainingTestCase extends PerforTestCase {
         Rect refreshPngRect = more.getVisibleBounds();
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
-                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+//                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openVtraining();
@@ -70,7 +70,9 @@ public class VtrainingTestCase extends PerforTestCase {
 // 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
@@ -81,14 +83,14 @@ public class VtrainingTestCase extends PerforTestCase {
             source_png.recycle();
             source_png = null;
         }
-        if (loadSource != null && !loadSource.isRecycled()) {
-            loadSource.recycle();
-            loadSource = null;
-        }
-        if (refreshSource != null && !refreshSource.isRecycled()) {
-            refreshSource.recycle();
-            refreshSource = null;
-        }
+//        if (loadSource != null && !loadSource.isRecycled()) {
+//            loadSource.recycle();
+//            loadSource = null;
+//        }
+//        if (refreshSource != null && !refreshSource.isRecycled()) {
+//            refreshSource.recycle();
+//            refreshSource = null;
+//        }
     }
 
     //点击选课→科目→课程包封面，加载完成
@@ -178,7 +180,7 @@ public class VtrainingTestCase extends PerforTestCase {
 // 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+            Map<String, String> compareResult = doCompare(refreshPngRect, null, refreshSource, null, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
@@ -316,10 +318,10 @@ public class VtrainingTestCase extends PerforTestCase {
         Rect loadPngRect = join.getVisibleBounds();
         //Rect loadPngRect = new Rect(rt.left,rt.top,rt.right,rt.bottom/2);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
-                loadPngRect.width(), loadPngRect.height());
-        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
-                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+//                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
 //        SystemClock.sleep(2000);
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
@@ -332,7 +334,9 @@ public class VtrainingTestCase extends PerforTestCase {
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
 //            SystemClock.sleep(1000);
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
@@ -342,14 +346,14 @@ public class VtrainingTestCase extends PerforTestCase {
             source_png.recycle();
             source_png = null;
         }
-        if (loadSource != null && !loadSource.isRecycled()) {
-            loadSource.recycle();
-            loadSource = null;
-        }
-        if (refreshSource != null && !refreshSource.isRecycled()) {
-            refreshSource.recycle();
-            refreshSource = null;
-        }
+//        if (loadSource != null && !loadSource.isRecycled()) {
+//            loadSource.recycle();
+//            loadSource = null;
+//        }
+//        if (refreshSource != null && !refreshSource.isRecycled()) {
+//            refreshSource.recycle();
+//            refreshSource = null;
+//        }
     }
 
 
@@ -385,7 +389,9 @@ public class VtrainingTestCase extends PerforTestCase {
 // 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
                     Date(), (i + 1), 1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));

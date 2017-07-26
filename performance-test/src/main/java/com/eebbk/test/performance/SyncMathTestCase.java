@@ -199,6 +199,9 @@ public class SyncMathTestCase extends PerforTestCase {
     public void downloadExplanatinSynMathContent() throws IOException, JSONException {
         //com.eebbk.synmath:id/add_download_button
         mHelper.openSynMathBook();
+        //视频 都有下载按钮
+        UiObject2 book = mDevice.findObject(By.res(SynMath.PACKAGE, "menu_video_btn"));
+        book.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(MathAnimation.PACKAGE, "add_download_button")), WAIT_TIME * 2);
         UiObject2 download = mDevice.findObject(By.res(SynMath.PACKAGE, "add_download_button"));
         download.clickAndWait(Until.newWindow(), WAIT_TIME);
@@ -272,7 +275,8 @@ public class SyncMathTestCase extends PerforTestCase {
             children = list.getChildren();
             detailBook = children.get(1);//第一课时
             startTestRecord();
-            detailBook.clickAndWait(Until.newWindow(), WAIT_TIME);
+//            detailBook.clickAndWait(Until.newWindow(), WAIT_TIME);
+            detailBook.click();
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
@@ -341,7 +345,7 @@ public class SyncMathTestCase extends PerforTestCase {
         book.clickAndWait(Until.newWindow(), WAIT_TIME);
         UiObject2 list = mDevice.findObject(By.res(SynMath.PACKAGE, "treelist"));
         List<UiObject2> children = list.getChildren();
-        UiObject2 detailBook = children.get(1);//第一课时
+        UiObject2 detailBook = children.get(2);//第一课时
         detailBook.clickAndWait(Until.newWindow(), WAIT_TIME);
         mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menuBtnId")), WAIT_TIME);
         book = mDevice.findObject(By.res(SynMath.PACKAGE, "menuBtnId"));
@@ -351,7 +355,7 @@ public class SyncMathTestCase extends PerforTestCase {
         explanation.clickAndWait(Until.newWindow(), WAIT_TIME);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 150, source_png.getWidth(), source_png.getHeight());
+//        Rect loadPngRect = new Rect(0, 150, source_png.getWidth(), source_png.getHeight());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSynMathBook();
@@ -359,14 +363,15 @@ public class SyncMathTestCase extends PerforTestCase {
             book2.clickAndWait(Until.newWindow(), WAIT_TIME);
             UiObject2 list2 = mDevice.findObject(By.res(SynMath.PACKAGE, "treelist"));
             children = list2.getChildren();
-            detailBook = children.get(1);//第一课时
+            detailBook = children.get(2);//第一课时
             detailBook.clickAndWait(Until.newWindow(), WAIT_TIME);
             mDevice.wait(Until.hasObject(By.res(SynMath.PACKAGE, "menuBtnId")), WAIT_TIME);
             detailBook = mDevice.findObject(By.res(SynMath.PACKAGE, "menuBtnId"));
             detailBook.clickAndWait(Until.newWindow(), WAIT_TIME);
             UiObject2 explanation2 = mDevice.findObject(By.text("知识讲解"));
             startTestRecord();
-            mHelper.longClick(explanation2);
+//            mHelper.longClick(explanation2);
+            mDevice.click(explanation2.getVisibleCenter().x,explanation2.getVisibleCenter().y);
             SystemClock.sleep(200);
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get

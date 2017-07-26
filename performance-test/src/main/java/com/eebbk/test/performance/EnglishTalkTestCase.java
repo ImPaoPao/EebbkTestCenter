@@ -25,7 +25,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
 
     @Test
     public void launchEnglishTalk() throws IOException, UiObjectNotFoundException, InterruptedException, JSONException {
-        clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller",5000,
+        clickIconStartApp(null, "英语听说", EnglishTalk.PACKAGE, "main_player_controller", 5000,
                 "main_player_controller", null, 1);
     }
 
@@ -42,6 +42,10 @@ public class EnglishTalkTestCase extends PerforTestCase {
         UiObject2 top = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "detail_book_top_layout_id"));
         Rect loadPngRect = top.getVisibleBounds();
         Rect refreshPngRect = new Rect(0, loadPngRect.bottom, source_png.getWidth(), source_png.getHeight());
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -51,14 +55,28 @@ public class EnglishTalkTestCase extends PerforTestCase {
             UiObject2 addBook = children.get(0);
             startTestRecord();
             addBook.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -80,25 +98,31 @@ public class EnglishTalkTestCase extends PerforTestCase {
         UiObject2 player_function_view_layout_id = mDevice.findObject(By.res(EnglishTalk.PACKAGE,
                 "player_function_view_layout_id"));
         Rect rt = player_function_view_layout_id.getVisibleBounds();
-        SystemClock.sleep(2000);
+//        SystemClock.sleep(2000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
-        SystemClock.sleep(1000);
+//        SystemClock.sleep(1000);
         Rect loadPngRect = new Rect(rt.left, rt.top, rt.right, rt.bottom);
-        Rect refreshPngRect = loadPngRect;
+//        Rect refreshPngRect = loadPngRect;
         mDevice.pressBack();
         for (int i = 0; i < mCount; i++) {
             mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "play_more")), WAIT_TIME);
             bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "play_more"));
             startTestRecord();
             bookChild.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             SystemClock.sleep(1000);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
     }
 
@@ -116,7 +140,7 @@ public class EnglishTalkTestCase extends PerforTestCase {
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
+//        Rect loadPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -124,9 +148,13 @@ public class EnglishTalkTestCase extends PerforTestCase {
             bookChild = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "item_book_menu_child_root_id"));
             startTestRecord();
             bookChild.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.waitForIdle();
             mDevice.pressBack();
         }
@@ -146,9 +174,14 @@ public class EnglishTalkTestCase extends PerforTestCase {
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - 80, source_png.getWidth(), source_png.getHeight());
-        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 100);
-        ;
+//        Rect loadPngRect = new Rect(0, source_png.getHeight() - mDevice.getDisplayHeight() * 80 / 1024, source_png
+//                .getWidth(), source_png.getHeight());
+//        Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), source_png.getHeight() - 100 * mDevice
+//                .getDisplayHeight() / 1024);
+//        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+//                loadPngRect.width(), loadPngRect.height());
+//        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+//                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         mDevice.pressBack();
         mDevice.waitForIdle();
         for (int i = 0; i < mCount; i++) {
@@ -156,14 +189,30 @@ public class EnglishTalkTestCase extends PerforTestCase {
             ranking = mDevice.findObject(By.res(EnglishTalk.PACKAGE, "homepage_func_rank_id"));
             startTestRecord();
             ranking.click();
-            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i + 1));
-            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
-                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(source_png, loadPngRect, refreshPngRect, new Date(), (i +
+// 1));
+//            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
+//                    ("loadResult"), compareResult.get("refreshResult"));
+//            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new
+//                    Date(), (i + 1), 1, 0);
+            Map<String, String> compareResult = doCompare(null, null, source_png, null, new
+                    Date(), (i + 1), 1, 0);
+            stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
+                    ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
             mDevice.wait(Until.hasObject(By.res(EnglishTalk.PACKAGE, "list")), WAIT_TIME);
             mDevice.pressBack();
         }
-        if (!source_png.isRecycled()) {
+        if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
+            source_png = null;
         }
+//        if (loadSource != null && !loadSource.isRecycled()) {
+//            loadSource.recycle();
+//            loadSource = null;
+//        }
+//        if (refreshSource != null && !refreshSource.isRecycled()) {
+//            refreshSource.recycle();
+//            refreshSource = null;
+//        }
     }
 }

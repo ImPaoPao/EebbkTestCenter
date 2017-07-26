@@ -39,7 +39,10 @@ public class SyncEglishTestCase extends PerforTestCase {
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect, refreshPngRect, match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadPngRect,match)
         //clickIconStartApp(folder, title, packageName, waitUi,timeout, loadId, idrefreshId, match)
-        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard", 3000, null, 1);
+        Rect loadPngRect = new Rect(0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight()*3/20);
+        Rect refreshPngRect = new Rect(0, loadPngRect.bottom, mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
+        clickIconStartApp("英语学习", "同步英语", SyncEnglish.PACKAGE, "imageview_mainbookshelf_blackboard", 3000,
+                loadPngRect, refreshPngRect,1);
     }
 
     //前置条件：首页下载好十本书
@@ -147,7 +150,12 @@ public class SyncEglishTestCase extends PerforTestCase {
         SystemClock.sleep(5000);
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
-//        Rect loadPngRect = new Rect(0, source_png.getHeight() / 2, source_png.getWidth(), source_png.getHeight());
+        Rect loadPngRect = new Rect(0, source_png.getHeight()*2/3,source_png.getWidth(), source_png.getHeight());
+        Rect refreshPngRect = new Rect(loadPngRect.left, 0,loadPngRect.width(),loadPngRect.top);
+        Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
+                loadPngRect.width(), loadPngRect.height());
+        Bitmap refreshSource = Bitmap.createBitmap(source_png, refreshPngRect.left,
+                refreshPngRect.top, refreshPngRect.width(), refreshPngRect.height());
         clearRunprocess();
         for (int i = 0; i < mCount; i++) {
             mHelper.openSyncEnglishMain();
@@ -161,7 +169,8 @@ public class SyncEglishTestCase extends PerforTestCase {
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
-            Map<String, String> compareResult = doCompare(null, null, source_png, null, new Date(), (i + 1),
+            Map<String, String> compareResult = doCompare(loadPngRect, refreshPngRect, loadSource, refreshSource, new Date(), (i
+                            + 1),
                     1, 0);
             stopTestRecord(compareResult.get("lastTime"), compareResult.get("loadTime"), compareResult.get
                     ("refreshTime"), compareResult.get("loadResult"), compareResult.get("refreshResult"));
@@ -171,7 +180,14 @@ public class SyncEglishTestCase extends PerforTestCase {
         }
         if (source_png != null && !source_png.isRecycled()) {
             source_png.recycle();
-            source_png=null;
+        }
+        if (loadSource != null && !loadSource.isRecycled()) {
+            loadSource.recycle();
+            loadSource = null;
+        }
+        if (refreshSource != null && !refreshSource.isRecycled()) {
+            refreshSource.recycle();
+            refreshSource = null;
         }
     }
 
@@ -242,7 +258,8 @@ public class SyncEglishTestCase extends PerforTestCase {
             SystemClock.sleep(2000);
             startTestRecord();
             //点击趣味测试
-            mHelper.longClick(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
+            mDevice.click(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
+//            mHelper.longClick(rt.right - mDevice.getDisplayWidth()*45/768, rt.height() / 2);
 //            Map<String, String> compareResult = doCompare(source_png, loadPngRect, new Date(), (i + 1));
 //            stopTestRecord(compareResult.get("loadTime"), compareResult.get("refreshTime"), compareResult.get
 //                    ("loadResult"), compareResult.get("refreshResult"));
@@ -279,8 +296,9 @@ public class SyncEglishTestCase extends PerforTestCase {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         SystemClock.sleep(1000);
 
-        Rect loadPngRect = new Rect(0, source_png.getHeight() - mDevice.getDisplayHeight() / 20, source_png.getWidth
-                (), source_png.getHeight());
+        Rect loadPngRect = new Rect(mDevice.getDisplayWidth()*284/1536, mDevice.getDisplayHeight() - mDevice.getDisplayHeight() / 20,
+                mDevice.getDisplayWidth()*436/1536,
+                mDevice.getDisplayHeight());
         Rect refreshPngRect = new Rect(0, 0, source_png.getWidth(), loadPngRect.top);
         Bitmap loadSource = Bitmap.createBitmap(source_png, loadPngRect.left, loadPngRect.top,
                 loadPngRect.width(), loadPngRect.height());
