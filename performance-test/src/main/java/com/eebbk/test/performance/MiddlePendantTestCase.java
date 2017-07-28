@@ -92,4 +92,14 @@ public class MiddlePendantTestCase extends PerforTestCase {
         clickIconStartApp("词典", "汉英大辞典", PackageConstants.EebbkDict.PACKAGE, null, 5000,
                 null, 1);
     }
+    @Test
+    public void launchAncientprose() throws IOException, JSONException {
+        clickIconStartApp(null, PackageConstants.Ancientprose.LABEL, PackageConstants.Ancientprose.PACKAGE, null, 5000,
+                null, 1);
+    }
+    @Test
+    public void launchBbkTranslation() throws IOException, JSONException {
+        clickIconStartApp(null, PackageConstants.BbkTranslation.LABEL, PackageConstants.BbkTranslation.PACKAGE, null,
+                5000, null, 1);
+    }
 }

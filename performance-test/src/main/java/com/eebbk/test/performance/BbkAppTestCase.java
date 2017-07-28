@@ -35,7 +35,7 @@ public class BbkAppTestCase extends PerforTestCase {
      * 语文学习
      */
     @Test
-    public void launchHanziLearning() throws IOException, JSONException {
+    public void launchHaneiLearning() throws IOException, JSONException {
         clickIconStartApp("语文学习", PackageConstants.HanziLearning.LABEL, PackageConstants.HanziLearning.PACKAGE, null,
                 5000, null, 1);
     }
@@ -82,11 +82,6 @@ public class BbkAppTestCase extends PerforTestCase {
                 null, 1);
     }
 
-    @Test
-    public void launchBbkTranslation() throws IOException, JSONException {
-        clickIconStartApp(null, PackageConstants.BbkTranslation.LABEL, PackageConstants.BbkTranslation.PACKAGE, null,
-                5000, null, 1);
-    }
 
     @Test
     public void launchEnglishDict() throws IOException, JSONException {
@@ -198,11 +193,6 @@ public class BbkAppTestCase extends PerforTestCase {
                 null, 5000, null, 1);
     }
 
-    @Test
-    public void launchAncientprose() throws IOException, JSONException {
-        clickIconStartApp(null, PackageConstants.Ancientprose.LABEL, PackageConstants.Ancientprose.PACKAGE, null, 5000,
-                null, 1);
-    }
 }
 
 
