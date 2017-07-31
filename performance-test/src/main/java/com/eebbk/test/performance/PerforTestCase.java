@@ -510,6 +510,9 @@ public class PerforTestCase extends Automator {
         Bitmap source_png = mHelper.takeScreenshot(mNumber);
         mDevice.wait(Until.hasObject(By.res(packageName, loadId)), WAIT_TIME * 2);
         UiObject2 view = mDevice.findObject(By.res(packageName, loadId));
+        if (view == null) {
+            return;
+        }
         Rect loadPngRect = view.getVisibleBounds();
         Rect refreshPngRect = null;
         Bitmap refreshSource = null;

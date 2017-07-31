@@ -94,7 +94,7 @@ public class PendantTestCase extends PerforTestCase {
         startVtraining("widget_paopao_goto", 1, true);
     }
 
-   // @Test
+    @Test
     public void launchJianQiaoPendant() throws IOException, UiObjectNotFoundException, JSONException, RemoteException,
             InterruptedException {
         startVtraining("widget_jianqiao_goto", 1, true);
@@ -111,7 +111,7 @@ public class PendantTestCase extends PerforTestCase {
      */
 
     @Test
-    public void launchHanziLeaningPendant() throws IOException, UiObjectNotFoundException, JSONException,
+    public void launchHanziLearningPendant() throws IOException, UiObjectNotFoundException, JSONException,
             RemoteException, InterruptedException {
         startApp("widget_enterBtn", "com.eebbk.hanziLearning.activity", 1, true);
     }

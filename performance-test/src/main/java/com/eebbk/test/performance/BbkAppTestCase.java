@@ -35,7 +35,7 @@ public class BbkAppTestCase extends PerforTestCase {
      * 语文学习
      */
     @Test
-    public void launchHaneiLearning() throws IOException, JSONException {
+    public void launchHanziLearning() throws IOException, JSONException {
         clickIconStartApp("语文学习", PackageConstants.HanziLearning.LABEL, PackageConstants.HanziLearning.PACKAGE, null,
                 5000, null, 1);
     }
@@ -92,7 +92,7 @@ public class BbkAppTestCase extends PerforTestCase {
      *
      */
     @Test
-    public void launchOnesearch() throws IOException, JSONException {
+    public void launchOnesearchMa() throws IOException, JSONException {
         clickIconStartApp(null, "扫条码", PackageConstants.Onesearch.PACKAGE, null, 5000, null, 1);
     }
 
